@@ -6357,8 +6357,14 @@ def react_assets(filename):
 # =========================================================
 # SERVE ORIGINAL HTML FILES FOR REACT LOADER
 # =========================================================
-
+@app.route("/")
+def home():
+    return send_from_directory(
+        HTML_DIR,
+        "login.html"
+    )
 @app.route("/html/<path:filename>")
+
 def serve_html_file(filename):
 
     file_path = os.path.join(
