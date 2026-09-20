@@ -6697,6 +6697,9 @@ def socket_disconnect():
 # =========================================================
 # HOME
 # =========================================================
+# =========================================================
+# HOME
+# =========================================================
 
 @app.route(
     "/",
@@ -6704,39 +6707,10 @@ def socket_disconnect():
 )
 def home():
 
-    if os.path.isfile(
-        REACT_INDEX_FILE
-    ):
-
-        return send_file(
-            REACT_INDEX_FILE
-        )
-
-    if not os.path.isfile(
-        INDEX_FILE
-    ):
-
-        return jsonify({
-
-            "project":
-                "IN/OUT X",
-
-            "status":
-                "running",
-
-            "database":
-                "MongoDB Atlas",
-
-            "error":
-                "index.html not found"
-
-        }), 404
-
-    return send_file(
-        INDEX_FILE
+    return send_from_directory(
+        HTML_DIR,
+        "login.html"
     )
-
-
 # =========================================================
 # STARTUP
 # =========================================================
