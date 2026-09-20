@@ -18,21 +18,27 @@
     </title>
 
 
-    <!-- Bootstrap -->
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
 
     <link
         rel="stylesheet"
         href="/assets/css/bootstrap.min.css">
 
 
-    <!-- Bootstrap Icons -->
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
         href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
 
 
-    <!-- Main CSS -->
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
 
     <link
         rel="stylesheet"
@@ -300,8 +306,179 @@
 
 
         /* =====================================================
+           PAGE TITLE IN NAVBAR
+        ===================================================== */
+
+        .admin-navbar .navbar-page-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+
+            margin-left: 18px;
+
+            margin-right: 18px;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading .page-icon {
+
+            flex: 0 0 auto;
+
+            width: 38px;
+
+            height: 38px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading .eyebrow {
+
+            margin-bottom: 0.1rem !important;
+
+            font-size: 10px;
+
+            line-height: 1.1;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading h1 {
+
+            margin-bottom: 0 !important;
+
+            font-size: 18px;
+
+            line-height: 1.15;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading p.text-muted {
+
+            margin-top: 2px;
+
+            font-size: 11px;
+
+            line-height: 1.2;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            max-width: min(430px, 38vw);
+
+        }
+
+
+        /* =====================================================
+           CAMERA 2
+        ===================================================== */
+
+        .camera-container {
+
+            position: relative;
+
+            width: 100%;
+
+            min-height: 320px;
+
+            overflow: hidden;
+
+            background: #111827;
+
+            border-radius: 10px;
+
+        }
+
+
+        .camera-container img {
+
+            display: block;
+
+            width: 100%;
+
+            height: 100%;
+
+            min-height: 320px;
+
+            object-fit: cover;
+
+            background: #111827;
+
+        }
+
+
+        .camera-status {
+
+            position: absolute;
+
+            left: 12px;
+
+            bottom: 12px;
+
+            z-index: 5;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background: rgba(0, 0, 0, 0.65);
+
+            color: #ffffff;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =====================================================
            RESPONSIVE
         ===================================================== */
+
+        @media (max-width: 992px) {
+
+            .admin-navbar .navbar-page-heading {
+
+                margin-left: 12px;
+
+                margin-right: 10px;
+
+                gap: 9px;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading p.text-muted {
+
+                display: none;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading h1 {
+
+                font-size: 16px;
+
+            }
+
+        }
+
 
         @media (max-width: 576px) {
 
@@ -320,88 +497,51 @@
 
             }
 
-        }
 
-    
-        /* ==========================================
-           PAGE TITLE IN NAVBAR
-        ========================================== */
-
-        .admin-navbar .navbar-page-heading {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-            margin-left: 18px;
-            margin-right: 18px;
-        }
-
-        .admin-navbar .navbar-page-heading .page-icon {
-            flex: 0 0 auto;
-            width: 38px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .admin-navbar .navbar-page-heading .eyebrow {
-            margin-bottom: 0.1rem !important;
-            font-size: 10px;
-            line-height: 1.1;
-        }
-
-        .admin-navbar .navbar-page-heading h1 {
-            margin-bottom: 0 !important;
-            font-size: 18px;
-            line-height: 1.15;
-        }
-
-        .admin-navbar .navbar-page-heading p.text-muted {
-            margin-top: 2px;
-            font-size: 11px;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: min(430px, 38vw);
-        }
-
-        @media (max-width: 992px) {
             .admin-navbar .navbar-page-heading {
-                margin-left: 12px;
-                margin-right: 10px;
-                gap: 9px;
-            }
 
-            .admin-navbar .navbar-page-heading p.text-muted {
-                display: none;
-            }
-
-            .admin-navbar .navbar-page-heading h1 {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .admin-navbar .navbar-page-heading {
                 margin-left: 8px;
+
             }
+
 
             .admin-navbar .navbar-page-heading .page-icon {
+
                 display: none;
+
             }
+
 
             .admin-navbar .navbar-page-heading .eyebrow {
+
                 display: none;
+
             }
+
 
             .admin-navbar .navbar-page-heading h1 {
+
                 font-size: 15px;
+
             }
+
+
+            .camera-container {
+
+                min-height: 240px;
+
+            }
+
+
+            .camera-container img {
+
+                min-height: 240px;
+
+            }
+
         }
 
-</style>
+    </style>
 
 </head>
 
@@ -416,12 +556,15 @@
     <div class="admin-shell">
 
 
-        <!-- SIDEBAR BACKDROP -->
+        <!-- =================================================
+             SIDEBAR BACKDROP
+        ================================================== -->
 
         <div
             class="sidebar-backdrop"
             data-sidebar-close>
         </div>
+
 
 
         <!-- =================================================
@@ -441,7 +584,7 @@
 
                 <a
                     class="brand-mark"
-                    href="index.html"
+                    href="/index.html"
                     aria-label="INOUTX Dashboard">
 
 
@@ -489,7 +632,7 @@
 
                 <a
                     class="nav-link active"
-                    href="index.html"
+                    href="/index.html"
                     aria-current="page">
 
 
@@ -516,7 +659,7 @@
 
                 <a
                     class="nav-link"
-                    href="vehicle.html">
+                    href="/vehicle.html">
 
 
                     <span class="nav-icon">
@@ -542,7 +685,7 @@
 
                 <a
                     class="nav-link"
-                    href="staff-vehicles.html">
+                    href="/staff-vehicles.html">
 
 
                     <span class="nav-icon">
@@ -562,11 +705,13 @@
 
                 </a>
 
-                 <!-- VISITOR  VEHICLES -->
+
+
+                <!-- VISITORS -->
 
                 <a
                     class="nav-link"
-                    href="visitor.html">
+                    href="/visitor.html">
 
 
                     <span class="nav-icon">
@@ -586,14 +731,13 @@
 
                 </a>
 
-                
 
 
                 <!-- DOWNLOAD DATA -->
 
                 <a
                     class="nav-link"
-                    href="download.html">
+                    href="/download.html">
 
 
                     <span class="nav-icon">
@@ -619,7 +763,7 @@
 
                 <a
                     class="nav-link"
-                    href="profile.html">
+                    href="/profile.html">
 
 
                     <span class="nav-icon">
@@ -634,6 +778,34 @@
 
                     <span class="nav-text">
                         Profile
+                    </span>
+
+
+                </a>
+
+
+
+                <!-- SYSTEM CONFIGURATION -->
+
+                <a
+                    class="nav-link"
+                    href="/html/system-config.html"
+                    id="system-config-nav"
+                    style="display: none;">
+
+
+                    <span class="nav-icon">
+
+                        <i
+                            class="bi bi-gear"
+                            aria-hidden="true">
+                        </i>
+
+                    </span>
+
+
+                    <span class="nav-text">
+                        System Configuration
                     </span>
 
 
@@ -687,57 +859,52 @@
                     </button>
 
 
-          <!-- PAGE TITLE -->
 
-<div
-                            class="page-heading-copy navbar-page-heading">
+                    <!-- PAGE TITLE -->
 
-
-                            <span class="page-icon">
+                    <div
+                        class="page-heading-copy navbar-page-heading">
 
 
-                                <i
-                                    class="bi bi-speedometer2"
-                                    aria-hidden="true">
-                                </i>
+                        <span class="page-icon">
+
+                            <i
+                                class="bi bi-speedometer2"
+                                aria-hidden="true">
+                            </i>
+
+                        </span>
 
 
-                            </span>
+                        <div>
 
 
-
-                            <div>
-
-
-
-                                <h1 class="h3 mb-1">
-                                    Dashboard
-                                </h1>
+                            <h1 class="h3 mb-1">
+                                Dashboard
+                            </h1>
 
 
-                                <p class="text-muted mb-0">
-Today's campus vehicle activity and access records
-
-                                </p>
-
-
-                            </div>
+                            <p class="text-muted mb-0">
+                                Today's campus vehicle activity and access records
+                            </p>
 
 
                         </div>
 
 
+                    </div>
 
 
-                    <!-- NAVBAR ACTIONS -->
+
+                    <!-- =================================================
+                         NAVBAR ACTIONS
+                    ================================================== -->
 
                     <div
                         class="navbar-actions ms-auto">
 
 
-                        <!-- =================================================
-                             LIVE TIME
-                        ================================================== -->
+                        <!-- LIVE TIME -->
 
                         <div class="live-time">
 
@@ -749,9 +916,7 @@ Today's campus vehicle activity and access records
 
 
                             <span id="live-time">
-
                                 --:--:--
-
                             </span>
 
 
@@ -794,13 +959,9 @@ Today's campus vehicle activity and access records
 
 
 
-                            <!-- NOTIFICATION MENU -->
-
                             <div
                                 class="dropdown-menu dropdown-menu-end notification-menu">
 
-
-                                <!-- HEADER -->
 
                                 <div class="notification-header">
 
@@ -824,7 +985,6 @@ Today's campus vehicle activity and access records
                                     </div>
 
 
-
                                     <button
                                         type="button"
                                         id="clear-notifications"
@@ -838,8 +998,6 @@ Today's campus vehicle activity and access records
                                 </div>
 
 
-
-                                <!-- NOTIFICATION LIST -->
 
                                 <div id="notification-list">
 
@@ -900,12 +1058,21 @@ Today's campus vehicle activity and access records
 
                                 <span
                                     class="avatar-img avatar-sm profile-avatar"
-                                    id="currentUserInitials"></span>
+                                    id="currentUserInitials">
+                                </span>
 
 
                                 <span class="profile-user-copy">
-                                    <span id="currentUserName"></span>
-                                    <small id="currentUserRole"></small>
+
+                                    <span
+                                        id="currentUserName">
+                                    </span>
+
+
+                                    <small
+                                        id="currentUserRole">
+                                    </small>
+
                                 </span>
 
 
@@ -922,7 +1089,7 @@ Today's campus vehicle activity and access records
 
                                     <a
                                         class="dropdown-item"
-                                        href="profile.html">
+                                        href="/profile.html">
 
 
                                         <i
@@ -943,10 +1110,8 @@ Today's campus vehicle activity and access records
 
                                 <li>
 
-
                                     <hr
                                         class="dropdown-divider">
-
 
                                 </li>
 
@@ -957,7 +1122,7 @@ Today's campus vehicle activity and access records
 
                                     <a
                                         class="dropdown-item"
-                                        href="login.html">
+                                        href="/login.html">
 
 
                                         <i
@@ -1002,23 +1167,6 @@ Today's campus vehicle activity and access records
                     class="container-fluid px-3 px-lg-4 py-4">
 
 
-
-                    <!-- PAGE HEADING -->
-
-                    <div class="page-heading">
-
-
-                        
-
-
-
-                      
-
-
-                    </div>
-
-
-
                     <!-- =================================================
                          DASHBOARD METRICS
                     ================================================== -->
@@ -1028,7 +1176,6 @@ Today's campus vehicle activity and access records
                         aria-label="Dashboard metrics">
 
 
-
                         <!-- COLLEGE BUSES -->
 
                         <div
@@ -1036,7 +1183,7 @@ Today's campus vehicle activity and access records
 
 
                             <a
-                                href="vehicle.html"
+                                href="/vehicle.html"
                                 class="dashboard-card-link"
                                 aria-label="Open College Buses">
 
@@ -1055,18 +1202,15 @@ Today's campus vehicle activity and access records
 
                                         <span class="metric-icon">
 
-
                                             <i
                                                 class="bi bi-bus-front"
                                                 aria-hidden="true">
                                             </i>
 
-
                                         </span>
 
 
                                     </div>
-
 
 
                                     <div
@@ -1076,7 +1220,6 @@ Today's campus vehicle activity and access records
                                         0/0
 
                                     </div>
-
 
 
                                     <div class="metric-meta">
@@ -1112,7 +1255,7 @@ Today's campus vehicle activity and access records
 
 
                             <a
-                                href="staff-vehicles.html"
+                                href="/staff-vehicles.html"
                                 class="dashboard-card-link"
                                 aria-label="Open Faculty Vehicles">
 
@@ -1131,18 +1274,15 @@ Today's campus vehicle activity and access records
 
                                         <span class="metric-icon">
 
-
                                             <i
                                                 class="bi bi-person-badge"
                                                 aria-hidden="true">
                                             </i>
 
-
                                         </span>
 
 
                                     </div>
-
 
 
                                     <div
@@ -1152,7 +1292,6 @@ Today's campus vehicle activity and access records
                                         0
 
                                     </div>
-
 
 
                                     <div class="metric-meta">
@@ -1188,62 +1327,59 @@ Today's campus vehicle activity and access records
 
 
                             <a
-                                href="visitor.html"
+                                href="/visitor.html"
                                 class="dashboard-card-link"
-                                aria-label="Open Unknown Vehicles">
+                                aria-label="Open Visitors">
 
 
                                 <article
                                     class="metric-card metric-warning">
 
-                                <div class="metric-top">
+
+                                    <div class="metric-top">
 
 
-                                    <span class="metric-label">
-                                        Visitors On Campus
-                                    </span>
+                                        <span class="metric-label">
+                                            Visitors On Campus
+                                        </span>
 
 
-                                    <span class="metric-icon">
+                                        <span class="metric-icon">
+
+                                            <i
+                                                class="bi bi-people-fill"
+                                                aria-hidden="true">
+                                            </i>
+
+                                        </span>
 
 
-                                        <i
-                                            class="bi bi-people-fill"
-                                            aria-hidden="true">
-                                        </i>
+                                    </div>
 
 
-                                    </span>
+                                    <div
+                                        class="metric-value"
+                                        id="visitorsOnCampus">
+
+                                        0
+
+                                    </div>
 
 
-                                </div>
+                                    <div class="metric-meta">
 
 
-
-                                <div
-                                    class="metric-value"
-                                    id="visitorsOnCampus">
-
-                                    0
-
-                                </div>
+                                        <span class="text-success">
+                                            Today
+                                        </span>
 
 
-
-                                <div class="metric-meta">
-
-
-                                    <span class="text-success">
-                                        Today
-                                    </span>
+                                        <span>
+                                            Issued Today
+                                        </span>
 
 
-                                    <span>
-                                        Issued Today
-                                    </span>
-
-
-                                </div>
+                                    </div>
 
 
                                 </article>
@@ -1255,193 +1391,196 @@ Today's campus vehicle activity and access records
                         </div>
 
 
-
-
                     </section>
 
 
 
-                 <!-- =================================================
-     CAMERA SECTION
-================================================== -->
+                    <!-- =================================================
+                         CAMERA SECTION
+                    ================================================== -->
 
-<section
-    class="row g-3 mt-1 camera-section">
+                    <section
+                        class="row g-3 mt-1 camera-section">
 
 
-    <!-- =================================================
-         KRCT CAMERA
-    ================================================== -->
+                        <!-- =================================================
+                             KRCT CAMERA 2
+                        ================================================== -->
 
-    <div
-        class="col-12 col-xl-6">
+                        <div
+                            class="col-12 col-xl-6">
 
 
-        <div class="panel camera-panel h-100">
+                            <div
+                                class="panel camera-panel h-100">
 
 
-            <!-- PANEL HEADER -->
+                                <!-- PANEL HEADER -->
 
-            <div class="panel-header">
+                                <div class="panel-header">
 
 
-                <div>
+                                    <div>
 
 
-                    <h2
-                        class="h5 mb-1 section-title">
+                                        <h2
+                                            class="h5 mb-1 section-title">
 
-                        <i
-                            class="bi bi-camera-video"
-                            aria-hidden="true">
-                        </i>
 
-                        <span>
-                            KRCT CCTV
-                        </span>
+                                            <i
+                                                class="bi bi-camera-video"
+                                                aria-hidden="true">
+                                            </i>
 
-                    </h2>
 
+                                            <span>
+                                                KRCT CCTV — CAMERA 2
+                                            </span>
 
-                    <p class="text-muted mb-0">
 
-                        Live DroidCam Vehicle Detection
+                                        </h2>
 
-                    </p>
 
+                                        <p class="text-muted mb-0">
 
-                </div>
+                                            Live Camera 2 Vehicle Detection
 
+                                        </p>
 
-            </div>
 
+                                    </div>
 
 
-            <!-- KRCT CAMERA -->
+                                </div>
 
-            <div
-                class="camera-container"
-                aria-label="KRCT live camera">
 
 
-                <img
-                    id="camera-stream"
-                    src=""
-                    alt="Live DroidCam vehicle detection">
+                                <!-- CAMERA 2 -->
 
+                                <div
+                                    class="camera-container"
+                                    aria-label="KRCT Camera 2 live camera">
 
-                <!-- CAMERA STATUS -->
 
-                <div
-                    id="camera-status"
-                    class="camera-status">
+                                    <img
+                                        id="camera-stream"
+                                        src=""
+                                        alt="Live Camera 2 vehicle detection">
 
-                    Connecting to camera...
 
-                </div>
+                                    <!-- CAMERA STATUS -->
 
+                                    <div
+                                        id="camera-status"
+                                        class="camera-status">
 
-            </div>
+                                        Connecting to Camera 2...
 
+                                    </div>
 
-        </div>
 
+                                </div>
 
-    </div>
 
+                            </div>
 
 
-    <!-- =================================================
-         KRCE CAMERA
-    ================================================== -->
+                        </div>
 
-    <div
-        class="col-12 col-xl-6">
 
 
-        <div class="panel camera-panel h-100">
+                        <!-- =================================================
+                             KRCE CAMERA
+                        ================================================== -->
 
+                        <div
+                            class="col-12 col-xl-6">
 
-            <!-- PANEL HEADER -->
 
-            <div class="panel-header">
+                            <div
+                                class="panel camera-panel h-100">
 
 
-                <div>
+                                <div class="panel-header">
 
 
-                    <h2
-                        class="h5 mb-1 section-title">
+                                    <div>
 
-                        <i
-                            class="bi bi-activity"
-                            aria-hidden="true">
-                        </i>
 
-                        <span>
-                            KRCE CCTV
-                        </span>
+                                        <h2
+                                            class="h5 mb-1 section-title">
 
-                    </h2>
 
+                                            <i
+                                                class="bi bi-activity"
+                                                aria-hidden="true">
+                                            </i>
 
-                    <p class="text-muted mb-0">
 
-                        Camera Status
+                                            <span>
+                                                KRCE CCTV
+                                            </span>
 
-                    </p>
 
+                                        </h2>
 
-                </div>
 
+                                        <p class="text-muted mb-0">
 
-            </div>
+                                            Camera Status
 
+                                        </p>
 
 
-            <!-- KRCE CAMERA -->
+                                    </div>
 
-            <div
-                class="camera-container krce-camera"
-                aria-label="KRCE camera status">
 
+                                </div>
 
-                <div>
 
 
-                    <i
-                        class="bi bi-camera-video-off"
-                        aria-hidden="true">
-                    </i>
+                                <div
+                                    class="camera-container krce-camera"
+                                    aria-label="KRCE camera status">
 
 
-                    <div class="krce-title">
+                                    <div>
 
-                        KRCE Camera
 
-                    </div>
+                                        <i
+                                            class="bi bi-camera-video-off"
+                                            aria-hidden="true">
+                                        </i>
 
 
-                    <div class="krce-status">
+                                        <div class="krce-title">
 
-                        Camera connection not configured
+                                            KRCE Camera
 
-                    </div>
+                                        </div>
 
 
-                </div>
+                                        <div class="krce-status">
 
+                                            Camera connection not configured
 
-            </div>
+                                        </div>
 
 
-        </div>
+                                    </div>
 
 
-    </div>
+                                </div>
 
 
-</section>
+                            </div>
+
+
+                        </div>
+
+
+                    </section>
+
 
 
                     <!-- =================================================
@@ -1483,7 +1622,6 @@ Today's campus vehicle activity and access records
                                         </h2>
 
 
-
                                         <p class="text-muted mb-0">
 
                                             Live database connection status
@@ -1492,7 +1630,6 @@ Today's campus vehicle activity and access records
 
 
                                     </div>
-
 
 
                                     <div>
@@ -1535,8 +1672,6 @@ Today's campus vehicle activity and access records
             </main>
 
 
-
-            
         </div>
 
 
@@ -1642,12 +1777,6 @@ Today's campus vehicle activity and access records
             );
 
 
-        const unknownVehiclesElement =
-            document.getElementById(
-                "unknownVehicles"
-            );
-
-
         const databaseStatusElement =
             document.getElementById(
                 "database-status"
@@ -1688,7 +1817,6 @@ Today's campus vehicle activity and access records
                     "MongoDB Atlas Dashboard Data:",
                     data
                 );
-
 
 
                 /* COLLEGE BUSES */
@@ -1736,17 +1864,6 @@ Today's campus vehicle activity and access records
 
 
 
-                /* UNKNOWN VEHICLES */
-
-                unknownVehiclesElement.textContent =
-                    Number(
-                        data.unknownVehicles ??
-                        data.unknownCount ??
-                        0
-                    );
-
-
-
                 /* DATABASE STATUS */
 
                 databaseStatusElement.textContent =
@@ -1759,7 +1876,6 @@ Today's campus vehicle activity and access records
 
                 databaseStatusElement.style.color =
                     "#166534";
-
 
             }
 
@@ -1808,10 +1924,6 @@ Today's campus vehicle activity and access records
         let notifications = [];
 
 
-        /* =====================================================
-           UPDATE NOTIFICATION UI
-        ===================================================== */
-
         function updateNotificationUI() {
 
             const list =
@@ -1842,9 +1954,6 @@ Today's campus vehicle activity and access records
 
             }
 
-
-
-            /* EMPTY */
 
             if (
                 notifications.length === 0
@@ -1890,9 +1999,6 @@ Today's campus vehicle activity and access records
 
             }
 
-
-
-            /* HAS NOTIFICATIONS */
 
             badge.textContent =
                 notifications.length;
@@ -1948,10 +2054,6 @@ Today's campus vehicle activity and access records
 
 
 
-        /* =====================================================
-           LOAD NOTIFICATIONS FROM BACKEND
-        ===================================================== */
-
         async function loadNotifications() {
 
             try {
@@ -1995,11 +2097,9 @@ Today's campus vehicle activity and access records
                                 notification.title ||
                                 "Notification",
 
-
                             message:
                                 notification.message ||
                                 "",
-
 
                             time:
                                 notification.created_at
@@ -2030,10 +2130,6 @@ Today's campus vehicle activity and access records
         }
 
 
-
-        /* =====================================================
-           CLEAR NOTIFICATIONS
-        ===================================================== */
 
         const clearNotifications =
             document.getElementById(
@@ -2076,7 +2172,6 @@ Today's campus vehicle activity and access records
 
                         updateNotificationUI();
 
-
                     }
 
                     catch (error) {
@@ -2095,17 +2190,9 @@ Today's campus vehicle activity and access records
 
 
 
-        /* =====================================================
-           HTML ESCAPE
-        ===================================================== */
+        function escapeHtml(value) {
 
-        function escapeHtml(
-            value
-        ) {
-
-            return String(
-                value
-            )
+            return String(value)
 
                 .replace(
                     /&/g,
@@ -2135,18 +2222,8 @@ Today's campus vehicle activity and access records
         }
 
 
-
-        /* =====================================================
-           INITIAL LOAD
-        ===================================================== */
-
         loadNotifications();
 
-
-
-        /* =====================================================
-           AUTO REFRESH EVERY 3 SECONDS
-        ===================================================== */
 
         setInterval(
             loadNotifications,
@@ -2158,7 +2235,80 @@ Today's campus vehicle activity and access records
 
 
     <!-- =====================================================
-         CAMERA WEBSOCKET
+         SYSTEM CONFIGURATION ACCESS
+    ====================================================== -->
+
+    <script>
+
+        async function checkSystemConfigurationAccess() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/config-access",
+                        {
+                            method: "GET",
+                            credentials: "include",
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    return;
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    result.success === true &&
+                    result.authorized === true
+                ) {
+
+                    const configNav =
+                        document.getElementById(
+                            "system-config-nav"
+                        );
+
+
+                    if (configNav) {
+
+                        configNav.style.display =
+                            "flex";
+
+                    }
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "System Configuration access check error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        checkSystemConfigurationAccess();
+
+    </script>
+
+
+
+    <!-- =====================================================
+         CAMERA 2 WEBSOCKET
     ====================================================== -->
 
     <script>
@@ -2175,53 +2325,72 @@ Today's campus vehicle activity and access records
             );
 
 
+        /*
+         * ===================================================
+         * CAMERA 2 ENDPOINT
+         * ===================================================
+         *
+         * IMPORTANT:
+         *
+         * This assumes the camera server provides:
+         *
+         * ws://localhost:8000/ws/camera2
+         *
+         */
+
         const WS_URL =
-            "ws://localhost:8000/ws/camera";
+            "ws://localhost:8000/ws/camera2";
+
+
+        let cameraSocket = null;
 
 
 
-        function connectCamera() {
+        /* =====================================================
+           CONNECT CAMERA 2
+        ====================================================== */
 
+        function connectCamera2() {
 
             console.log(
-                "Connecting to camera:",
+                "Connecting to Camera 2:",
                 WS_URL
             );
 
 
-            let socket;
-
-
             try {
 
-
-                socket =
+                cameraSocket =
                     new WebSocket(
                         WS_URL
                     );
 
 
-                socket.binaryType =
+                cameraSocket.binaryType =
                     "blob";
-
 
             }
 
             catch (error) {
 
-
                 console.error(
-                    "Unable to create camera WebSocket:",
+                    "Unable to create Camera 2 WebSocket:",
                     error
                 );
 
 
                 cameraStatus.textContent =
-                    "Camera connection failed";
+                    "Camera 2 connection failed";
 
 
                 cameraStatus.style.color =
                     "#ff5555";
+
+
+                setTimeout(
+                    connectCamera2,
+                    3000
+                );
 
 
                 return;
@@ -2230,19 +2399,20 @@ Today's campus vehicle activity and access records
 
 
 
-            /* SOCKET OPEN */
+            /* =================================================
+               CAMERA 2 CONNECTED
+            ================================================== */
 
-            socket.onopen =
+            cameraSocket.onopen =
                 function() {
 
-
                     console.log(
-                        "Camera WebSocket connected"
+                        "Camera 2 WebSocket connected"
                     );
 
 
                     cameraStatus.textContent =
-                        "● LIVE";
+                        "● CAMERA 2 LIVE";
 
 
                     cameraStatus.style.color =
@@ -2252,9 +2422,11 @@ Today's campus vehicle activity and access records
 
 
 
-            /* CAMERA MESSAGE */
+            /* =================================================
+               CAMERA 2 FRAME
+            ================================================== */
 
-            socket.onmessage =
+            cameraSocket.onmessage =
                 function(event) {
 
 
@@ -2285,7 +2457,6 @@ Today's campus vehicle activity and access records
 
                         if (oldUrl) {
 
-
                             URL.revokeObjectURL(
                                 oldUrl
                             );
@@ -2306,9 +2477,8 @@ Today's campus vehicle activity and access records
                         "string"
                     ) {
 
-
                         console.log(
-                            "Camera message:",
+                            "Camera 2 message:",
                             event.data
                         );
 
@@ -2318,20 +2488,21 @@ Today's campus vehicle activity and access records
 
 
 
-            /* SOCKET ERROR */
+            /* =================================================
+               CAMERA 2 ERROR
+            ================================================== */
 
-            socket.onerror =
+            cameraSocket.onerror =
                 function(error) {
 
-
                     console.error(
-                        "Camera WebSocket error:",
+                        "Camera 2 WebSocket error:",
                         error
                     );
 
 
                     cameraStatus.textContent =
-                        "Camera error";
+                        "Camera 2 error";
 
 
                     cameraStatus.style.color =
@@ -2341,19 +2512,20 @@ Today's campus vehicle activity and access records
 
 
 
-            /* SOCKET CLOSED */
+            /* =================================================
+               CAMERA 2 DISCONNECTED
+            ================================================== */
 
-            socket.onclose =
+            cameraSocket.onclose =
                 function() {
 
-
                     console.warn(
-                        "Camera WebSocket disconnected"
+                        "Camera 2 WebSocket disconnected"
                     );
 
 
                     cameraStatus.textContent =
-                        "Reconnecting...";
+                        "Camera 2 reconnecting...";
 
 
                     cameraStatus.style.color =
@@ -2361,7 +2533,7 @@ Today's campus vehicle activity and access records
 
 
                     setTimeout(
-                        connectCamera,
+                        connectCamera2,
                         2000
                     );
 
@@ -2370,7 +2542,214 @@ Today's campus vehicle activity and access records
         }
 
 
-        connectCamera();
+        /* =====================================================
+           START CAMERA 2
+        ====================================================== */
+
+        connectCamera2();
+
+    </script>
+
+
+
+    <!-- =====================================================
+         SIDEBAR MOBILE CONTROL
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                const sidebar =
+                    document.getElementById(
+                        "adminSidebar"
+                    );
+
+
+                const toggle =
+                    document.querySelector(
+                        "[data-sidebar-toggle]"
+                    );
+
+
+                const backdrop =
+                    document.querySelector(
+                        "[data-sidebar-close]"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !toggle
+                ) {
+
+                    return;
+
+                }
+
+
+
+                function openSidebar() {
+
+                    sidebar.classList.add(
+                        "show"
+                    );
+
+
+                    if (backdrop) {
+
+                        backdrop.classList.add(
+                            "show"
+                        );
+
+                    }
+
+
+                    toggle.setAttribute(
+                        "aria-expanded",
+                        "true"
+                    );
+
+
+                    document.body.classList.add(
+                        "sidebar-open"
+                    );
+
+                }
+
+
+
+                function closeSidebar() {
+
+                    sidebar.classList.remove(
+                        "show"
+                    );
+
+
+                    if (backdrop) {
+
+                        backdrop.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+
+                    toggle.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+
+                    document.body.classList.remove(
+                        "sidebar-open"
+                    );
+
+                }
+
+
+
+                function toggleSidebar() {
+
+                    if (
+                        sidebar.classList.contains(
+                            "show"
+                        )
+                    ) {
+
+                        closeSidebar();
+
+                    }
+
+                    else {
+
+                        openSidebar();
+
+                    }
+
+                }
+
+
+
+                toggle.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+                        toggleSidebar();
+
+                    }
+                );
+
+
+
+                if (backdrop) {
+
+                    backdrop.addEventListener(
+                        "click",
+                        function() {
+
+                            closeSidebar();
+
+                        }
+                    );
+
+                }
+
+
+
+                const sidebarLinks =
+                    sidebar.querySelectorAll(
+                        ".nav-link"
+                    );
+
+
+                sidebarLinks.forEach(
+                    function(link) {
+
+                        link.addEventListener(
+                            "click",
+                            function() {
+
+                                if (
+                                    window.innerWidth <=
+                                    992
+                                ) {
+
+                                    closeSidebar();
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+
+                window.addEventListener(
+                    "resize",
+                    function() {
+
+                        if (
+                            window.innerWidth > 992
+                        ) {
+
+                            closeSidebar();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
 
     </script>
 
@@ -2385,6 +2764,7 @@ Today's campus vehicle activity and access records
     </script>
 
 
+
     <!-- =====================================================
          MAIN JS
     ====================================================== -->
@@ -2395,11 +2775,23 @@ Today's campus vehicle activity and access records
 
 
 
-<footer class="auth-copyright">
-  2026 Designed by
-  <strong>Department Of CSE - KRCT</strong>.
-  All rights reserved.
-</footer>
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="auth-copyright">
+
+        2026 Designed by
+
+        <strong>
+            Department Of CSE - KRCT
+        </strong>.
+
+        All rights reserved.
+
+    </footer>
+
+
 </body>
 
 </html>

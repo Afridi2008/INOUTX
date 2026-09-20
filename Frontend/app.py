@@ -221,9 +221,29 @@ PRIVILEGED_ROLES = {
     "executive_director",
     "hod",
     "hoc",
+    "config_admin",
     "gate_watchman",
     "bus_incharge",
 }
+# =========================================================
+# SYSTEM CONFIGURATION ADMIN
+# =========================================================
+
+CONFIG_ADMIN_EMAIL = os.getenv(
+    "CONFIG_ADMIN_EMAIL",
+    ""
+).strip().lower()
+
+CONFIG_ADMIN_PASSWORD = os.getenv(
+    "CONFIG_ADMIN_PASSWORD",
+    ""
+)
+
+if not CONFIG_ADMIN_EMAIL or not CONFIG_ADMIN_PASSWORD:
+    print(
+        "WARNING: System Configuration admin credentials "
+        "are not configured in .env"
+    )
 
 
 # =========================================================
@@ -1741,6 +1761,8 @@ def login():
         }
 
         session.permanent = True
+        print("LOGIN SESSION CREATED:")
+        print(session.get("user"))
 
         return jsonify({
 
@@ -1773,8 +1795,76 @@ def login():
         }), 500
 
 
-
 # =========================================================
+# SYSTEM CONFIGURATION ACCESS CHECK
+# =========================================================
+
+@app.route(
+    "/api/config-access",
+    methods=["GET"]
+)
+def config_access():
+
+    try:
+
+        user = session.get("user")
+
+        if not user:
+
+            return jsonify({
+                "success": False,
+                "authorized": False,
+                "error": "Login required."
+            }), 401
+
+        logged_in_email = str(
+            user.get(
+                "email",
+                ""
+            )
+        ).strip().lower()
+
+        logged_in_role = str(
+            user.get(
+                "role",
+                ""
+            )
+        ).strip().lower()
+
+        if (
+            not CONFIG_ADMIN_EMAIL
+            or logged_in_email != CONFIG_ADMIN_EMAIL
+            or logged_in_role != "config_admin"
+        ):
+
+            return jsonify({
+                "success": False,
+                "authorized": False,
+                "error": (
+                    "You are not authorized to access "
+                    "System Configuration."
+                )
+            }), 403
+
+        return jsonify({
+            "success": True,
+            "authorized": True,
+            "email": logged_in_email,
+            "role": logged_in_role
+        })
+
+    except Exception as e:
+
+        print(
+            "Config access check error:",
+            e
+        )
+
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": str(e)
+        }), 500
 # REGISTER USER
 # =========================================================
 
@@ -6313,8 +6403,31 @@ def html_files(filename):
         "download.html",
         "camera.html",
         "profile.html",
+        "system-config.html",
+        "404.html",
+        "500.html",
+        "forgot-password.html",
+        "register.html",
         "reset-password.html"
     }
+    print(
+    "HTML DEBUG:",
+    filename,
+    "HTML_DIR:",
+    HTML_DIR,
+    "FILE:",
+    os.path.join(
+        HTML_DIR,
+        filename
+    ),
+    "EXISTS:",
+    os.path.isfile(
+        os.path.join(
+            HTML_DIR,
+            filename
+        )
+    )
+)
 
     if (
         filename in static_html_pages

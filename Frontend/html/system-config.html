@@ -5,1033 +5,922 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="INOUTX System Configuration">
+    <meta name="description"
+          content="INOUTX System Configuration">
 
-    <title>
-        System Configuration | INOUTX
-    </title>
+    <title>System Configuration | INOUTX</title>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          BOOTSTRAP
-    ====================================================== -->
+    ========================================================== -->
 
-    <link
-        rel="stylesheet"
-        href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="/assets/css/bootstrap.min.css">
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          BOOTSTRAP ICONS
-    ====================================================== -->
+    ========================================================== -->
 
-    <link
-        rel="stylesheet"
-        href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="/assets/vendors/bootstrap-icons/bootstrap-icons.css">
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          MAIN INOUTX CSS
-    ====================================================== -->
+    ========================================================== -->
 
-    <link
-        rel="stylesheet"
-        href="/assets/css/style.css">
+    <link rel="stylesheet"
+          href="/assets/css/style.css">
 
 
     <style>
 
-        /* =====================================================
+        /* =========================================================
            SYSTEM CONFIGURATION
-        ===================================================== */
+        ========================================================= */
 
-        .config-section {
-
-            margin-top: 4px;
-
+        .config-page {
+            width: 100%;
+            max-width: 100%;
+            padding: 24px;
+            box-sizing: border-box;
         }
 
+        .config-page-header {
+            margin-bottom: 24px;
+        }
+
+        .config-page-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .config-page-header p {
+            margin: 7px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           CONFIG PANELS
+        ========================================================== */
 
         .config-panel {
-
-            border-radius: 10px;
-
-        }
-
-
-        .config-card {
-
             background: #ffffff;
-
-            border:
-                1px solid #e5e7eb;
-
-            border-radius: 10px;
-
-            padding: 20px;
-
-            height: 100%;
-
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
         }
 
-
-        .config-card-header {
-
+        .config-panel-header {
             display: flex;
-
             align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
 
+        .config-panel-title {
+            display: flex;
+            align-items: center;
             gap: 12px;
-
-            margin-bottom: 20px;
-
+            min-width: 0;
         }
 
-
-        .config-icon {
-
-            width: 42px;
-
-            height: 42px;
-
-            flex: 0 0 auto;
-
-            border-radius: 9px;
-
+        .config-panel-title-icon {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
-            background: #eef5ff;
-
-            color: #004A9F;
-
+            border-radius: 10px;
+            background: #eef4ff;
+            color: #2563eb;
             font-size: 18px;
-
         }
 
+        .config-panel-title-text {
+            min-width: 0;
+        }
 
-        .config-card-header h2 {
-
-            font-size: 16px;
-
-            font-weight: 700;
-
+        .config-panel-title-text h2 {
             margin: 0;
-
-        }
-
-
-        .config-card-header p {
-
-            font-size: 11px;
-
-            color: #6b7280;
-
-            margin: 3px 0 0;
-
-        }
-
-
-        /* =====================================================
-           CAMERA BADGE
-        ===================================================== */
-
-        .camera-number-badge {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 6px;
-
-            padding: 5px 10px;
-
-            border-radius: 20px;
-
-            background: #eef5ff;
-
-            color: #004A9F;
-
-            font-size: 11px;
-
+            font-size: 17px;
             font-weight: 700;
+            color: #1f2937;
+        }
 
-            margin-bottom: 18px;
+        .config-panel-title-text p {
+            margin: 3px 0 0;
+            color: #6b7280;
+            font-size: 12px;
+        }
 
+        .config-panel-body {
+            padding: 22px;
         }
 
 
-        /* =====================================================
-           FORM
-        ===================================================== */
+        /* =========================================================
+           CAMERA CONFIGURATION
+        ========================================================== */
+
+        .camera-config-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .camera-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            background: #ffffff;
+            min-width: 0;
+        }
+
+        .camera-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .camera-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .camera-card-title i {
+            font-size: 20px;
+            color: #2563eb;
+            flex-shrink: 0;
+        }
+
+        .camera-card-title h3 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .camera-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .camera-status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #9ca3af;
+        }
+
+
+        /* =========================================================
+           FORM ELEMENTS
+        ========================================================== */
 
         .config-form-group {
-
-            margin-bottom: 17px;
-
+            margin-bottom: 16px;
         }
 
+        .config-form-group:last-child {
+            margin-bottom: 0;
+        }
 
-        .config-form-label {
-
+        .config-label {
             display: block;
-
-            font-size: 12px;
-
-            font-weight: 600;
-
-            color: #374151;
-
             margin-bottom: 7px;
-
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
         }
 
+        .config-label .required {
+            color: #dc2626;
+        }
 
         .config-input,
         .config-select {
-
             width: 100%;
-
-            min-height: 40px;
-
-            border:
-                1px solid #dfe3e8;
-
-            border-radius: 7px;
-
-            padding: 8px 11px;
-
-            font-size: 13px;
-
-            color: #374151;
-
+            min-height: 42px;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             background: #ffffff;
-
+            color: #1f2937;
+            font-size: 13px;
             outline: none;
-
             transition:
-                border-color 0.15s ease,
-                box-shadow 0.15s ease;
-
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+            box-sizing: border-box;
         }
-
 
         .config-input:focus,
         .config-select:focus {
-
-            border-color: #004A9F;
-
+            border-color: #2563eb;
             box-shadow:
-                0 0 0 3px rgba(0, 74, 159, 0.08);
-
+                0 0 0 3px rgba(37, 99, 235, 0.10);
         }
-
 
         .config-input[readonly] {
-
-            background: #f8fafc;
-
-            color: #64748b;
-
+            background: #f9fafb;
+            color: #6b7280;
         }
 
+        .input-with-action {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-with-action .config-input {
+            padding-right: 46px;
+        }
+
+        .input-action-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border: 0;
+            background: transparent;
+            color: #6b7280;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-action-btn:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
 
         .config-help {
-
+            display: block;
             margin-top: 6px;
-
-            font-size: 10px;
-
-            line-height: 1.45;
-
-            color: #6b7280;
-
-        }
-
-
-        /* =====================================================
-           SOURCE INFORMATION
-        ===================================================== */
-
-        .source-info {
-
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 8px;
-
-            padding: 10px 12px;
-
-            margin-top: 10px;
-
-            border-radius: 7px;
-
-            background: #f8fafc;
-
-            border:
-                1px solid #eef0f3;
-
-            color: #64748b;
-
+            color: #9ca3af;
             font-size: 11px;
-
-            line-height: 1.45;
-
+            line-height: 1.5;
         }
 
 
-        .source-info i {
-
-            color: #004A9F;
-
-            font-size: 13px;
-
-            flex: 0 0 auto;
-
-        }
-
-
-        /* =====================================================
+        /* =========================================================
            GATE CONFIGURATION
-        ===================================================== */
+        ========================================================== */
 
         .gate-config-grid {
-
             display: grid;
-
             grid-template-columns:
                 repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
 
-            gap: 16px;
-
+        .gate-field {
+            min-width: 0;
         }
 
 
-        /* =====================================================
-           CAMERA CONFIGURATION
-        ===================================================== */
+        /* =========================================================
+           MONGODB
+        ========================================================== */
 
-        .camera-config-grid {
-
+        .mongodb-grid {
             display: grid;
-
             grid-template-columns:
                 repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
 
-            gap: 16px;
-
+        .mongodb-grid .full-width {
+            grid-column: 1 / -1;
         }
 
 
-        /* =====================================================
-           MONGODB
-        ===================================================== */
-
-        .mongo-warning {
-
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 9px;
-
-            padding: 11px 13px;
-
-            margin-bottom: 18px;
-
-            border-radius: 7px;
-
-            background: #fff8e8;
-
-            border:
-                1px solid #f4dfad;
-
-            color: #7c5a00;
-
-            font-size: 11px;
-
-            line-height: 1.5;
-
-        }
-
-
-        .mongo-warning i {
-
-            font-size: 14px;
-
-            flex: 0 0 auto;
-
-        }
-
-
-        /* =====================================================
-           ENVIRONMENT PREVIEW
-        ===================================================== */
+        /* =========================================================
+           CONFIGURATION PREVIEW
+        ========================================================== */
 
         .environment-preview {
-
-            background: #111827;
-
-            color: #d1fae5;
-
-            border-radius: 8px;
-
-            padding: 15px;
-
-            font-family:
-                Consolas,
-                "Courier New",
-                monospace;
-
-            font-size: 12px;
-
-            line-height: 1.8;
-
-            overflow-x: auto;
-
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 14px;
         }
 
+        .environment-item {
+            min-width: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+            background: #f9fafb;
+        }
 
         .environment-key {
-
-            color: #93c5fd;
-
+            display: block;
+            margin-bottom: 6px;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
-
 
         .environment-value {
-
-            color: #86efac;
-
-        }
-
-
-        /* =====================================================
-           STATUS
-        ===================================================== */
-
-        .config-status {
-
-            display: none;
-
-            padding: 10px 13px;
-
-            border-radius: 7px;
-
-            font-size: 12px;
-
+            display: block;
+            color: #111827;
+            font-size: 13px;
             font-weight: 600;
-
-            margin-top: 14px;
-
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
 
-        .config-status.success {
-
-            display: block;
-
-            color: #166534;
-
-            background: #dcfce7;
-
-            border:
-                1px solid #bbf7d0;
-
-        }
-
-
-        .config-status.error {
-
-            display: block;
-
-            color: #991b1b;
-
-            background: #fee2e2;
-
-            border:
-                1px solid #fecaca;
-
-        }
-
-
-        /* =====================================================
+        /* =========================================================
            ACTION BUTTONS
-        ===================================================== */
+        ========================================================== */
 
         .config-actions {
-
             display: flex;
-
             align-items: center;
-
             justify-content: flex-end;
-
+            flex-wrap: wrap;
             gap: 10px;
-
+            margin-top: 24px;
         }
-
 
         .config-btn {
-
-            min-height: 40px;
-
-            padding:
-                7px 17px;
-
-            border-radius: 7px;
-
-            border: 0;
-
-            font-size: 12px;
-
+            min-height: 42px;
+            padding: 9px 17px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 13px;
             font-weight: 600;
-
             cursor: pointer;
-
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.15s ease;
         }
 
-
-        .config-btn-primary {
-
-            background: #004A9F;
-
-            color: #ffffff;
-
+        .config-btn:active {
+            transform: translateY(1px);
         }
-
-
-        .config-btn-primary:hover {
-
-            background: #003d82;
-
-            color: #ffffff;
-
-        }
-
 
         .config-btn-secondary {
-
-            background: #f3f4f6;
-
+            background: #ffffff;
+            border-color: #d1d5db;
             color: #374151;
-
         }
-
 
         .config-btn-secondary:hover {
+            background: #f9fafb;
+        }
 
-            background: #e5e7eb;
+        .config-btn-danger {
+            background: #ffffff;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
 
+        .config-btn-danger:hover {
+            background: #fef2f2;
+        }
+
+        .config-btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .config-btn-primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
         }
 
 
-        /* =====================================================
-           PASSWORD TOGGLE
-        ===================================================== */
-
-        .password-wrapper {
-
-            position: relative;
-
-        }
-
-
-        .password-wrapper .config-input {
-
-            padding-right: 70px;
-
-        }
-
-
-        .password-toggle {
-
-            position: absolute;
-
-            right: 9px;
-
-            top: 50%;
-
-            transform:
-                translateY(-50%);
-
-            border: 0;
-
-            background: transparent;
-
-            color: #004A9F;
-
-            font-size: 11px;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-        }
-
-
-        /* =====================================================
-           SOURCE STATUS
-        ===================================================== */
-
-        .source-status {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 5px;
-
-            margin-top: 8px;
-
-            font-size: 10px;
-
-            color: #6b7280;
-
-        }
-
-
-        .source-status-dot {
-
-            width: 7px;
-
-            height: 7px;
-
-            border-radius: 50%;
-
-            background: #9ca3af;
-
-        }
-
-
-        /* =====================================================
-           LIVE TIME
-        ===================================================== */
-
-        .live-time {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            font-size: 14px;
-
-            font-weight: 600;
-
-            color: #374151;
-
-            white-space: nowrap;
-
-        }
-
-
-        .live-time i {
-
-            font-size: 16px;
-
-        }
-
-
-        /* =====================================================
-           NOTIFICATION BUTTON
-        ===================================================== */
-
-        .notification-button {
-
-            position: relative;
-
-            width: 40px;
-
-            height: 40px;
-
-            border: 0;
-
-            background: transparent;
-
-            border-radius: 8px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            color: #374151;
-
-            font-size: 19px;
-
-            cursor: pointer;
-
-        }
-
-
-        .notification-button:hover {
-
-            background: #f3f4f6;
-
-            color: #004A9F;
-
-        }
-
-
-        /* =====================================================
-           NOTIFICATION BADGE
-        ===================================================== */
-
-        .notification-badge {
-
-            position: absolute;
-
-            top: 3px;
-
-            right: 3px;
-
-            min-width: 17px;
-
-            height: 17px;
-
-            padding: 0 4px;
-
-            border-radius: 20px;
-
-            background: #C62828;
-
-            color: white;
-
-            font-size: 10px;
-
-            font-weight: 700;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-        }
-
-
-        /* =====================================================
-           NOTIFICATION MENU
-        ===================================================== */
-
-        .notification-menu {
-
-            width: 330px;
-
-            max-width:
-                calc(100vw - 30px);
-
-            border:
-                1px solid #e5e7eb;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-
-            padding: 0;
-
-        }
-
-
-        .notification-header {
-
-            padding: 13px 15px;
-
-            border-bottom:
-                1px solid #e5e7eb;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-        }
-
-
-        .notification-header strong {
-
-            display: block;
-
-            font-size: 14px;
-
-        }
-
-
-        .notification-header small {
-
-            color: #6b7280;
-
-            font-size: 11px;
-
-        }
-
-
-        .notification-empty {
-
-            padding: 25px 15px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            color: #6b7280;
-
-        }
-
-
-        .notification-empty i {
-
-            font-size: 25px;
-
-            color: #198754;
-
-        }
-
-
-        .notification-empty strong {
-
-            display: block;
-
+        /* =========================================================
+           ALERT / MESSAGE
+        ========================================================== */
+
+        .config-message {
+            display: none;
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border-radius: 9px;
             font-size: 13px;
+            line-height: 1.5;
+        }
 
-            color: #374151;
+        .config-message.show {
+            display: block;
+        }
 
+        .config-message.success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+
+        .config-message.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+        .config-message.warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
         }
 
 
-        .notification-empty small {
+        /* =========================================================
+           NAVBAR / SIDEBAR MOBILE FIX
+        ========================================================== */
 
-            font-size: 11px;
-
+        .sidebar-toggle {
+            position: relative;
+            z-index: 1201;
         }
-
-
-        .notification-item {
-
-            background: white;
-
-        }
-
-
-        /* =====================================================
-           PAGE TITLE
-        ===================================================== */
-
-        .admin-navbar .navbar-page-heading {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            min-width: 0;
-
-            margin-left: 18px;
-
-            margin-right: 18px;
-
-        }
-
-
-        .admin-navbar .navbar-page-heading .page-icon {
-
-            flex: 0 0 auto;
-
-            width: 38px;
-
-            height: 38px;
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-        }
-
-
-        .admin-navbar .navbar-page-heading .eyebrow {
-
-            margin-bottom:
-                0.1rem !important;
-
-            font-size: 10px;
-
-            line-height: 1.1;
-
-        }
-
-
-        .admin-navbar .navbar-page-heading h1 {
-
-            margin-bottom: 0 !important;
-
-            font-size: 18px;
-
-            line-height: 1.15;
-
-        }
-
-
-        .admin-navbar .navbar-page-heading p.text-muted {
-
-            margin-top: 2px;
-
-            font-size: 11px;
-
-            line-height: 1.2;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            max-width:
-                min(430px, 38vw);
-
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
 
         @media (max-width: 992px) {
 
-            .admin-navbar
-            .navbar-page-heading {
+            .admin-sidebar {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                bottom: 0;
 
-                margin-left: 12px;
+                width: 270px;
+                max-width: 85vw;
 
-                margin-right: 10px;
+                z-index: 1100;
 
-                gap: 9px;
+                transform: translateX(-100%);
+                transition:
+                    transform 0.25s ease;
 
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
-
-            .admin-navbar
-            .navbar-page-heading
-            p.text-muted {
-
-                display: none;
-
+            .admin-sidebar.show {
+                transform: translateX(0);
             }
 
+            .sidebar-backdrop {
+                position: fixed;
 
-            .admin-navbar
-            .navbar-page-heading
-            h1 {
+                inset: 0;
 
-                font-size: 16px;
+                z-index: 1090;
 
+                background:
+                    rgba(0, 0, 0, 0.45);
+
+                opacity: 0;
+                visibility: hidden;
+
+                transition:
+                    opacity 0.25s ease,
+                    visibility 0.25s ease;
             }
 
-
-            .camera-config-grid {
-
-                grid-template-columns:
-                    1fr;
-
+            .sidebar-backdrop.show {
+                opacity: 1;
+                visibility: visible;
             }
 
-
-            .gate-config-grid {
-
-                grid-template-columns:
-                    1fr;
-
+            .admin-main {
+                width: 100%;
+                min-width: 0;
             }
 
+            .admin-navbar {
+                position: relative;
+                z-index: 1050;
+            }
         }
 
 
-        @media (max-width: 576px) {
+        /* =========================================================
+           LARGE TABLET
+           <= 1200px
+        ========================================================== */
 
-            .live-time {
+        @media (max-width: 1200px) {
 
-                font-size: 12px;
-
-                gap: 4px;
-
+            .config-page {
+                padding: 22px;
             }
 
-
-            .notification-menu {
-
-                width: 290px;
-
+            .camera-config-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
             }
 
-
-            .admin-navbar
-            .navbar-page-heading {
-
-                margin-left: 8px;
-
+            .gate-config-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
             }
 
+            .gate-config-grid .gate-field:last-child {
+                grid-column: 1 / -1;
+            }
+        }
 
-            .admin-navbar
-            .navbar-page-heading
-            .page-icon {
 
-                display: none;
+        /* =========================================================
+           TABLET
+           <= 992px
+        ========================================================== */
 
+        @media (max-width: 992px) {
+
+            .config-page {
+                padding: 20px;
             }
 
-
-            .admin-navbar
-            .navbar-page-heading
-            .eyebrow {
-
-                display: none;
-
+            .config-page-header h1 {
+                font-size: 25px;
             }
 
-
-            .admin-navbar
-            .navbar-page-heading
-            h1 {
-
-                font-size: 15px;
-
+            .camera-config-grid {
+                grid-template-columns: 1fr;
             }
 
+            .gate-config-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .gate-config-grid .gate-field:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .mongodb-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .environment-preview {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .config-panel-header {
+                padding: 16px 18px;
+            }
+
+            .config-panel-body {
+                padding: 18px;
+            }
+        }
+
+
+        /* =========================================================
+           SMALL TABLET
+           <= 768px
+        ========================================================== */
+
+        @media (max-width: 768px) {
+
+            html,
+            body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .config-page {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .config-page-header {
+                margin-bottom: 18px;
+            }
+
+            .config-page-header h1 {
+                font-size: 23px;
+            }
+
+            .config-page-header p {
+                font-size: 13px;
+            }
+
+            .config-panel {
+                border-radius: 12px;
+                margin-bottom: 16px;
+            }
+
+            .config-panel-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .config-panel-body {
+                padding: 15px;
+            }
+
+            .camera-config-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .gate-config-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .gate-config-grid .gate-field:last-child {
+                grid-column: auto;
+            }
+
+            .mongodb-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .mongodb-grid .full-width {
+                grid-column: auto;
+            }
+
+            .environment-preview {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .camera-card {
+                padding: 15px;
+            }
+
+            .camera-card-header {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
 
             .config-actions {
-
+                justify-content: stretch;
                 flex-direction: column;
-
-                align-items: stretch;
-
+                width: 100%;
             }
-
 
             .config-btn {
-
                 width: 100%;
-
             }
 
+            .admin-navbar {
+                min-height: 58px;
+            }
+
+            .navbar-page-heading {
+                min-width: 0;
+                flex: 1;
+            }
+
+            .navbar-page-heading h1,
+            .navbar-page-heading .page-title,
+            .page-heading-copy h1 {
+                font-size: 18px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .navbar-actions {
+                gap: 6px;
+            }
+
+            .live-time {
+                display: none !important;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE
+           <= 576px
+        ========================================================== */
+
+        @media (max-width: 576px) {
+
+            .config-page {
+                padding: 12px;
+            }
+
+            .config-page-header h1 {
+                font-size: 21px;
+            }
+
+            .config-page-header p {
+                font-size: 12px;
+                line-height: 1.5;
+            }
+
+            .config-panel {
+                border-radius: 10px;
+            }
+
+            .config-panel-header {
+                padding: 13px;
+            }
+
+            .config-panel-body {
+                padding: 13px;
+            }
+
+            .config-panel-title {
+                width: 100%;
+            }
+
+            .config-panel-title-icon {
+                width: 34px;
+                height: 34px;
+                min-width: 34px;
+                font-size: 16px;
+            }
+
+            .config-panel-title-text h2 {
+                font-size: 15px;
+            }
+
+            .config-panel-title-text p {
+                font-size: 11px;
+            }
+
+            .camera-card {
+                padding: 13px;
+                border-radius: 9px;
+            }
+
+            .camera-card-title h3 {
+                font-size: 14px;
+            }
+
+            .camera-card-title i {
+                font-size: 18px;
+            }
+
+            .camera-status-badge {
+                font-size: 10px;
+                padding: 4px 7px;
+            }
+
+            .config-label {
+                font-size: 11px;
+            }
+
+            .config-input,
+            .config-select {
+                min-height: 40px;
+                font-size: 13px;
+            }
+
+            .config-help {
+                font-size: 10px;
+            }
+
+            .environment-item {
+                padding: 12px;
+            }
+
+            .environment-key {
+                font-size: 10px;
+            }
+
+            .environment-value {
+                font-size: 12px;
+            }
+
+            .config-btn {
+                min-height: 40px;
+                font-size: 12px;
+            }
+
+            .navbar-actions {
+                gap: 4px;
+            }
+
+            .navbar-page-heading h1,
+            .navbar-page-heading .page-title,
+            .page-heading-copy h1 {
+                font-size: 16px;
+            }
+
+            .notification-dropdown,
+            .notifications-dropdown,
+            .dropdown-menu {
+                max-width:
+                    calc(100vw - 24px);
+            }
+        }
+
+
+        /* =========================================================
+           VERY SMALL MOBILE
+           <= 400px
+        ========================================================== */
+
+        @media (max-width: 400px) {
+
+            .config-page {
+                padding: 9px;
+            }
+
+            .config-page-header h1 {
+                font-size: 19px;
+            }
+
+            .config-page-header p {
+                font-size: 11px;
+            }
+
+            .config-panel-header {
+                padding: 11px;
+            }
+
+            .config-panel-body {
+                padding: 11px;
+            }
+
+            .camera-card {
+                padding: 11px;
+            }
+
+            .config-panel-title-icon {
+                width: 31px;
+                height: 31px;
+                min-width: 31px;
+                font-size: 14px;
+            }
+
+            .config-panel-title-text h2 {
+                font-size: 14px;
+            }
+
+            .camera-card-header {
+                gap: 8px;
+            }
+
+            .camera-status-badge {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================== */
+
+        .config-footer {
+            width: 100%;
+            padding: 18px 10px 24px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 11px;
+            box-sizing: border-box;
+        }
+
+        .config-footer strong {
+            color: #6b7280;
         }
 
     </style>
@@ -1041,11 +930,6 @@
 
 <body>
 
-
-<!-- =========================================================
-     ADMIN SHELL
-========================================================== -->
-
 <div class="admin-shell">
 
 
@@ -1053,56 +937,39 @@
          SIDEBAR BACKDROP
     ====================================================== -->
 
-    <div
-        class="sidebar-backdrop"
-        data-sidebar-close>
-    </div>
+    <div class="sidebar-backdrop"></div>
 
 
     <!-- =====================================================
          SIDEBAR
     ====================================================== -->
 
-    <aside
-        class="admin-sidebar"
-        id="adminSidebar"
-        aria-label="Main navigation">
-
-
-        <!-- SIDEBAR HEADER -->
+    <aside class="admin-sidebar"
+           id="adminSidebar">
 
         <div class="sidebar-header">
 
-            <a
-                class="brand-mark"
-                href="index.html"
-                aria-label="INOUTX Dashboard">
+            <div class="brand-mark">
 
+                <div class="brand-icon">
 
-                <span class="brand-icon">
+                    <i class="bi bi-bus-front-fill"></i>
 
-                    <i
-                        class="bi bi-grid-1x2-fill"
-                        aria-hidden="true">
-                    </i>
+                </div>
 
-                </span>
+                <div class="brand-copy">
 
-
-                <span class="brand-copy">
-
-                    <span class="brand-title">
+                    <div class="brand-title">
                         INOUTX
-                    </span>
+                    </div>
 
-                    <span class="brand-subtitle">
+                    <div class="brand-subtitle">
                         Smart Campus Vehicle Management
-                    </span>
+                    </div>
 
-                </span>
+                </div>
 
-
-            </a>
+            </div>
 
         </div>
 
@@ -1113,19 +980,13 @@
 
         <nav class="sidebar-nav">
 
-
-            <!-- DASHBOARD -->
-
-            <a
-                class="nav-link"
-                href="index.html">
+            <a class="nav-link"
+               href="index.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-speedometer2"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-grid-1x2-fill"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1136,18 +997,13 @@
             </a>
 
 
-            <!-- VEHICLE ENTRY / EXIT -->
-
-            <a
-                class="nav-link"
-                href="vehicle.html">
+            <a class="nav-link"
+               href="vehicle.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-bus-front"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-arrow-left-right"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1158,18 +1014,13 @@
             </a>
 
 
-            <!-- FACULTY / STAFF VEHICLES -->
-
-            <a
-                class="nav-link"
-                href="staff-vehicles.html">
+            <a class="nav-link"
+               href="staff-vehicles.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-person-vcard"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-person-badge"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1180,18 +1031,13 @@
             </a>
 
 
-            <!-- VISITORS -->
-
-            <a
-                class="nav-link"
-                href="visitor.html">
+            <a class="nav-link"
+               href="unknown-vehicles.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-question-circle"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-person-walking"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1202,40 +1048,30 @@
             </a>
 
 
-            <!-- DOWNLOAD DATA -->
-
-            <a
-                class="nav-link"
-                href="download.html">
+            <a class="nav-link"
+               href="download.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-download"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-file-earmark-arrow-down"
+                       aria-hidden="true"></i>
 
                 </span>
 
                 <span class="nav-text">
-                    Reports &amp; Downloads
+                    Reports & Downloads
                 </span>
 
             </a>
 
 
-            <!-- PROFILE -->
-
-            <a
-                class="nav-link"
-                href="profile.html">
+            <a class="nav-link"
+               href="profile.html">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-person-badge"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-person-circle"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1250,17 +1086,14 @@
                  SYSTEM CONFIGURATION
             ================================================== -->
 
-            <a
-                class="nav-link active"
-                href="system-config.html"
-                aria-current="page">
+            <a class="nav-link active"
+               href="system-config.html"
+               id="system-config-nav">
 
                 <span class="nav-icon">
 
-                    <i
-                        class="bi bi-sliders2"
-                        aria-hidden="true">
-                    </i>
+                    <i class="bi bi-gear"
+                       aria-hidden="true"></i>
 
                 </span>
 
@@ -1270,284 +1103,173 @@
 
             </a>
 
-
         </nav>
 
     </aside>
 
 
+
     <!-- =====================================================
-         MAIN AREA
+         MAIN
     ====================================================== -->
 
-    <div class="admin-main">
+    <main class="admin-main">
 
 
         <!-- =================================================
              NAVBAR
         ================================================== -->
 
-        <nav
-            class="navbar admin-navbar navbar-expand bg-white">
+        <nav class="navbar admin-navbar">
 
-
-            <div
-                class="container-fluid px-3 px-lg-4">
+            <div class="navbar-page-heading">
 
 
                 <!-- SIDEBAR TOGGLE -->
 
                 <button
-                    class="sidebar-toggle"
                     type="button"
-                    data-sidebar-toggle
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Open navigation"
                     aria-controls="adminSidebar"
-                    aria-expanded="true"
-                    aria-label="Toggle sidebar">
+                    aria-expanded="false">
 
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <i class="bi bi-list"></i>
 
                 </button>
 
 
-                <!-- PAGE TITLE -->
+                <div class="page-heading-copy">
 
-                <div
-                    class="page-heading-copy navbar-page-heading">
+                    <h1>
+                        System Configuration
+                    </h1>
 
+                </div>
 
-                    <span class="page-icon">
-
-                        <i
-                            class="bi bi-sliders2"
-                            aria-hidden="true">
-                        </i>
-
-                    </span>
+            </div>
 
 
-                    <div>
+            <!-- =================================================
+                 NAVBAR ACTIONS
+            ================================================== -->
 
-                        <h1 class="h3 mb-1">
-                            System Configuration
-                        </h1>
+            <div class="navbar-actions">
 
-                        <p class="text-muted mb-0">
-                            Configure cameras, gates and MongoDB Atlas
-                        </p>
 
-                    </div>
+                <!-- LIVE TIME -->
+
+                <div class="live-time"
+                     id="live-time">
+
+                    --:--:--
 
                 </div>
 
 
-                <!-- NAVBAR ACTIONS -->
+                <!-- =================================================
+                     NOTIFICATIONS
+                ================================================== -->
 
-                <div
-                    class="navbar-actions ms-auto">
+                <div class="dropdown">
 
+                    <button
+                        class="btn btn-link text-decoration-none"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="Notifications">
 
-                    <!-- =================================================
-                         LIVE TIME
-                    ================================================== -->
+                        <i class="bi bi-bell"></i>
 
-                    <div class="live-time">
-
-                        <i
-                            class="bi bi-clock"
-                            aria-hidden="true">
-                        </i>
-
-                        <span id="live-time">
-                            --:--:--
-                        </span>
-
-                    </div>
+                    </button>
 
 
-                    <!-- =================================================
-                         NOTIFICATIONS
-                    ================================================== -->
+                    <div
+                        class="dropdown-menu dropdown-menu-end notification-dropdown">
 
-                    <div class="dropdown">
+                        <div class="px-3 py-2">
 
-                        <button
-                            class="notification-button"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            aria-label="Notifications">
+                            <strong>
+                                Notifications
+                            </strong>
 
-                            <i
-                                class="bi bi-bell"
-                                aria-hidden="true">
-                            </i>
-
-                            <span
-                                id="notification-badge"
-                                class="notification-badge"
-                                style="display:none;">
-                                0
-                            </span>
-
-                        </button>
+                        </div>
 
 
                         <div
-                            class="dropdown-menu dropdown-menu-end notification-menu">
+                            id="notification-list"
+                            class="px-3 pb-3">
 
-
-                            <div
-                                class="notification-header">
-
-                                <div>
-
-                                    <strong>
-                                        Notifications
-                                    </strong>
-
-                                    <small
-                                        id="notification-count">
-
-                                        No new notifications
-
-                                    </small>
-
-                                </div>
-
-
-                                <button
-                                    type="button"
-                                    id="clear-notifications"
-                                    class="btn btn-sm btn-link">
-
-                                    Clear
-
-                                </button>
-
-                            </div>
-
-
-                            <div id="notification-list">
-
-                                <div
-                                    id="notification-empty"
-                                    class="notification-empty">
-
-                                    <i
-                                        class="bi bi-check-circle"
-                                        aria-hidden="true">
-                                    </i>
-
-                                    <div>
-
-                                        <strong>
-                                            No new notifications
-                                        </strong>
-
-                                        <small>
-                                            You're all caught up.
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
+                            <div class="text-muted small">
+                                No new notifications.
                             </div>
 
                         </div>
 
                     </div>
 
-
-                    <!-- =================================================
-                         PROFILE
-                    ================================================== -->
-
-                    <div class="dropdown">
-
-                        <button
-                            class="profile-button dropdown-toggle"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                </div>
 
 
-                            <span
-                                class="avatar-img avatar-sm profile-avatar"
-                                id="currentUserInitials">
-                            </span>
+
+                <!-- =================================================
+                     PROFILE
+                ================================================== -->
+
+                <div class="dropdown">
+
+                    <button
+                        class="btn btn-link text-decoration-none"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                        <i class="bi bi-person-circle"></i>
+
+                    </button>
 
 
-                            <span class="profile-user-copy">
+                    <ul class="dropdown-menu dropdown-menu-end">
 
-                                <span
-                                    id="currentUserName">
-                                </span>
+                        <li>
 
-                                <small
-                                    id="currentUserRole">
-                                </small>
+                            <a
+                                class="dropdown-item"
+                                href="profile.html">
 
-                            </span>
+                                <i class="bi bi-person me-2"></i>
 
+                                Profile
 
-                        </button>
+                            </a>
 
-
-                        <ul
-                            class="dropdown-menu dropdown-menu-end">
+                        </li>
 
 
-                            <li>
+                        <li>
 
-                                <a
-                                    class="dropdown-item"
-                                    href="profile.html">
+                            <hr class="dropdown-divider">
 
-                                    <i
-                                        class="bi bi-person me-2"
-                                        aria-hidden="true">
-                                    </i>
-
-                                    Profile
-
-                                </a>
-
-                            </li>
+                        </li>
 
 
-                            <li>
+                        <li>
 
-                                <hr
-                                    class="dropdown-divider">
+                            <a
+                                class="dropdown-item"
+                                href="login.html">
 
-                            </li>
+                                <i class="bi bi-box-arrow-right me-2"></i>
 
+                                Logout
 
-                            <li>
+                            </a>
 
-                                <a
-                                    class="dropdown-item"
-                                    href="login.html">
+                        </li>
 
-                                    <i
-                                        class="bi bi-box-arrow-right me-2"
-                                        aria-hidden="true">
-                                    </i>
-
-                                    Sign out
-
-                                </a>
-
-                            </li>
-
-                        </ul>
-
-                    </div>
-
+                    </ul>
 
                 </div>
 
@@ -1556,350 +1278,287 @@
         </nav>
 
 
+
         <!-- =================================================
              CONFIGURATION CONTENT
         ================================================== -->
 
-        <main class="dashboard-content">
+        <section class="dashboard-content">
 
-
-            <div
-                class="container-fluid px-3 px-lg-4 py-4">
+            <div class="config-page">
 
 
                 <!-- =================================================
-                     INTRODUCTION
+                     PAGE HEADER
                 ================================================== -->
 
-                <section
-                    class="row g-3 mb-3">
+                <div class="config-page-header">
+
+                    <h1>
+                        System Configuration
+                    </h1>
+
+                    <p>
+                        Configure camera sources, gate settings,
+                        and database connection parameters.
+                    </p>
+
+                </div>
 
 
-                    <div class="col-12">
 
-                        <div class="panel">
+                <!-- =================================================
+                     MESSAGE
+                ================================================== -->
 
-
-                            <div class="panel-header">
-
-
-                                <div>
-
-                                    <h2
-                                        class="h5 mb-1 section-title">
-
-                                        <i
-                                            class="bi bi-gear-wide-connected"
-                                            aria-hidden="true">
-                                        </i>
-
-                                        <span>
-                                            System Configuration
-                                        </span>
-
-                                    </h2>
+                <div
+                    id="config-message"
+                    class="config-message">
+                </div>
 
 
-                                    <p class="text-muted mb-0">
 
-                                        Configure Gate 1, Gate 2,
-                                        camera sources and MongoDB Atlas.
+                <!-- =================================================
+                     CAMERA SOURCES
+                ================================================== -->
 
-                                    </p>
+                <section class="config-panel">
 
-                                </div>
+                    <div class="config-panel-header">
+
+                        <div class="config-panel-title">
+
+                            <div class="config-panel-title-icon">
+
+                                <i class="bi bi-camera-video"></i>
+
+                            </div>
 
 
-                                <div>
+                            <div class="config-panel-title-text">
 
-                                    <span
-                                        class="badge text-bg-light">
+                                <h2>
+                                    Camera Sources
+                                </h2>
 
-                                        Detection system unchanged
+                                <p>
+                                    Configure camera input sources
+                                    for each gate.
+                                </p>
 
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="config-panel-body">
+
+                        <div class="camera-config-grid">
+
+
+                            <!-- GATE 1 -->
+
+                            <div class="camera-card">
+
+                                <div class="camera-card-header">
+
+                                    <div class="camera-card-title">
+
+                                        <i class="bi bi-camera"></i>
+
+                                        <h3>
+                                            Gate 1 — Camera 1
+                                        </h3>
+
+                                    </div>
+
+
+                                    <span class="camera-status-badge">
+                                        Configurable
                                     </span>
 
                                 </div>
 
 
-                            </div>
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Camera Name
+
+                                    </label>
 
 
-                        </div>
+                                    <input
+                                        type="text"
+                                        id="camera1-name"
+                                        class="config-input"
+                                        value="Gate 1 — Camera 1">
 
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     CAMERA CONFIGURATION
-                ================================================== -->
-
-                <section
-                    class="row g-3 config-section">
+                                </div>
 
 
-                    <div class="col-12">
+                                <div class="config-form-group">
 
-                        <div class="panel config-panel">
+                                    <label
+                                        class="config-label">
 
+                                        Source Type
 
-                            <div class="panel-header">
-
-                                <div>
-
-                                    <h2
-                                        class="h5 mb-1 section-title">
-
-                                        <i
-                                            class="bi bi-camera-video"
-                                            aria-hidden="true">
-                                        </i>
-
-                                        <span>
-                                            Camera Sources
-                                        </span>
-
-                                    </h2>
+                                    </label>
 
 
-                                    <p class="text-muted mb-0">
+                                    <select
+                                        id="camera1-type"
+                                        class="config-select">
 
-                                        Select the source used by each
-                                        gate camera.
+                                        <option value="USB">
+                                            USB Camera
+                                        </option>
 
-                                    </p>
+                                        <option value="DroidCam">
+                                            DroidCam
+                                        </option>
+
+                                        <option value="WiFi-IP">
+                                            Wi-Fi / IP Camera
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Camera Source
+
+                                    </label>
+
+
+                                    <input
+                                        type="text"
+                                        id="camera1-source"
+                                        class="config-input"
+                                        placeholder="Example: 0 or IP URL">
+
+
+                                    <span class="config-help">
+
+                                        USB cameras normally use
+                                        device index 0, 1, 2...
+
+                                    </span>
 
                                 </div>
 
                             </div>
 
 
-                            <div class="p-3 p-lg-4">
 
+                            <!-- GATE 2 -->
 
-                                <div
-                                    class="camera-config-grid">
+                            <div class="camera-card">
 
+                                <div class="camera-card-header">
 
-                                    <!-- =================================
-                                         CAMERA 1
-                                    ================================== -->
+                                    <div class="camera-card-title">
 
-                                    <div class="config-card">
+                                        <i class="bi bi-camera-video"></i>
 
-
-                                        <div
-                                            class="config-card-header">
-
-                                            <div
-                                                class="config-icon">
-
-                                                <i
-                                                    class="bi bi-camera-video">
-                                                </i>
-
-                                            </div>
-
-
-                                            <div>
-
-                                                <h2>
-                                                    Gate 1 — Camera 1
-                                                </h2>
-
-                                                <p>
-                                                    Primary gate camera source
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        <span
-                                            class="camera-number-badge">
-
-                                            <i
-                                                class="bi bi-pin-map">
-                                            </i>
-
-                                            GATE1_CAMERA = 1
-
-                                        </span>
-
-
-                                        <div
-                                            class="config-form-group">
-
-
-                                            <label
-                                                class="config-form-label"
-                                                for="camera1Type">
-
-                                                Camera Source Type
-
-                                            </label>
-
-
-                                            <select
-                                                id="camera1Type"
-                                                class="config-select"
-                                                onchange="updateCameraFields(1)">
-
-
-                                                <option value="usb">
-                                                    USB Camera
-                                                </option>
-
-
-                                                <option value="droidcam">
-                                                    DroidCam
-                                                </option>
-
-
-                                                <option value="wifi">
-                                                    Wi-Fi / IP Camera
-                                                </option>
-
-
-                                            </select>
-
-                                        </div>
-
-
-                                        <div
-                                            id="camera1Fields">
-                                        </div>
-
-
-                                        <div
-                                            class="source-status">
-
-                                            <span
-                                                class="source-status-dot"
-                                                id="camera1StatusDot">
-                                            </span>
-
-                                            <span
-                                                id="camera1Status">
-                                                Source not tested
-                                            </span>
-
-                                        </div>
+                                        <h3>
+                                            Gate 2 — Camera 2
+                                        </h3>
 
                                     </div>
 
 
-                                    <!-- =================================
-                                         CAMERA 2
-                                    ================================== -->
+                                    <span class="camera-status-badge">
+                                        Configurable
+                                    </span>
 
-                                    <div class="config-card">
-
-
-                                        <div
-                                            class="config-card-header">
-
-                                            <div
-                                                class="config-icon">
-
-                                                <i
-                                                    class="bi bi-camera-reels">
-                                                </i>
-
-                                            </div>
+                                </div>
 
 
-                                            <div>
+                                <div class="config-form-group">
 
-                                                <h2>
-                                                    Gate 2 — Camera 2
-                                                </h2>
+                                    <label
+                                        class="config-label">
 
-                                                <p>
-                                                    Secondary gate camera source
-                                                </p>
+                                        Camera Name
 
-                                            </div>
-
-                                        </div>
+                                    </label>
 
 
-                                        <span
-                                            class="camera-number-badge">
+                                    <input
+                                        type="text"
+                                        id="camera2-name"
+                                        class="config-input"
+                                        value="Gate 2 — Camera 2">
 
-                                            <i
-                                                class="bi bi-pin-map">
-                                            </i>
-
-                                            GATE2_CAMERA = 2
-
-                                        </span>
+                                </div>
 
 
-                                        <div
-                                            class="config-form-group">
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Source Type
+
+                                    </label>
 
 
-                                            <label
-                                                class="config-form-label"
-                                                for="camera2Type">
+                                    <select
+                                        id="camera2-type"
+                                        class="config-select">
 
-                                                Camera Source Type
+                                        <option value="USB">
+                                            USB Camera
+                                        </option>
 
-                                            </label>
+                                        <option value="DroidCam">
+                                            DroidCam
+                                        </option>
 
+                                        <option value="WiFi-IP">
+                                            Wi-Fi / IP Camera
+                                        </option>
 
-                                            <select
-                                                id="camera2Type"
-                                                class="config-select"
-                                                onchange="updateCameraFields(2)">
+                                    </select>
 
-
-                                                <option value="usb">
-                                                    USB Camera
-                                                </option>
-
-
-                                                <option value="droidcam">
-                                                    DroidCam
-                                                </option>
+                                </div>
 
 
-                                                <option value="wifi">
-                                                    Wi-Fi / IP Camera
-                                                </option>
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Camera Source
+
+                                    </label>
 
 
-                                            </select>
-
-                                        </div>
-
-
-                                        <div
-                                            id="camera2Fields">
-                                        </div>
+                                    <input
+                                        type="text"
+                                        id="camera2-source"
+                                        class="config-input"
+                                        placeholder="Example: 1 or IP URL">
 
 
-                                        <div
-                                            class="source-status">
+                                    <span class="config-help">
 
-                                            <span
-                                                class="source-status-dot"
-                                                id="camera2StatusDot">
-                                            </span>
+                                        Enter the camera device index
+                                        or IP stream URL.
 
-                                            <span
-                                                id="camera2Status">
-                                                Source not tested
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-
+                                    </span>
 
                                 </div>
 
@@ -1910,155 +1569,145 @@
                     </div>
 
                 </section>
+
 
 
                 <!-- =================================================
                      GATE CONFIGURATION
                 ================================================== -->
 
-                <section
-                    class="row g-3 mt-1">
+                <section class="config-panel">
+
+                    <div class="config-panel-header">
+
+                        <div class="config-panel-title">
+
+                            <div class="config-panel-title-icon">
+
+                                <i class="bi bi-signpost-2"></i>
+
+                            </div>
 
 
-                    <div class="col-12">
+                            <div class="config-panel-title-text">
 
-                        <div class="panel">
+                                <h2>
+                                    Gate Configuration
+                                </h2>
 
+                                <p>
+                                    Configure gate identification
+                                    and first vehicle movement direction.
+                                </p>
 
-                            <div class="panel-header">
+                            </div>
 
-                                <div>
+                        </div>
 
-                                    <h2
-                                        class="h5 mb-1 section-title">
-
-                                        <i
-                                            class="bi bi-signpost-split"
-                                            aria-hidden="true">
-                                        </i>
-
-                                        <span>
-                                            Gate Configuration
-                                        </span>
-
-                                    </h2>
+                    </div>
 
 
-                                    <p class="text-muted mb-0">
+                    <div class="config-panel-body">
 
-                                        Define the camera relationship
-                                        for each gate.
+                        <div class="gate-config-grid">
 
-                                    </p>
+
+                            <!-- GATE -->
+
+                            <div class="gate-field">
+
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Gate
+
+                                    </label>
+
+
+                                    <select
+                                        id="gate1"
+                                        class="config-select">
+
+                                        <option value="Gate 1">
+                                            Gate 1
+                                        </option>
+
+                                        <option value="Gate 2">
+                                            Gate 2
+                                        </option>
+
+                                    </select>
 
                                 </div>
 
                             </div>
 
 
-                            <div class="p-3 p-lg-4">
+
+                            <!-- CAMERA -->
+
+                            <div class="gate-field">
+
+                                <div class="config-form-group">
+
+                                    <label
+                                        class="config-label">
+
+                                        Camera
+
+                                    </label>
 
 
-                                <div
-                                    class="gate-config-grid">
+                                    <input
+                                        type="text"
+                                        id="gate-camera"
+                                        class="config-input"
+                                        value="Camera 1"
+                                        readonly>
+
+                                </div>
+
+                            </div>
 
 
-                                    <div
-                                        class="config-form-group">
 
-                                        <label
-                                            class="config-form-label"
-                                            for="gate1Camera">
+                            <!-- FIRST DIRECTION -->
 
-                                            Gate 1 Camera
+                            <div class="gate-field">
 
-                                        </label>
+                                <div class="config-form-group">
 
+                                    <label
+                                        class="config-label">
 
-                                        <input
-                                            id="gate1Camera"
-                                            class="config-input"
-                                            type="number"
-                                            value="1"
-                                            readonly>
+                                        First Direction
+
+                                    </label>
 
 
-                                        <div class="config-help">
+                                    <select
+                                        id="gate-direction"
+                                        class="config-select">
 
-                                            Fixed relationship:
-                                            Gate 1 → Camera 1
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div
-                                        class="config-form-group">
-
-                                        <label
-                                            class="config-form-label"
-                                            for="gate2Camera">
-
-                                            Gate 2 Camera
-
-                                        </label>
-
-
-                                        <input
-                                            id="gate2Camera"
-                                            class="config-input"
-                                            type="number"
-                                            value="2"
-                                            readonly>
-
-
-                                        <div class="config-help">
-
-                                            Fixed relationship:
-                                            Gate 2 → Camera 2
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div
-                                        class="config-form-group">
-
-                                        <label
-                                            class="config-form-label"
-                                            for="gate2Direction">
-
-                                            Gate 2 First Direction
-
-                                        </label>
-
-
-                                        <select
-                                            id="gate2Direction"
-                                            class="config-select">
-
-                                            <option value="ENTRY">
-                                                ENTRY
-                                            </option>
-
-                                            <option value="EXIT">
-                                                EXIT
-                                            </option>
-
-                                        </select>
-
-
-                                        <div class="config-help">
-
-                                            Current requested value:
+                                        <option value="ENTRY">
                                             ENTRY
+                                        </option>
 
-                                        </div>
+                                        <option value="EXIT">
+                                            EXIT
+                                        </option>
 
-                                    </div>
+                                    </select>
 
+
+                                    <span class="config-help">
+
+                                        Defines the first direction
+                                        recorded for this gate.
+
+                                    </span>
 
                                 </div>
 
@@ -2069,186 +1718,137 @@
                     </div>
 
                 </section>
+
 
 
                 <!-- =================================================
                      MONGODB ATLAS
                 ================================================== -->
 
-                <section
-                    class="row g-3 mt-1">
+                <section class="config-panel">
 
+                    <div class="config-panel-header">
 
-                    <div class="col-12">
+                        <div class="config-panel-title">
 
-                        <div class="panel">
+                            <div class="config-panel-title-icon">
 
-
-                            <div class="panel-header">
-
-                                <div>
-
-                                    <h2
-                                        class="h5 mb-1 section-title">
-
-                                        <i
-                                            class="bi bi-database-check"
-                                            aria-hidden="true">
-                                        </i>
-
-                                        <span>
-                                            MongoDB Atlas
-                                        </span>
-
-                                    </h2>
-
-
-                                    <p class="text-muted mb-0">
-
-                                        Configure the database connection
-                                        used by the application.
-
-                                    </p>
-
-                                </div>
+                                <i class="bi bi-database"></i>
 
                             </div>
 
 
-                            <div class="p-3 p-lg-4">
+                            <div class="config-panel-title-text">
+
+                                <h2>
+                                    MongoDB Atlas
+                                </h2>
+
+                                <p>
+                                    Configure database connection
+                                    parameters.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
 
-                                <div class="mongo-warning">
+                    <div class="config-panel-body">
 
-                                    <i
-                                        class="bi bi-shield-lock">
-                                    </i>
-
-                                    <div>
-
-                                        <strong>
-                                            Security notice:
-                                        </strong>
-
-                                        MongoDB credentials should
-                                        ultimately be stored on the
-                                        backend/server using environment
-                                        variables. Do not expose production
-                                        credentials to public frontend code.
-
-                                    </div>
-
-                                </div>
+                        <div class="mongodb-grid">
 
 
-                                <div class="row g-3">
+                            <!-- URI -->
+
+                            <div class="config-form-group full-width">
+
+                                <label
+                                    class="config-label">
+
+                                    MongoDB URI
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
 
 
-                                    <div class="col-12">
+                                <div class="input-with-action">
 
-                                        <div
-                                            class="config-form-group mb-0">
-
-
-                                            <label
-                                                class="config-form-label"
-                                                for="mongoUri">
-
-                                                MongoDB Atlas Connection URI
-
-                                            </label>
+                                    <input
+                                        type="password"
+                                        id="mongodb-uri"
+                                        class="config-input"
+                                        placeholder="mongodb+srv://username:password@cluster.mongodb.net/">
 
 
-                                            <div
-                                                class="password-wrapper">
+                                    <button
+                                        type="button"
+                                        class="input-action-btn"
+                                        id="toggle-mongodb-uri"
+                                        aria-label="Show MongoDB URI">
 
+                                        <i class="bi bi-eye"></i>
 
-                                                <input
-                                                    id="mongoUri"
-                                                    class="config-input"
-                                                    type="password"
-                                                    autocomplete="off"
-                                                    placeholder="mongodb+srv://username:password@cluster.mongodb.net/">
-
-                                                <button
-                                                    type="button"
-                                                    class="password-toggle"
-                                                    onclick="toggleMongoUri()">
-
-                                                    Show
-
-                                                </button>
-
-                                            </div>
-
-
-                                            <div class="config-help">
-
-                                                Example:
-                                                mongodb+srv://username:password@cluster.mongodb.net/
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col-12 col-md-6">
-
-                                        <div
-                                            class="config-form-group mb-0">
-
-
-                                            <label
-                                                class="config-form-label"
-                                                for="mongoDatabase">
-
-                                                Database Name
-
-                                            </label>
-
-
-                                            <input
-                                                id="mongoDatabase"
-                                                class="config-input"
-                                                type="text"
-                                                value="INOUTX"
-                                                placeholder="INOUTX">
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col-12 col-md-6">
-
-                                        <div
-                                            class="config-form-group mb-0">
-
-
-                                            <label
-                                                class="config-form-label"
-                                                for="mongoCollection">
-
-                                                Main Collection
-
-                                            </label>
-
-
-                                            <input
-                                                id="mongoCollection"
-                                                class="config-input"
-                                                type="text"
-                                                value="bus_movements"
-                                                placeholder="bus_movements">
-
-                                        </div>
-
-                                    </div>
-
+                                    </button>
 
                                 </div>
+
+
+                                <span class="config-help">
+
+                                    Your MongoDB Atlas connection
+                                    string.
+
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- DATABASE -->
+
+                            <div class="config-form-group">
+
+                                <label
+                                    class="config-label">
+
+                                    Database Name
+
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    id="mongodb-database"
+                                    class="config-input"
+                                    value="IN_OUTX">
+
+                            </div>
+
+
+
+                            <!-- COLLECTION -->
+
+                            <div class="config-form-group">
+
+                                <label
+                                    class="config-label">
+
+                                    Collection
+
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    id="mongodb-collection"
+                                    class="config-input"
+                                    value="bus_movements">
 
                             </div>
 
@@ -2257,125 +1857,158 @@
                     </div>
 
                 </section>
+
 
 
                 <!-- =================================================
-                     ENVIRONMENT PREVIEW
+                     CONFIGURATION PREVIEW
                 ================================================== -->
 
-                <section
-                    class="row g-3 mt-1">
+                <section class="config-panel">
 
+                    <div class="config-panel-header">
 
-                    <div class="col-12">
+                        <div class="config-panel-title">
 
-                        <div class="panel">
+                            <div class="config-panel-title-icon">
 
-
-                            <div class="panel-header">
-
-                                <div>
-
-                                    <h2
-                                        class="h5 mb-1 section-title">
-
-                                        <i
-                                            class="bi bi-code-square"
-                                            aria-hidden="true">
-                                        </i>
-
-                                        <span>
-                                            Configuration Preview
-                                        </span>
-
-                                    </h2>
-
-
-                                    <p class="text-muted mb-0">
-
-                                        Values corresponding to the
-                                        detection configuration.
-
-                                    </p>
-
-                                </div>
+                                <i class="bi bi-eye"></i>
 
                             </div>
 
 
-                            <div class="p-3 p-lg-4">
+                            <div class="config-panel-title-text">
+
+                                <h2>
+                                    Configuration Preview
+                                </h2>
+
+                                <p>
+                                    Review the currently selected
+                                    environment values.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
 
-                                <div
-                                    class="environment-preview">
+                    <div class="config-panel-body">
+
+                        <div class="environment-preview">
 
 
-                                    <div>
+                            <div class="environment-item">
 
-                                        <span class="environment-key">
-                                            GATE1_CAMERA
-                                        </span>=<span
-                                            class="environment-value"
-                                            id="previewGate1">
-                                            1
-                                        </span>
-
-                                    </div>
+                                <span class="environment-key">
+                                    Gate 1
+                                </span>
 
 
-                                    <div>
+                                <span
+                                    class="environment-value"
+                                    id="preview-gate1">
 
-                                        <span class="environment-key">
-                                            GATE2_CAMERA
-                                        </span>=<span
-                                            class="environment-value"
-                                            id="previewGate2">
-                                            2
-                                        </span>
+                                    Gate 1 — Camera 1
 
-                                    </div>
+                                </span>
+
+                            </div>
 
 
-                                    <div>
 
-                                        <span class="environment-key">
-                                            GATE2_FIRST_DIRECTION
-                                        </span>=<span
-                                            class="environment-value"
-                                            id="previewDirection">
-                                            ENTRY
-                                        </span>
+                            <div class="environment-item">
 
-                                    </div>
+                                <span class="environment-key">
+                                    Gate 2
+                                </span>
 
 
-                                    <div>
+                                <span
+                                    class="environment-value"
+                                    id="preview-gate2">
 
-                                        <span class="environment-key">
-                                            CAMERA1_SOURCE_TYPE
-                                        </span>=<span
-                                            class="environment-value"
-                                            id="previewCamera1Type">
-                                            usb
-                                        </span>
+                                    Gate 2 — Camera 2
 
-                                    </div>
+                                </span>
+
+                            </div>
 
 
-                                    <div>
 
-                                        <span class="environment-key">
-                                            CAMERA2_SOURCE_TYPE
-                                        </span>=<span
-                                            class="environment-value"
-                                            id="previewCamera2Type">
-                                            usb
-                                        </span>
+                            <div class="environment-item">
 
-                                    </div>
+                                <span class="environment-key">
+                                    Gate Direction
+                                </span>
 
 
-                                </div>
+                                <span
+                                    class="environment-value"
+                                    id="preview-direction">
+
+                                    ENTRY
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="environment-item">
+
+                                <span class="environment-key">
+                                    Database
+                                </span>
+
+
+                                <span
+                                    class="environment-value"
+                                    id="preview-database">
+
+                                    IN_OUTX
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="environment-item">
+
+                                <span class="environment-key">
+                                    Collection
+                                </span>
+
+
+                                <span
+                                    class="environment-value"
+                                    id="preview-collection">
+
+                                    bus_movements
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="environment-item">
+
+                                <span class="environment-key">
+                                    MongoDB
+                                </span>
+
+
+                                <span
+                                    class="environment-value"
+                                    id="preview-mongodb">
+
+                                    Configured
+
+                                </span>
 
                             </div>
 
@@ -2384,398 +2017,473 @@
                     </div>
 
                 </section>
+
 
 
                 <!-- =================================================
                      ACTIONS
                 ================================================== -->
 
-                <section
-                    class="row g-3 mt-1 mb-4">
+                <div class="config-actions">
 
 
-                    <div class="col-12">
+                    <button
+                        type="button"
+                        class="config-btn config-btn-secondary"
+                        id="load-config-btn">
 
-                        <div class="panel">
+                        <i class="bi bi-arrow-clockwise"></i>
 
-                            <div
-                                class="p-3 p-lg-4">
+                        Load Saved
 
-
-                                <div
-                                    class="config-actions">
-
-
-                                    <button
-                                        type="button"
-                                        class="config-btn config-btn-secondary"
-                                        onclick="loadConfiguration()">
-
-                                        <i
-                                            class="bi bi-arrow-clockwise me-1">
-                                        </i>
-
-                                        Load Saved
-
-                                    </button>
+                    </button>
 
 
-                                    <button
-                                        type="button"
-                                        class="config-btn config-btn-secondary"
-                                        onclick="resetConfiguration()">
+                    <button
+                        type="button"
+                        class="config-btn config-btn-danger"
+                        id="reset-config-btn">
 
-                                        <i
-                                            class="bi bi-arrow-counterclockwise me-1">
-                                        </i>
+                        <i class="bi bi-arrow-counterclockwise"></i>
 
-                                        Reset
+                        Reset
 
-                                    </button>
+                    </button>
 
 
-                                    <button
-                                        type="button"
-                                        class="config-btn config-btn-primary"
-                                        onclick="saveConfiguration()">
+                    <button
+                        type="button"
+                        class="config-btn config-btn-primary"
+                        id="save-config-btn">
 
-                                        <i
-                                            class="bi bi-check2-circle me-1">
-                                        </i>
+                        <i class="bi bi-check-lg"></i>
 
-                                        Save Configuration
+                        Save Configuration
 
-                                    </button>
+                    </button>
 
-
-                                </div>
+                </div>
 
 
-                                <div
-                                    id="configStatus"
-                                    class="config-status">
-                                </div>
 
+                <!-- =================================================
+                     FOOTER
+                ================================================== -->
 
-                            </div>
+                <footer class="config-footer">
 
-                        </div>
+                    2026 Designed by
 
-                    </div>
+                    <strong>
+                        Department Of CSE - KRCT
+                    </strong>.
 
-                </section>
+                    All rights reserved.
 
+                </footer>
 
             </div>
 
-        </main>
+        </section>
 
-    </div>
+    </main>
 
 </div>
 
 
+
 <!-- =========================================================
-     LIVE CLOCK
-========================================================== -->
+     BOOTSTRAP JS
+========================================================= -->
 
-<script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
 
-    function updateLiveTime() {
-
-        const clock =
-            document.getElementById(
-                "live-time"
-            );
-
-
-        if (!clock) {
-
-            return;
-
-        }
-
-
-        const now =
-            new Date();
-
-
-        const hours =
-            String(
-                now.getHours()
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const minutes =
-            String(
-                now.getMinutes()
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const seconds =
-            String(
-                now.getSeconds()
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        clock.textContent =
-            `${hours}:${minutes}:${seconds}`;
-
-    }
-
-
-    updateLiveTime();
-
-
-    setInterval(
-        updateLiveTime,
-        1000
-    );
-
-</script>
 
 
 <!-- =========================================================
-     CONFIGURATION JAVASCRIPT
-========================================================== -->
+     SYSTEM CONFIGURATION JS
+========================================================= -->
 
 <script>
 
-    const CONFIG_STORAGE_KEY =
+(function () {
+
+    "use strict";
+
+
+    /* =====================================================
+       STORAGE KEY
+    ====================================================== */
+
+    const STORAGE_KEY =
         "INOUTX_SYSTEM_CONFIGURATION";
 
 
     /* =====================================================
-       CAMERA FIELD GENERATOR
+       DEFAULT CONFIGURATION
     ====================================================== */
 
-    function updateCameraFields(
-        cameraNumber
-    ) {
+    const DEFAULT_CONFIG = {
 
-        const typeElement =
-            document.getElementById(
-                `camera${cameraNumber}Type`
-            );
+        camera1: {
+            name: "Gate 1 — Camera 1",
+            type: "USB",
+            source: ""
+        },
 
+        camera2: {
+            name: "Gate 2 — Camera 2",
+            type: "USB",
+            source: ""
+        },
 
-        const container =
-            document.getElementById(
-                `camera${cameraNumber}Fields`
-            );
+        gate: {
+            name: "Gate 1",
+            camera: "Camera 1",
+            direction: "ENTRY"
+        },
 
-
-        if (!typeElement || !container) {
-
-            return;
-
+        mongodb: {
+            uri: "",
+            database: "IN_OUTX",
+            collection: "bus_movements"
         }
 
+    };
 
-        const type =
-            typeElement.value;
 
+    /* =====================================================
+       ELEMENT HELPER
+    ====================================================== */
 
-        let html = "";
+    function getElement(id) {
 
-
-        /* =================================================
-           USB CAMERA
-        ================================================== */
-
-        if (type === "usb") {
-
-            html = `
-
-                <div class="config-form-group">
-
-                    <label
-                        class="config-form-label"
-                        for="camera${cameraNumber}Source">
-
-                        USB Camera Device Index
-
-                    </label>
-
-
-                    <input
-                        id="camera${cameraNumber}Source"
-                        class="config-input"
-                        type="number"
-                        min="0"
-                        value="${cameraNumber - 1}"
-                        placeholder="0">
-
-
-                    <div class="source-info">
-
-                        <i class="bi bi-usb-symbol"></i>
-
-                        <span>
-
-                            Enter the operating-system
-                            camera index.
-
-                            Usually 0 is the first USB
-                            camera and 1 is the second.
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-
-        /* =================================================
-           DROIDCAM
-        ================================================== */
-
-        else if (type === "droidcam") {
-
-            html = `
-
-                <div class="config-form-group">
-
-                    <label
-                        class="config-form-label"
-                        for="camera${cameraNumber}Source">
-
-                        DroidCam IP / URL
-
-                    </label>
-
-
-                    <input
-                        id="camera${cameraNumber}Source"
-                        class="config-input"
-                        type="text"
-                        placeholder="http://192.168.1.100:4747">
-
-
-                    <div class="source-info">
-
-                        <i class="bi bi-phone"></i>
-
-                        <span>
-
-                            Enter the DroidCam network
-                            address provided by the
-                            DroidCam application.
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-
-        /* =================================================
-           WIFI / IP CAMERA
-        ================================================== */
-
-        else if (type === "wifi") {
-
-            html = `
-
-                <div class="config-form-group">
-
-                    <label
-                        class="config-form-label"
-                        for="camera${cameraNumber}Source">
-
-                        Wi-Fi / IP Camera URL
-
-                    </label>
-
-
-                    <input
-                        id="camera${cameraNumber}Source"
-                        class="config-input"
-                        type="text"
-                        placeholder="rtsp://192.168.1.100:554/stream">
-
-
-                    <div class="source-info">
-
-                        <i class="bi bi-wifi"></i>
-
-                        <span>
-
-                            Enter the RTSP, HTTP or MJPEG
-                            stream URL supplied by the
-                            network camera.
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-
-        container.innerHTML =
-            html;
-
-
-        updateConfigurationPreview();
+        return document.getElementById(id);
 
     }
 
 
     /* =====================================================
-       GET CAMERA CONFIG
+       MESSAGE
     ====================================================== */
 
-    function getCameraConfig(
-        cameraNumber
+    function showMessage(
+        message,
+        type = "success"
     ) {
 
-        const type =
-            document.getElementById(
-                `camera${cameraNumber}Type`
-            ).value;
+        const element =
+            getElement("config-message");
 
 
-        const sourceElement =
-            document.getElementById(
-                `camera${cameraNumber}Source`
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "config-message show " +
+            type;
+
+
+        window.clearTimeout(
+            showMessage.timeout
+        );
+
+
+        showMessage.timeout =
+            window.setTimeout(
+                function () {
+
+                    element.classList.remove(
+                        "show"
+                    );
+
+                },
+                4000
             );
 
+    }
+
+
+    /* =====================================================
+       READ FORM
+    ====================================================== */
+
+    function getConfigurationFromForm() {
 
         return {
 
-            camera:
-                cameraNumber,
+            camera1: {
 
-            type:
-                type,
+                name:
+                    getElement(
+                        "camera1-name"
+                    )?.value || "",
 
-            source:
-                sourceElement
-                    ? sourceElement.value.trim()
-                    : ""
+                type:
+                    getElement(
+                        "camera1-type"
+                    )?.value || "USB",
+
+                source:
+                    getElement(
+                        "camera1-source"
+                    )?.value || ""
+
+            },
+
+
+            camera2: {
+
+                name:
+                    getElement(
+                        "camera2-name"
+                    )?.value || "",
+
+                type:
+                    getElement(
+                        "camera2-type"
+                    )?.value || "USB",
+
+                source:
+                    getElement(
+                        "camera2-source"
+                    )?.value || ""
+
+            },
+
+
+            gate: {
+
+                name:
+                    getElement(
+                        "gate1"
+                    )?.value || "Gate 1",
+
+                camera:
+                    getElement(
+                        "gate-camera"
+                    )?.value || "Camera 1",
+
+                direction:
+                    getElement(
+                        "gate-direction"
+                    )?.value || "ENTRY"
+
+            },
+
+
+            mongodb: {
+
+                uri:
+                    getElement(
+                        "mongodb-uri"
+                    )?.value || "",
+
+                database:
+                    getElement(
+                        "mongodb-database"
+                    )?.value ||
+                    "IN_OUTX",
+
+                collection:
+                    getElement(
+                        "mongodb-collection"
+                    )?.value ||
+                    "bus_movements"
+
+            }
 
         };
+
+    }
+
+
+    /* =====================================================
+       APPLY CONFIGURATION
+    ====================================================== */
+
+    function applyConfiguration(config) {
+
+        config =
+            config || DEFAULT_CONFIG;
+
+
+        /* CAMERA 1 */
+
+        const camera1 =
+            config.camera1 ||
+            DEFAULT_CONFIG.camera1;
+
+
+        const camera1Name =
+            getElement("camera1-name");
+
+        const camera1Type =
+            getElement("camera1-type");
+
+        const camera1Source =
+            getElement("camera1-source");
+
+
+        if (camera1Name) {
+
+            camera1Name.value =
+                camera1.name || "";
+
+        }
+
+
+        if (camera1Type) {
+
+            camera1Type.value =
+                camera1.type || "USB";
+
+        }
+
+
+        if (camera1Source) {
+
+            camera1Source.value =
+                camera1.source || "";
+
+        }
+
+
+
+        /* CAMERA 2 */
+
+        const camera2 =
+            config.camera2 ||
+            DEFAULT_CONFIG.camera2;
+
+
+        const camera2Name =
+            getElement("camera2-name");
+
+        const camera2Type =
+            getElement("camera2-type");
+
+        const camera2Source =
+            getElement("camera2-source");
+
+
+        if (camera2Name) {
+
+            camera2Name.value =
+                camera2.name || "";
+
+        }
+
+
+        if (camera2Type) {
+
+            camera2Type.value =
+                camera2.type || "USB";
+
+        }
+
+
+        if (camera2Source) {
+
+            camera2Source.value =
+                camera2.source || "";
+
+        }
+
+
+
+        /* GATE */
+
+        const gate =
+            config.gate ||
+            DEFAULT_CONFIG.gate;
+
+
+        const gateName =
+            getElement("gate1");
+
+        const gateCamera =
+            getElement("gate-camera");
+
+        const gateDirection =
+            getElement("gate-direction");
+
+
+        if (gateName) {
+
+            gateName.value =
+                gate.name || "Gate 1";
+
+        }
+
+
+        if (gateCamera) {
+
+            gateCamera.value =
+                gate.camera || "Camera 1";
+
+        }
+
+
+        if (gateDirection) {
+
+            gateDirection.value =
+                gate.direction || "ENTRY";
+
+        }
+
+
+
+        /* MONGODB */
+
+        const mongodb =
+            config.mongodb ||
+            DEFAULT_CONFIG.mongodb;
+
+
+        const mongodbUri =
+            getElement("mongodb-uri");
+
+        const mongodbDatabase =
+            getElement("mongodb-database");
+
+        const mongodbCollection =
+            getElement("mongodb-collection");
+
+
+        if (mongodbUri) {
+
+            mongodbUri.value =
+                mongodb.uri || "";
+
+        }
+
+
+        if (mongodbDatabase) {
+
+            mongodbDatabase.value =
+                mongodb.database ||
+                "IN_OUTX";
+
+        }
+
+
+        if (mongodbCollection) {
+
+            mongodbCollection.value =
+                mongodb.collection ||
+                "bus_movements";
+
+        }
+
+
+        updatePreview();
 
     }
 
@@ -2786,291 +2494,39 @@
 
     function saveConfiguration() {
 
-        const configuration = {
-
-            gate1: {
-
-                camera:
-                    1,
-
-                source:
-                    getCameraConfig(1)
-
-            },
-
-
-            gate2: {
-
-                camera:
-                    2,
-
-                firstDirection:
-                    document.getElementById(
-                        "gate2Direction"
-                    ).value,
-
-                source:
-                    getCameraConfig(2)
-
-            },
-
-
-            mongodb: {
-
-                uri:
-                    document.getElementById(
-                        "mongoUri"
-                    ).value.trim(),
-
-                database:
-                    document.getElementById(
-                        "mongoDatabase"
-                    ).value.trim(),
-
-                collection:
-                    document.getElementById(
-                        "mongoCollection"
-                    ).value.trim()
-
-            },
-
-
-            environment: {
-
-                GATE1_CAMERA:
-                    1,
-
-                GATE2_CAMERA:
-                    2,
-
-                GATE2_FIRST_DIRECTION:
-                    document.getElementById(
-                        "gate2Direction"
-                    ).value
-
-            }
-
-        };
-
-
-        localStorage.setItem(
-            CONFIG_STORAGE_KEY,
-            JSON.stringify(
-                configuration
-            )
-        );
-
-
-        updateConfigurationPreview();
-
-
-        showConfigStatus(
-            "Configuration saved successfully in this browser.",
-            "success"
-        );
-
-    }
-
-
-    /* =====================================================
-       LOAD CONFIGURATION
-    ====================================================== */
-
-    function loadConfiguration() {
-
-        const saved =
-            localStorage.getItem(
-                CONFIG_STORAGE_KEY
-            );
-
-
-        if (!saved) {
-
-            updateCameraFields(1);
-            updateCameraFields(2);
-
-            updateConfigurationPreview();
-
-            return;
-
-        }
-
-
         try {
 
             const configuration =
-                JSON.parse(saved);
+                getConfigurationFromForm();
 
 
-            /* =============================================
-               CAMERA 1
-            ============================================== */
-
-            if (
-                configuration.gate1 &&
-                configuration.gate1.source
-            ) {
-
-                const camera1Type =
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(
                     configuration
-                        .gate1
-                        .source
-                        .type ||
-                    "usb";
+                )
+            );
 
 
-                document.getElementById(
-                    "camera1Type"
-                ).value =
-                    camera1Type;
+            updatePreview();
 
 
-                updateCameraFields(1);
-
-
-                const camera1Source =
-                    document.getElementById(
-                        "camera1Source"
-                    );
-
-
-                if (camera1Source) {
-
-                    camera1Source.value =
-                        configuration
-                            .gate1
-                            .source
-                            .source ||
-                        "";
-
-                }
-
-            }
-
-
-            /* =============================================
-               CAMERA 2
-            ============================================== */
-
-            if (
-                configuration.gate2 &&
-                configuration.gate2.source
-            ) {
-
-                const camera2Type =
-                    configuration
-                        .gate2
-                        .source
-                        .type ||
-                    "usb";
-
-
-                document.getElementById(
-                    "camera2Type"
-                ).value =
-                    camera2Type;
-
-
-                updateCameraFields(2);
-
-
-                const camera2Source =
-                    document.getElementById(
-                        "camera2Source"
-                    );
-
-
-                if (camera2Source) {
-
-                    camera2Source.value =
-                        configuration
-                            .gate2
-                            .source
-                            .source ||
-                        "";
-
-                }
-
-            }
-
-
-            /* =============================================
-               GATE 2 DIRECTION
-            ============================================== */
-
-            if (
-                configuration.gate2 &&
-                configuration.gate2.firstDirection
-            ) {
-
-                document.getElementById(
-                    "gate2Direction"
-                ).value =
-                    configuration
-                        .gate2
-                        .firstDirection;
-
-            }
-
-
-            /* =============================================
-               MONGODB
-            ============================================== */
-
-            if (
-                configuration.mongodb
-            ) {
-
-                document.getElementById(
-                    "mongoUri"
-                ).value =
-                    configuration
-                        .mongodb
-                        .uri ||
-                    "";
-
-
-                document.getElementById(
-                    "mongoDatabase"
-                ).value =
-                    configuration
-                        .mongodb
-                        .database ||
-                    "INOUTX";
-
-
-                document.getElementById(
-                    "mongoCollection"
-                ).value =
-                    configuration
-                        .mongodb
-                        .collection ||
-                    "bus_movements";
-
-            }
-
-
-            updateConfigurationPreview();
-
-
-            showConfigStatus(
-                "Saved configuration loaded.",
+            showMessage(
+                "System configuration saved successfully.",
                 "success"
             );
 
         }
-
-
         catch (error) {
 
             console.error(
-                "Configuration load error:",
+                "Save configuration error:",
                 error
             );
 
 
-            showConfigStatus(
-                "Unable to load saved configuration.",
+            showMessage(
+                "Unable to save system configuration.",
                 "error"
             );
 
@@ -3080,72 +2536,113 @@
 
 
     /* =====================================================
-       RESET
+       LOAD CONFIGURATION
+    ====================================================== */
+
+    function loadConfiguration(
+        showNotification = true
+    ) {
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    STORAGE_KEY
+                );
+
+
+            if (!saved) {
+
+                applyConfiguration(
+                    DEFAULT_CONFIG
+                );
+
+
+                if (showNotification) {
+
+                    showMessage(
+                        "No saved configuration found. Default configuration loaded.",
+                        "warning"
+                    );
+
+                }
+
+                return;
+
+            }
+
+
+            const configuration =
+                JSON.parse(saved);
+
+
+            applyConfiguration(
+                configuration
+            );
+
+
+            if (showNotification) {
+
+                showMessage(
+                    "Saved configuration loaded successfully.",
+                    "success"
+                );
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load configuration error:",
+                error
+            );
+
+
+            applyConfiguration(
+                DEFAULT_CONFIG
+            );
+
+
+            showMessage(
+                "Saved configuration could not be loaded. Default configuration restored.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESET CONFIGURATION
     ====================================================== */
 
     function resetConfiguration() {
 
-        if (
-            !confirm(
-                "Reset the configuration to default values?"
-            )
-        ) {
+        const confirmed =
+            window.confirm(
+                "Reset System Configuration to default values?"
+            );
 
+
+        if (!confirmed) {
             return;
-
         }
 
 
-        document.getElementById(
-            "camera1Type"
-        ).value =
-            "usb";
-
-
-        document.getElementById(
-            "camera2Type"
-        ).value =
-            "usb";
-
-
-        document.getElementById(
-            "gate2Direction"
-        ).value =
-            "ENTRY";
-
-
-        document.getElementById(
-            "mongoUri"
-        ).value =
-            "";
-
-
-        document.getElementById(
-            "mongoDatabase"
-        ).value =
-            "INOUTX";
-
-
-        document.getElementById(
-            "mongoCollection"
-        ).value =
-            "bus_movements";
-
-
-        updateCameraFields(1);
-        updateCameraFields(2);
-
-
         localStorage.removeItem(
-            CONFIG_STORAGE_KEY
+            STORAGE_KEY
         );
 
 
-        updateConfigurationPreview();
+        applyConfiguration(
+            DEFAULT_CONFIG
+        );
 
 
-        showConfigStatus(
-            "Configuration reset.",
+        showMessage(
+            "System configuration has been reset.",
             "success"
         );
 
@@ -3153,70 +2650,97 @@
 
 
     /* =====================================================
-       CONFIGURATION PREVIEW
+       UPDATE PREVIEW
     ====================================================== */
 
-    function updateConfigurationPreview() {
+    function updatePreview() {
 
-        const camera1Type =
-            document.getElementById(
-                "camera1Type"
+        const configuration =
+            getConfigurationFromForm();
+
+
+        const previewGate1 =
+            getElement(
+                "preview-gate1"
+            );
+
+        const previewGate2 =
+            getElement(
+                "preview-gate2"
+            );
+
+        const previewDirection =
+            getElement(
+                "preview-direction"
+            );
+
+        const previewDatabase =
+            getElement(
+                "preview-database"
+            );
+
+        const previewCollection =
+            getElement(
+                "preview-collection"
+            );
+
+        const previewMongo =
+            getElement(
+                "preview-mongodb"
             );
 
 
-        const camera2Type =
-            document.getElementById(
-                "camera2Type"
-            );
+        if (previewGate1) {
 
-
-        const direction =
-            document.getElementById(
-                "gate2Direction"
-            );
-
-
-        if (
-            camera1Type &&
-            document.getElementById(
-                "previewCamera1Type"
-            )
-        ) {
-
-            document.getElementById(
-                "previewCamera1Type"
-            ).textContent =
-                camera1Type.value;
+            previewGate1.textContent =
+                configuration.camera1.name ||
+                "Gate 1 — Camera 1";
 
         }
 
 
-        if (
-            camera2Type &&
-            document.getElementById(
-                "previewCamera2Type"
-            )
-        ) {
+        if (previewGate2) {
 
-            document.getElementById(
-                "previewCamera2Type"
-            ).textContent =
-                camera2Type.value;
+            previewGate2.textContent =
+                configuration.camera2.name ||
+                "Gate 2 — Camera 2";
 
         }
 
 
-        if (
-            direction &&
-            document.getElementById(
-                "previewDirection"
-            )
-        ) {
+        if (previewDirection) {
 
-            document.getElementById(
-                "previewDirection"
-            ).textContent =
-                direction.value;
+            previewDirection.textContent =
+                configuration.gate.direction ||
+                "ENTRY";
+
+        }
+
+
+        if (previewDatabase) {
+
+            previewDatabase.textContent =
+                configuration.mongodb.database ||
+                "IN_OUTX";
+
+        }
+
+
+        if (previewCollection) {
+
+            previewCollection.textContent =
+                configuration.mongodb.collection ||
+                "bus_movements";
+
+        }
+
+
+        if (previewMongo) {
+
+            previewMongo.textContent =
+                configuration.mongodb.uri
+                    ? "Configured"
+                    : "Not configured";
 
         }
 
@@ -3224,318 +2748,481 @@
 
 
     /* =====================================================
-       MONGODB URI SHOW / HIDE
+       MONGODB URI VISIBILITY
     ====================================================== */
 
-    function toggleMongoUri() {
-
-        const input =
-            document.getElementById(
-                "mongoUri"
-            );
-
+    function setupMongoVisibility() {
 
         const button =
-            document.querySelector(
-                ".password-toggle"
+            getElement(
+                "toggle-mongodb-uri"
             );
+
+        const input =
+            getElement(
+                "mongodb-uri"
+            );
+
+
+        if (!button || !input) {
+            return;
+        }
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const icon =
+                    button.querySelector("i");
+
+
+                if (
+                    input.type ===
+                    "password"
+                ) {
+
+                    input.type =
+                        "text";
+
+
+                    button.setAttribute(
+                        "aria-label",
+                        "Hide MongoDB URI"
+                    );
+
+
+                    if (icon) {
+
+                        icon.className =
+                            "bi bi-eye-slash";
+
+                    }
+
+                }
+                else {
+
+                    input.type =
+                        "password";
+
+
+                    button.setAttribute(
+                        "aria-label",
+                        "Show MongoDB URI"
+                    );
+
+
+                    if (icon) {
+
+                        icon.className =
+                            "bi bi-eye";
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       GATE CAMERA MAPPING
+    ====================================================== */
+
+    function updateGateCamera() {
+
+        const gate =
+            getElement("gate1");
+
+        const camera =
+            getElement("gate-camera");
+
+
+        if (!gate || !camera) {
+            return;
+        }
 
 
         if (
-            input.type ===
-            "password"
+            gate.value ===
+            "Gate 2"
         ) {
 
-            input.type =
-                "text";
-
-            button.textContent =
-                "Hide";
+            camera.value =
+                "Camera 2";
 
         }
-
         else {
 
-            input.type =
-                "password";
-
-            button.textContent =
-                "Show";
+            camera.value =
+                "Camera 1";
 
         }
+
+
+        updatePreview();
 
     }
 
 
     /* =====================================================
-       STATUS MESSAGE
+       SIDEBAR
+       MOBILE + TABLET
     ====================================================== */
 
-    function showConfigStatus(
-        message,
-        type
-    ) {
+    function setupSidebar() {
 
-        const status =
-            document.getElementById(
-                "configStatus"
+        const toggle =
+            getElement(
+                "sidebarToggle"
             );
 
 
-        status.textContent =
-            message;
+        const sidebar =
+            getElement(
+                "adminSidebar"
+            );
 
 
-        status.className =
-            "config-status " +
-            type;
+        const backdrop =
+            document.querySelector(
+                ".sidebar-backdrop"
+            );
 
-    }
+
+        if (!toggle || !sidebar) {
+
+            console.error(
+                "INOUTX sidebar elements not found."
+            );
+
+            return;
+
+        }
 
 
-    /* =====================================================
-       GATE DIRECTION CHANGE
-    ====================================================== */
+        /* ================================================
+           OPEN SIDEBAR
+        ================================================= */
 
-    document
-        .getElementById(
-            "gate2Direction"
-        )
-        .addEventListener(
-            "change",
-            updateConfigurationPreview
+        function openSidebar() {
+
+            sidebar.classList.add(
+                "show"
+            );
+
+
+            if (backdrop) {
+
+                backdrop.classList.add(
+                    "show"
+                );
+
+            }
+
+
+            toggle.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+
+            toggle.setAttribute(
+                "aria-label",
+                "Close navigation"
+            );
+
+        }
+
+
+        /* ================================================
+           CLOSE SIDEBAR
+        ================================================= */
+
+        function closeSidebar() {
+
+            sidebar.classList.remove(
+                "show"
+            );
+
+
+            if (backdrop) {
+
+                backdrop.classList.remove(
+                    "show"
+                );
+
+            }
+
+
+            toggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+
+            toggle.setAttribute(
+                "aria-label",
+                "Open navigation"
+            );
+
+        }
+
+
+        /* ================================================
+           TOGGLE
+        ================================================= */
+
+        toggle.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                if (
+                    sidebar.classList.contains(
+                        "show"
+                    )
+                ) {
+
+                    closeSidebar();
+
+                }
+                else {
+
+                    openSidebar();
+
+                }
+
+            }
         );
 
 
+        /* ================================================
+           BACKDROP
+        ================================================= */
+
+        if (backdrop) {
+
+            backdrop.addEventListener(
+                "click",
+                function () {
+
+                    closeSidebar();
+
+                }
+            );
+
+        }
+
+
+        /* ================================================
+           NAVIGATION LINKS
+        ================================================= */
+
+        const navLinks =
+            sidebar.querySelectorAll(
+                ".nav-link"
+            );
+
+
+        navLinks.forEach(
+            function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (
+                            window.innerWidth <=
+                            992
+                        ) {
+
+                            closeSidebar();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* ================================================
+           ESC KEY
+        ================================================= */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+
+        /* ================================================
+           RESIZE
+        ================================================= */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (
+                    window.innerWidth >
+                    992
+                ) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    }
+
+
     /* =====================================================
-       INITIAL CAMERA FIELDS
+       LIVE CLOCK
     ====================================================== */
 
-    updateCameraFields(1);
+    function updateClock() {
 
-    updateCameraFields(2);
+        const element =
+            getElement(
+                "live-time"
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        const now =
+            new Date();
+
+
+        element.textContent =
+            now.toLocaleTimeString(
+                "en-IN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: true
+                }
+            );
+
+    }
 
 
     /* =====================================================
-       LOAD SAVED CONFIG
+       NOTIFICATIONS
     ====================================================== */
 
-    loadConfiguration();
-
-</script>
-
-
-<!-- =========================================================
-     NOTIFICATIONS
-========================================================== -->
-
-<script>
-
-    const API_BASE =
-        window.location.origin;
-
-
-    let notifications = [];
-
-
-    function updateNotificationUI() {
+    async function loadNotifications() {
 
         const list =
-            document.getElementById(
+            getElement(
                 "notification-list"
             );
 
 
-        const badge =
-            document.getElementById(
-                "notification-badge"
-            );
-
-
-        const count =
-            document.getElementById(
-                "notification-count"
-            );
-
-
-        if (
-            !list ||
-            !badge ||
-            !count
-        ) {
-
+        if (!list) {
             return;
-
         }
 
-
-        if (
-            notifications.length === 0
-        ) {
-
-            badge.style.display =
-                "none";
-
-
-            count.textContent =
-                "No new notifications";
-
-
-            list.innerHTML = `
-
-                <div
-                    id="notification-empty"
-                    class="notification-empty">
-
-                    <i
-                        class="bi bi-check-circle"
-                        aria-hidden="true">
-                    </i>
-
-                    <div>
-
-                        <strong>
-                            No new notifications
-                        </strong>
-
-                        <small>
-                            You're all caught up.
-                        </small>
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            return;
-
-        }
-
-
-        badge.textContent =
-            notifications.length;
-
-
-        badge.style.display =
-            "flex";
-
-
-        count.textContent =
-            `${notifications.length} new notification${
-                notifications.length > 1
-                    ? "s"
-                    : ""
-            }`;
-
-
-        list.innerHTML =
-            notifications
-                .map(
-                    notification => `
-
-                        <div
-                            class="notification-item p-3 border-bottom">
-
-                            <strong>
-                                ${escapeHtml(
-                                    notification.title
-                                )}
-                            </strong>
-
-                            <div
-                                class="small text-muted">
-
-                                ${escapeHtml(
-                                    notification.message
-                                )}
-
-                            </div>
-
-                            <div
-                                class="small text-muted mt-1">
-
-                                ${escapeHtml(
-                                    notification.time
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    `
-                )
-                .join("");
-
-    }
-
-
-    async function loadNotifications() {
 
         try {
 
             const response =
                 await fetch(
-                    API_BASE +
                     "/api/notifications",
                     {
                         method: "GET",
+                        credentials: "include",
                         cache: "no-store"
                     }
                 );
 
 
             if (!response.ok) {
+                return;
+            }
 
-                throw new Error(
-                    "Notification API returned HTTP " +
-                    response.status
-                );
+
+            const result =
+                await response.json();
+
+
+            const notifications =
+                Array.isArray(
+                    result.notifications
+                )
+                    ? result.notifications
+                    : [];
+
+
+            if (
+                notifications.length ===
+                0
+            ) {
+
+                list.innerHTML =
+                    '<div class="text-muted small">' +
+                    'No new notifications.' +
+                    '</div>';
+
+                return;
 
             }
 
 
-            const data =
-                await response.json();
+            list.innerHTML =
+                notifications
+                    .map(
+                        function (item) {
+
+                            const message =
+                                item.message ||
+                                item.text ||
+                                "Notification";
 
 
-            notifications =
-                Array.isArray(data)
-                    ? data.map(
-                        notification => ({
+                            return (
+                                '<div class="small mb-2">' +
+                                escapeHtml(
+                                    message
+                                ) +
+                                '</div>'
+                            );
 
-                            title:
-                                notification.title ||
-                                "Notification",
-
-                            message:
-                                notification.message ||
-                                "",
-
-                            time:
-                                notification.created_at
-                                    ? new Date(
-                                        notification.created_at
-                                      ).toLocaleTimeString(
-                                        "en-IN"
-                                      )
-                                    : ""
-
-                        })
+                        }
                     )
-                    : [];
-
-
-            updateNotificationUI();
+                    .join("");
 
         }
-
-
         catch (error) {
 
             console.error(
-                "Notification loading error:",
+                "Notification load error:",
                 error
             );
 
@@ -3544,62 +3231,9 @@
     }
 
 
-    const clearNotifications =
-        document.getElementById(
-            "clear-notifications"
-        );
-
-
-    if (clearNotifications) {
-
-        clearNotifications.addEventListener(
-            "click",
-            async function() {
-
-                try {
-
-                    const response =
-                        await fetch(
-                            API_BASE +
-                            "/api/notifications/clear",
-                            {
-                                method: "POST"
-                            }
-                        );
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            "Clear notification API returned HTTP " +
-                            response.status
-                        );
-
-                    }
-
-
-                    notifications = [];
-
-
-                    updateNotificationUI();
-
-                }
-
-
-                catch (error) {
-
-                    console.error(
-                        "Clear notifications error:",
-                        error
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
+    /* =====================================================
+       HTML ESCAPE
+    ====================================================== */
 
     function escapeHtml(value) {
 
@@ -3633,49 +3267,250 @@
     }
 
 
-    loadNotifications();
+    /* =====================================================
+       ACCESS CONTROL
+    ====================================================== */
+
+    async function checkConfigurationAccess() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/config-access",
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        cache: "no-store"
+                    }
+                );
 
 
-    setInterval(
-        loadNotifications,
-        3000
-    );
+            const result =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                result.success !== true ||
+                result.authorized !== true
+            ) {
+
+                alert(
+                    result.error ||
+                    "You are not authorized to access System Configuration."
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+
+                return false;
+
+            }
+
+
+            console.log(
+                "System Configuration access granted:",
+                result.email
+            );
+
+
+            return true;
+
+        }
+        catch (error) {
+
+            console.error(
+                "Configuration access check failed:",
+                error
+            );
+
+
+            alert(
+                "Unable to verify configuration access."
+            );
+
+
+            window.location.href =
+                "index.html";
+
+
+            return false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       EVENT LISTENERS
+    ====================================================== */
+
+    function setupEvents() {
+
+        const saveButton =
+            getElement(
+                "save-config-btn"
+            );
+
+
+        const loadButton =
+            getElement(
+                "load-config-btn"
+            );
+
+
+        const resetButton =
+            getElement(
+                "reset-config-btn"
+            );
+
+
+        const gate =
+            getElement(
+                "gate1"
+            );
+
+
+        if (saveButton) {
+
+            saveButton.addEventListener(
+                "click",
+                saveConfiguration
+            );
+
+        }
+
+
+        if (loadButton) {
+
+            loadButton.addEventListener(
+                "click",
+                function () {
+
+                    loadConfiguration(
+                        true
+                    );
+
+                }
+            );
+
+        }
+
+
+        if (resetButton) {
+
+            resetButton.addEventListener(
+                "click",
+                resetConfiguration
+            );
+
+        }
+
+
+        if (gate) {
+
+            gate.addEventListener(
+                "change",
+                updateGateCamera
+            );
+
+        }
+
+
+        const formInputs =
+            document.querySelectorAll(
+                ".config-input, .config-select"
+            );
+
+
+        formInputs.forEach(
+            function (input) {
+
+                input.addEventListener(
+                    "input",
+                    updatePreview
+                );
+
+
+                input.addEventListener(
+                    "change",
+                    updatePreview
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INITIALIZE
+    ====================================================== */
+
+    async function initialize() {
+
+        const authorized =
+            await checkConfigurationAccess();
+
+
+        if (!authorized) {
+            return;
+        }
+
+
+        setupSidebar();
+
+        setupMongoVisibility();
+
+        setupEvents();
+
+        updateGateCamera();
+
+        loadConfiguration(
+            false
+        );
+
+        updateClock();
+
+
+        window.setInterval(
+            updateClock,
+            1000
+        );
+
+
+        loadNotifications();
+
+    }
+
+
+    /* =====================================================
+       START
+    ====================================================== */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize
+        );
+
+    }
+    else {
+
+        initialize();
+
+    }
+
+})();
 
 </script>
-
-
-<!-- =========================================================
-     BOOTSTRAP
-========================================================== -->
-
-<script
-    src="/assets/js/bootstrap.bundle.min.js">
-</script>
-
-
-<!-- =========================================================
-     MAIN JS
-========================================================== -->
-
-<script
-    src="/assets/js/main.js">
-</script>
-
-
-<!-- =========================================================
-     FOOTER
-========================================================== -->
-
-<footer class="auth-copyright">
-
-    2026 Designed by
-    <strong>
-        Department Of CSE - KRCT
-    </strong>.
-
-    All rights reserved.
-
-</footer>
 
 
 </body>
