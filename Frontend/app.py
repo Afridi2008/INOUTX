@@ -10,6 +10,7 @@ from bson import ObjectId
 from datetime import datetime
 import secrets
 import smtplib
+from flask import redirect
 
 from email.message import EmailMessage
 
@@ -6386,7 +6387,9 @@ def serve_html_file(filename):
 # =========================================================
 # HTML / REACT
 # =========================================================
-
+@app.route("/")
+def home():
+    return redirect("/login.html")
 @app.route(
     "/<path:filename>"
 )
@@ -6406,15 +6409,16 @@ def html_files(filename):
     # -----------------------------------------------------
 
     static_html_pages = {
-        "download.html",
-        "camera.html",
-        "profile.html",
-        "system-config.html",
-        "404.html",
-        "500.html",
-        "forgot-password.html",
-        "register.html",
-        "reset-password.html"
+        "login.html",
+    "register.html",
+    "forgot-password.html",
+    "reset-password.html",
+    "download.html",
+    "camera.html",
+    "profile.html",
+    "system-config.html",
+    "404.html",
+    "500.html"
     }
     print(
     "HTML DEBUG:",
@@ -6456,16 +6460,11 @@ def html_files(filename):
     # -----------------------------------------------------
 
     react_pages = {
-        "index.html",
-        "login.html",
-        "register.html",
-        "forgot-password.html",
-        "staff-vehicles.html",
-        "unknown-vehicles.html",
-        "vehicle.html",
-        "404.html",
-        "500.html"
-    }
+    "index.html",
+    "staff-vehicles.html",
+    "unknown-vehicles.html",
+    "vehicle.html"
+}
 
     if (
         filename in react_pages
