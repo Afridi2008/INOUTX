@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Create your INOUTX account">
+
+  <title>Register | INOUTX</title>
+
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <link rel="icon" type="image/png" href="pic.PNG">
+
+  <style>
+    :root {
+      --inoutx-primary: #003377;
+      --inoutx-primary-dark: #002451;
+      --inoutx-primary-light: #004A9F;
+      --inoutx-light-blue: #EAF2FA;
+      --inoutx-bg: #F4F7FA;
+      --inoutx-text: #17202A;
+      --inoutx-muted: #5B6775;
+      --inoutx-border: #C8D2DE;
+      --inoutx-border-light: #E7ECF1;
+      --inoutx-success: #198754;
+      --inoutx-danger: #C62828;
+    }
+
+    /* =========================================================
+       PAGE BACKGROUND
+       ========================================================= */
+
+    body.auth-body {
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(0, 74, 159, 0.35),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(0, 51, 119, 0.25),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          var(--inoutx-primary-dark),
+          var(--inoutx-primary),
+          var(--inoutx-primary-dark)
+        );
+    }
+
+    /* =========================================================
+       MAIN AUTH CARD
+       ========================================================= */
+
+    .auth-card {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      overflow: hidden;
+
+      box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.28),
+        0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* =========================================================
+       BRAND
+       ========================================================= */
+
+    .auth-brand {
+      padding-bottom: 18px;
+    }
+
+    .auth-brand .brand-icon {
+      background: var(--inoutx-primary);
+      color: #ffffff;
+      border-radius: 10px;
+
+      box-shadow:
+        0 5px 14px rgba(0, 51, 119, 0.22);
+    }
+
+    .auth-brand strong {
+      color: var(--inoutx-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .auth-brand small {
+      color: var(--inoutx-muted);
+    }
+
+    /* =========================================================
+       VISUAL / DASHBOARD IMAGE
+       ========================================================= */
+
+    .auth-visual {
+      border-radius: 12px;
+      overflow: hidden;
+
+      border: 1px solid var(--inoutx-border-light);
+
+      margin-bottom: 26px;
+
+      background: var(--inoutx-bg);
+    }
+
+    .auth-visual img {
+      display: block;
+
+      width: 100%;
+      height: 180px;
+
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* =========================================================
+       FORM HEADER
+       ========================================================= */
+
+    #registerForm {
+      color: var(--inoutx-text);
+    }
+
+    #registerForm .eyebrow {
+      color: var(--inoutx-primary);
+
+      font-size: 11px;
+      font-weight: 800;
+
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    #registerForm h1 {
+      color: var(--inoutx-text);
+      font-weight: 800;
+    }
+
+    #registerForm .text-muted {
+      color: var(--inoutx-muted) !important;
+    }
+
+    /* =========================================================
+       FORM LABELS
+       ========================================================= */
+
+    #registerForm .form-label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: var(--inoutx-text);
+
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       INPUTS
+       ========================================================= */
+
+    #registerForm .form-control,
+    #registerForm .form-select {
+
+      min-height: 46px;
+
+      padding: 10px 13px;
+
+      border: 1.5px solid var(--inoutx-border);
+
+      border-radius: 8px;
+
+      background: #ffffff;
+
+      color: var(--inoutx-text);
+
+      font-size: 14px;
+      font-weight: 500;
+
+      box-shadow: none;
+
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+    }
+
+    /* =========================================================
+       PLACEHOLDER
+       ========================================================= */
+
+    #registerForm .form-control::placeholder {
+      color: #8793A1;
+      opacity: 1;
+    }
+
+    /* =========================================================
+       INPUT HOVER
+       ========================================================= */
+
+    #registerForm .form-control:hover,
+    #registerForm .form-select:hover {
+
+      border-color: #9BAABD;
+
+      background: #FCFDFE;
+    }
+
+    /* =========================================================
+       INPUT FOCUS
+       ========================================================= */
+
+    #registerForm .form-control:focus,
+    #registerForm .form-select:focus {
+
+      border-color: var(--inoutx-primary);
+
+      background: #ffffff;
+
+      box-shadow:
+        0 0 0 3px rgba(0, 51, 119, 0.10),
+        0 2px 5px rgba(15, 23, 42, 0.05);
+
+      outline: none;
+    }
+
+    /* =========================================================
+       SELECT
+       ========================================================= */
+
+    #registerForm .form-select {
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       VALIDATION
+       ========================================================= */
+
+    #registerForm .form-control.is-invalid,
+    #registerForm .form-select.is-invalid {
+
+      border-color: var(--inoutx-danger);
+
+      box-shadow:
+        0 0 0 3px rgba(198, 40, 40, 0.08);
+    }
+
+    #registerForm .form-control.is-valid,
+    #registerForm .form-select.is-valid {
+
+      border-color: var(--inoutx-success);
+    }
+
+    .invalid-feedback {
+      font-size: 12px;
+      font-weight: 500;
+
+      margin-top: 5px;
+    }
+
+    /* =========================================================
+       FIELD SPACING
+       ========================================================= */
+
+    #registerForm .mb-3 {
+      margin-bottom: 17px !important;
+    }
+
+    #registerForm .mb-4 {
+      margin-bottom: 22px !important;
+    }
+
+    /* =========================================================
+       PASSWORD FIELD
+       ========================================================= */
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper .form-control {
+      padding-right: 45px !important;
+    }
+
+    .password-toggle {
+      position: absolute;
+
+      right: 10px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      width: 32px;
+      height: 32px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      background: transparent;
+
+      color: var(--inoutx-muted);
+
+      border-radius: 6px;
+
+      cursor: pointer;
+
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+    }
+
+    .password-toggle:hover {
+      background: var(--inoutx-light-blue);
+      color: var(--inoutx-primary);
+    }
+
+    .password-toggle:focus {
+      outline: none;
+
+      box-shadow:
+        0 0 0 3px rgba(0, 51, 119, 0.10);
+    }
+
+    /* =========================================================
+       VERIFICATION PANEL
+       ========================================================= */
+
+    #verificationPanel {
+
+      padding: 18px;
+
+      border: 1px solid #D5DCE5;
+
+      border-radius: 10px;
+
+      background: var(--inoutx-light-blue);
+    }
+
+    #verificationPanel h2 {
+
+      color: var(--inoutx-text);
+
+      font-weight: 800;
+    }
+
+    #verificationEmail {
+
+      color: var(--inoutx-primary);
+
+      word-break: break-word;
+    }
+
+    /* =========================================================
+       REGISTER BUTTON
+       ========================================================= */
+
+    #registerButton {
+
+      min-height: 46px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background: var(--inoutx-primary);
+
+      color: #ffffff;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      box-shadow:
+        0 4px 10px rgba(0, 51, 119, 0.18);
+
+      transition:
+        background-color 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    #registerButton:hover:not(:disabled) {
+
+      background: var(--inoutx-primary-light);
+
+      box-shadow:
+        0 6px 14px rgba(0, 51, 119, 0.22);
+
+      transform: translateY(-1px);
+    }
+
+    #registerButton:active:not(:disabled) {
+
+      transform: translateY(0);
+    }
+
+    #registerButton:focus-visible {
+
+      box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.85),
+        0 0 0 6px rgba(0, 51, 119, 0.35);
+    }
+
+    /* =========================================================
+       VERIFY BUTTON
+       ========================================================= */
+
+    #verifyButton {
+
+      min-height: 44px;
+
+      border-radius: 8px;
+
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       RESEND BUTTON
+       ========================================================= */
+
+    #resendButton {
+
+      color: var(--inoutx-primary);
+
+      font-size: 13px;
+
+      font-weight: 600;
+    }
+
+    #resendButton:disabled {
+
+      color: #8995A3;
+
+      opacity: 1;
+    }
+
+    /* =========================================================
+       MESSAGE
+       ========================================================= */
+
+    #registerMessage {
+
+      border-radius: 8px;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      border-width: 1px;
+    }
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .auth-footer {
+
+      margin-top: 22px;
+
+      padding-top: 18px;
+
+      border-top: 1px solid var(--inoutx-border-light);
+
+      color: var(--inoutx-muted);
+
+      font-size: 13px;
+
+      text-align: center;
+    }
+
+    .auth-footer a {
+
+      color: var(--inoutx-primary);
+
+      font-weight: 700;
+
+      text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+
+      color: var(--inoutx-primary-light);
+
+      text-decoration: underline;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 768px) {
+
+      .auth-card {
+        border-radius: 14px;
+      }
+
+      .auth-visual img {
+        height: 140px;
+      }
+
+      #registerForm .form-control,
+      #registerForm .form-select {
+
+        min-height: 47px;
+
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 576px) {
+
+      .auth-visual {
+        margin-bottom: 20px;
+      }
+
+      .auth-visual img {
+        height: 120px;
+      }
+
+      #registerForm .form-label {
+        font-size: 12px;
+      }
+
+      #registerButton {
+        min-height: 47px;
+      }
+    }
+  </style>
+</head>
+
+
+<body class="auth-body register-page">
+
+  <main class="auth-page">
+
+    <section class="auth-card">
+
+      <!-- =====================================================
+           BRAND
+           ====================================================== -->
+
+      <a class="auth-brand" href="index.html">
+
+        <span class="brand-icon">
+          <img src="../assets/images/logo.PNG" alt="INOUTX Project Logo" class="auth-brand-logo">
+        </span>
+
+        <span>
+
+          <strong>INOUTX</strong>
+
+          <small>
+            Create your INOUTX account.
+          </small>
+
+        </span>
+
+      </a>
+
+
+      <!-- =====================================================
+           VISUAL
+           ====================================================== -->
+
+      <div class="auth-visual">
+
+        <img
+          src="../assets/images/png/dasher-ui-bootstrap-5.jpg"
+          alt="INOUTX dashboard interface">
+
+      </div>
+
+
+      <!-- =====================================================
+           REGISTER FORM
+           ====================================================== -->
+
+      <form id="registerForm" novalidate>
+
+
+        <!-- FORM HEADER -->
+
+        <div class="mb-4">
+
+          <p class="eyebrow mb-1">
+            Secure Access
+          </p>
+
+          <h1 class="h3 mb-1">
+            Create your account
+          </h1>
+
+          <p class="text-muted mb-0">
+            Register to access the INOUTX campus management system.
+          </p>
+
+        </div>
+
+
+        <!-- ===================================================
+             NAME
+             ==================================================== -->
+
+        <div class="mb-3">
+
+          <label
+            class="form-label"
+            for="registerName">
+
+            Full name
+
+          </label>
+
+          <input
+            class="form-control"
+            id="registerName"
+            name="name"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            placeholder="Enter your full name"
+            required>
+
+          <div class="invalid-feedback">
+            Full name is required.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             PHONE
+             ==================================================== -->
+
+        <div class="mb-3">
+
+          <label
+            class="form-label"
+            for="registerPhone">
+
+            Phone number
+
+          </label>
+
+          <input
+            class="form-control"
+            id="registerPhone"
+            name="phone"
+            type="tel"
+            autocomplete="tel"
+            maxlength="20"
+            placeholder="Enter your phone number"
+            required>
+
+          <div class="invalid-feedback">
+            Phone number is required.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             ACCOUNT TYPE
+             ==================================================== -->
+
+        <div class="mb-3">
+
+          <label
+            class="form-label"
+            for="registerAccountType">
+
+            Account type
+
+          </label>
+
+          <select
+            class="form-select"
+            id="registerAccountType"
+            name="account_type"
+            required>
+
+            <option value="">
+              Select account type
+            </option>
+
+            <option value="student">
+              Student
+            </option>
+
+            <option value="principal">
+              Principal
+            </option>
+
+            <option value="executive_director">
+              Executive Director
+            </option>
+
+            <option value="hod">
+              HOD
+            </option>
+
+            <option value="hoc">
+              HOC
+            </option>
+
+            <option value="gate_watchman">
+              Gate Watchman
+            </option>
+
+            <option value="bus_incharge">
+              Bus Incharge
+            </option>
+
+          </select>
+
+          <div class="invalid-feedback">
+            Select an account type.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             EMAIL
+             ==================================================== -->
+
+        <div class="mb-3">
+
+          <label
+            class="form-label"
+            for="registerEmail">
+
+            Email address
+
+          </label>
+
+          <input
+            class="form-control"
+            id="registerEmail"
+            name="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            placeholder="name@example.com"
+            required>
+
+          <div class="invalid-feedback">
+            Enter a valid email.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             PASSWORD
+             ==================================================== -->
+
+        <div class="mb-3">
+
+          <label
+            class="form-label"
+            for="registerPassword">
+
+            Password
+
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              class="form-control"
+              id="registerPassword"
+              name="password"
+              type="password"
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Create a password"
+              required>
+
+            <button
+              type="button"
+              class="password-toggle"
+              id="togglePassword"
+              aria-label="Show password">
+
+              <i class="bi bi-eye" id="passwordIcon"></i>
+
+            </button>
+
+          </div>
+
+          <div class="invalid-feedback">
+            Password must be at least 6 characters.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             CONFIRM PASSWORD
+             ==================================================== -->
+
+        <div class="mb-4">
+
+          <label
+            class="form-label"
+            for="registerConfirmPassword">
+
+            Confirm password
+
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              class="form-control"
+              id="registerConfirmPassword"
+              name="confirm_password"
+              type="password"
+              minlength="6"
+              autocomplete="new-password"
+              placeholder="Re-enter your password"
+              required>
+
+            <button
+              type="button"
+              class="password-toggle"
+              id="toggleConfirmPassword"
+              aria-label="Show password">
+
+              <i
+                class="bi bi-eye"
+                id="confirmPasswordIcon">
+              </i>
+
+            </button>
+
+          </div>
+
+          <div class="invalid-feedback">
+            Passwords must match.
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             ERROR / SUCCESS MESSAGE
+             ==================================================== -->
+
+        <div
+          id="registerMessage"
+          class="alert d-none"
+          role="alert">
+        </div>
+
+
+        <!-- ===================================================
+             EMAIL VERIFICATION
+             ==================================================== -->
+
+        <div
+          id="verificationPanel"
+          class="mb-4 d-none">
+
+          <h2 class="h5 mb-2">
+            Verify Your Email
+          </h2>
+
+          <p class="text-muted mb-3">
+            We sent a 6-digit verification code to:
+          </p>
+
+          <p
+            id="verificationEmail"
+            class="fw-semibold mb-3">
+          </p>
+
+          <label
+            class="form-label"
+            for="verificationOtp">
+
+            Verification code
+
+          </label>
+
+          <input
+            class="form-control"
+            id="verificationOtp"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            maxlength="6"
+            autocomplete="one-time-code"
+            placeholder="Enter 6-digit code">
+
+          <button
+            id="verifyButton"
+            class="btn btn-success w-100 mt-3"
+            type="button">
+
+            Verify college email
+
+          </button>
+
+          <button
+            id="resendButton"
+            class="btn btn-link w-100 mt-2"
+            type="button"
+            disabled>
+
+            Resend Code
+
+            <span id="resendCountdown">
+              (60s)
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- ===================================================
+             CREATE ACCOUNT BUTTON
+             ==================================================== -->
+
+        <button
+          id="registerButton"
+          class="btn btn-primary w-100"
+          type="submit">
+
+          <i
+            class="bi bi-person-plus me-1"
+            aria-hidden="true">
+          </i>
+
+          <span id="registerButtonText">
+            Create Account
+          </span>
+
+        </button>
+
+      </form>
+
+
+      <!-- =====================================================
+           FOOTER
+           ====================================================== -->
+
+      <div class="auth-footer">
+
+        Already have an account?
+
+        <a href="login.html">
+          Sign in
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       BOOTSTRAP
+       ========================================================== -->
+
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+
+  <!-- =========================================================
+       REGISTER API
+       ========================================================== -->
+
+  <script>
+
+    const registerForm =
+      document.getElementById("registerForm");
+
+    const registerButton =
+      document.getElementById("registerButton");
+
+    const registerButtonText =
+      document.getElementById("registerButtonText");
+
+    const registerMessage =
+      document.getElementById("registerMessage");
+
+    const verificationPanel =
+      document.getElementById("verificationPanel");
+
+    const verificationOtp =
+      document.getElementById("verificationOtp");
+
+    const verificationEmail =
+      document.getElementById("verificationEmail");
+
+    const verifyButton =
+      document.getElementById("verifyButton");
+
+    const resendButton =
+      document.getElementById("resendButton");
+
+    const resendCountdown =
+      document.getElementById("resendCountdown");
+
+    let resendTimer = null;
+
+
+    /* =========================================================
+       PASSWORD VISIBILITY
+       ========================================================= */
+
+    const passwordInput =
+      document.getElementById("registerPassword");
+
+    const confirmPasswordInput =
+      document.getElementById("registerConfirmPassword");
+
+    const togglePassword =
+      document.getElementById("togglePassword");
+
+    const toggleConfirmPassword =
+      document.getElementById("toggleConfirmPassword");
+
+    const passwordIcon =
+      document.getElementById("passwordIcon");
+
+    const confirmPasswordIcon =
+      document.getElementById("confirmPasswordIcon");
+
+
+    togglePassword.addEventListener("click", function () {
+
+      const isPassword =
+        passwordInput.type === "password";
+
+      passwordInput.type =
+        isPassword ? "text" : "password";
+
+      passwordIcon.className =
+        isPassword
+          ? "bi bi-eye-slash"
+          : "bi bi-eye";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        isPassword
+          ? "Hide password"
+          : "Show password"
+      );
+
+    });
+
+
+    toggleConfirmPassword.addEventListener("click", function () {
+
+      const isPassword =
+        confirmPasswordInput.type === "password";
+
+      confirmPasswordInput.type =
+        isPassword ? "text" : "password";
+
+      confirmPasswordIcon.className =
+        isPassword
+          ? "bi bi-eye-slash"
+          : "bi bi-eye";
+
+      toggleConfirmPassword.setAttribute(
+        "aria-label",
+        isPassword
+          ? "Hide password"
+          : "Show password"
+      );
+
+    });
+
+
+    /* =========================================================
+       SHOW MESSAGE
+       ========================================================= */
+
+    function showMessage(message, type) {
+
+      registerMessage.className =
+        "alert alert-" + type;
+
+      registerMessage.textContent =
+        message;
+
+      registerMessage.classList.remove("d-none");
+
+    }
+
+
+    /* =========================================================
+       HIDE MESSAGE
+       ========================================================= */
+
+    function hideMessage() {
+
+      registerMessage.classList.add("d-none");
+
+      registerMessage.textContent = "";
+
+    }
+
+
+    /* =========================================================
+       RESEND COUNTDOWN
+       ========================================================= */
+
+    function startResendCountdown(seconds) {
+
+      if (resendTimer) {
+
+        clearInterval(resendTimer);
+
+      }
+
+      let remaining = seconds;
+
+      resendButton.disabled = true;
+
+      resendCountdown.textContent =
+        "(" + remaining + "s)";
+
+
+      resendTimer =
+        setInterval(function () {
+
+          remaining -= 1;
+
+          resendCountdown.textContent =
+            remaining > 0
+              ? "(" + remaining + "s)"
+              : "";
+
+
+          if (remaining <= 0) {
+
+            clearInterval(resendTimer);
+
+            resendTimer = null;
+
+            resendButton.disabled = false;
+
+          }
+
+        }, 1000);
+
+    }
+
+
+    /* =========================================================
+       REGISTER
+       ========================================================= */
+
+    registerForm.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+        hideMessage();
+
+
+        /* Browser validation */
+
+        if (!registerForm.checkValidity()) {
+
+          registerForm.classList.add(
+            "was-validated"
+          );
+
+          return;
+
+        }
+
+
+        /* Get form values */
+
+        const name =
+          document
+            .getElementById("registerName")
+            .value
+            .trim();
+
+
+        const email =
+          document
+            .getElementById("registerEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        const password =
+          document
+            .getElementById("registerPassword")
+            .value;
+
+
+        const confirmPassword =
+          document
+            .getElementById("registerConfirmPassword")
+            .value;
+
+
+        const phone =
+          document
+            .getElementById("registerPhone")
+            .value
+            .trim();
+
+
+        const accountType =
+          document
+            .getElementById("registerAccountType")
+            .value;
+
+
+        /* Password confirmation */
+
+        if (password !== confirmPassword) {
+
+          showMessage(
+            "Passwords do not match.",
+            "danger"
+          );
+
+          document
+            .getElementById(
+              "registerConfirmPassword"
+            )
+            .focus();
+
+          return;
+
+        }
+
+
+        /* Disable button */
+
+        registerButton.disabled = true;
+
+        registerButtonText.textContent =
+          "Creating Account...";
+
+
+        try {
+
+          /* Send registration request */
+
+          const response =
+            await fetch(
+              "/api/register",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                credentials: "include",
+
+                body: JSON.stringify({
+
+                  name: name,
+
+                  email: email,
+
+                  password: password,
+
+                  confirm_password:
+                    confirmPassword,
+
+                  phone: phone,
+
+                  account_type:
+                    accountType
+
+                })
+              }
+            );
+
+
+          /* Read response */
+
+          const data =
+            await response.json();
+
+
+          /* Registration failed */
+
+          if (
+            !response.ok ||
+            !data.success
+          ) {
+
+            showMessage(
+              data.error ||
+              data.message ||
+              "Unable to create the account.",
+              "danger"
+            );
+
+            return;
+
+          }
+
+
+          /* Registration successful */
+
+          showMessage(
+            "Verification code sent. Verify your college email to activate your account.",
+            "success"
+          );
+
+
+          /* Show verification */
+
+          verificationPanel
+            .classList
+            .remove("d-none");
+
+
+          registerButton
+            .classList
+            .add("d-none");
+
+
+          verificationEmail.textContent =
+            email;
+
+
+          verificationOtp.focus();
+
+
+          startResendCountdown(60);
+
+
+          /* ===================================================
+             VERIFY EMAIL
+             ==================================================== */
+
+          verifyButton.onclick =
+            async function () {
+
+              const otp =
+                verificationOtp
+                  .value
+                  .trim();
+
+
+              if (!/^\d{6}$/.test(otp)) {
+
+                showMessage(
+                  "Enter the 6-digit verification code.",
+                  "danger"
+                );
+
+                verificationOtp.focus();
+
+                return;
+
+              }
+
+
+              verifyButton.disabled = true;
+
+
+              try {
+
+                const verifyResponse =
+                  await fetch(
+                    "/api/verify-email",
+                    {
+                      method: "POST",
+
+                      headers: {
+                        "Content-Type":
+                          "application/json"
+                      },
+
+                      credentials: "include",
+
+                      body: JSON.stringify({
+                        email: email,
+                        otp: otp
+                      })
+                    }
+                  );
+
+
+                const verifyData =
+                  await verifyResponse.json();
+
+
+                if (
+                  !verifyResponse.ok ||
+                  !verifyData.success
+                ) {
+
+                  showMessage(
+                    verifyData.error ||
+                    "Verification failed.",
+                    "danger"
+                  );
+
+                  return;
+
+                }
+
+
+                showMessage(
+                  verifyData.message,
+                  "success"
+                );
+
+
+                setTimeout(
+                  function () {
+
+                    window.location.href =
+                      "login.html";
+
+                  },
+                  1000
+                );
+
+              } catch (error) {
+
+                console.error(
+                  "Email verification error:",
+                  error
+                );
+
+                showMessage(
+                  "Cannot connect to the INOUTX server.",
+                  "danger"
+                );
+
+              } finally {
+
+                verifyButton.disabled = false;
+
+              }
+
+            };
+
+
+          /* ===================================================
+             RESEND OTP
+             ==================================================== */
+
+          resendButton.onclick =
+            async function () {
+
+              resendButton.disabled = true;
+
+
+              try {
+
+                const resendResponse =
+                  await fetch(
+                    "/api/resend-otp",
+                    {
+                      method: "POST",
+
+                      headers: {
+                        "Content-Type":
+                          "application/json"
+                      },
+
+                      credentials: "include",
+
+                      body: JSON.stringify({
+                        email: email
+                      })
+                    }
+                  );
+
+
+                const resendData =
+                  await resendResponse.json();
+
+
+                if (
+                  !resendResponse.ok ||
+                  !resendData.success
+                ) {
+
+                  showMessage(
+                    resendData.error ||
+                    "We couldn't send the verification code. Please try again.",
+                    "danger"
+                  );
+
+                  resendButton.disabled = false;
+
+                  return;
+
+                }
+
+
+                showMessage(
+                  resendData.message,
+                  "success"
+                );
+
+
+                verificationOtp.value = "";
+
+
+                startResendCountdown(60);
+
+
+              } catch (error) {
+
+                console.error(
+                  "Resend OTP error:",
+                  error
+                );
+
+                showMessage(
+                  "We couldn't send the verification code. Please try again.",
+                  "danger"
+                );
+
+                resendButton.disabled = false;
+
+              }
+
+            };
+
+
+          /* Clear password fields */
+
+          document
+            .getElementById("registerPassword")
+            .value = "";
+
+          document
+            .getElementById("registerConfirmPassword")
+            .value = "";
+
+
+        } catch (error) {
+
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          showMessage(
+            "Cannot connect to the INOUTX server. Make sure Flask is running.",
+            "danger"
+          );
+
+
+        } finally {
+
+          registerButton.disabled = false;
+
+          registerButtonText.textContent =
+            "Create Account";
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+
+</html>

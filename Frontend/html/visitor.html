@@ -1,0 +1,3167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="INOUTX Visitor Management">
+    <title>Visitors | INOUTX</title>
+
+    <link rel="icon" type="image/png" href="pic.PNG">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <style>
+
+        /* =========================================================
+           MASTER INOUTX DESIGN SYSTEM
+           Matches vehicle.html
+        ========================================================= */
+
+        :root {
+            --primary: #003377;
+            --primary-dark: #002451;
+            --primary-light: #004A9F;
+            --light-blue: #EAF2FA;
+            --background: #F4F7FA;
+            --surface: #FFFFFF;
+            --text: #17202A;
+            --secondary-text: #5B6775;
+            --border: #D5DCE5;
+            --light-border: #E7ECF1;
+            --success: #198754;
+            --warning: #F0AD00;
+            --danger: #C62828;
+            --info: #0D6EFD;
+        }
+
+        body,
+        .admin-shell,
+        .admin-content,
+        .visitor-content {
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =========================================================
+           VISITOR CONTENT
+        ========================================================= */
+
+        .visitor-content {
+            padding: 0 !important;
+            background: var(--background);
+        }
+
+        .visitor-content > .container-fluid {
+            padding-top: 18px !important;
+        }
+
+
+        /* =========================================================
+           TOP SEARCH + REGISTER
+        ========================================================= */
+
+        .visitor-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            margin: 0 0 18px;
+        }
+
+        .visitor-search {
+            position: relative;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .visitor-search .form-control {
+            width: 100%;
+            height: 44px;
+            padding: 0 16px 0 43px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+        }
+
+        .visitor-search .form-control::placeholder {
+            color: var(--secondary-text);
+            opacity: 1;
+        }
+
+        .visitor-search .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 51, 119, 0.10);
+        }
+
+        .visitor-search > i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .visitor-toolbar .register-visitor-btn {
+            height: 44px;
+            min-width: 220px;
+            padding: 0 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+
+        /* =========================================================
+           PANEL
+        ========================================================= */
+
+        .visitor-record-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            box-shadow: 0 2px 5px rgba(15, 23, 42, .05);
+            overflow: hidden;
+        }
+
+        .visitor-record-panel .panel-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .visitor-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--surface);
+        }
+
+        .visitor-table {
+            width: 100%;
+            min-width: 1050px;
+            table-layout: fixed;
+            margin-bottom: 0 !important;
+            border-collapse: collapse;
+        }
+        .visitor-table thead th {
+    background-color: #003377 !important;
+    color: #FFFFFF !important;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 14px 16px;
+    border-color: #003377;
+}
+
+        .visitor-table th,
+        .visitor-table td {
+            vertical-align: middle !important;
+            text-align: center !important;
+            padding: 14px 16px;
+        }
+
+        .visitor-table th {
+            background: var(--light-blue);
+            color: var(--secondary-text);
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            white-space: nowrap;
+        }
+
+        .visitor-table td {
+            background: var(--surface);
+            color: var(--text);
+            border-bottom: 1px solid var(--light-border);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .visitor-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .visitor-table tbody tr:hover td {
+            background: var(--background);
+        }
+
+        /* Column widths */
+
+        .visitor-table th:nth-child(1),
+        .visitor-table td:nth-child(1) {
+            width: 6%;
+        }
+
+        .visitor-table th:nth-child(2),
+        .visitor-table td:nth-child(2) {
+            width: 15%;
+        }
+
+        .visitor-table th:nth-child(3),
+        .visitor-table td:nth-child(3) {
+            width: 13%;
+        }
+
+        .visitor-table th:nth-child(4),
+        .visitor-table td:nth-child(4) {
+            width: 11%;
+        }
+
+        .visitor-table th:nth-child(5),
+        .visitor-table td:nth-child(5) {
+            width: 12%;
+        }
+
+        .visitor-table th:nth-child(6),
+        .visitor-table td:nth-child(6) {
+            width: 15%;
+        }
+
+        .visitor-table th:nth-child(7),
+        .visitor-table td:nth-child(7) {
+            width: 10%;
+        }
+
+        .visitor-table th:nth-child(8),
+        .visitor-table td:nth-child(8) {
+            width: 10%;
+        }
+
+        .visitor-table th:nth-child(9),
+        .visitor-table td:nth-child(9) {
+            width: 8%;
+        }
+
+        .visitor-plate {
+            font-weight: 700;
+            letter-spacing: .5px;
+            color: var(--primary);
+        }
+
+        .visitor-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .visitor-empty {
+            text-align: center !important;
+            padding: 45px 20px !important;
+            color: var(--secondary-text) !important;
+        }
+
+        .visitor-empty i {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 38px;
+        }
+
+
+        /* =========================================================
+           STATUS BADGES
+        ========================================================= */
+
+        .visitor-status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .visitor-status-badge i {
+            font-size: 7px;
+        }
+
+        .status-inside {
+            background: #EAF6EF;
+            color: var(--success);
+        }
+
+        .status-expected {
+            background: #FFF7DD;
+            color: var(--warning);
+        }
+
+        .status-exited {
+            background: #E7ECF1;
+            color: var(--secondary-text);
+        }
+
+
+        /* =========================================================
+           NAVBAR PAGE HEADING
+        ========================================================= */
+
+        .admin-navbar .navbar-page-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            margin-left: 18px;
+            margin-right: 18px;
+        }
+
+        .admin-navbar .navbar-page-heading .page-icon {
+            flex: 0 0 auto;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-navbar .navbar-page-heading .eyebrow {
+            margin-bottom: .1rem !important;
+            font-size: 10px;
+            line-height: 1.1;
+        }
+
+        .admin-navbar .navbar-page-heading h1 {
+            margin-bottom: 0 !important;
+            font-size: 18px;
+            line-height: 1.15;
+        }
+
+        .admin-navbar .navbar-page-heading p.text-muted {
+            margin-top: 2px;
+            font-size: 11px;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: min(430px, 38vw);
+        }
+
+
+        /* =========================================================
+           LIVE TIME
+        ========================================================= */
+
+        .live-time {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .live-time i {
+            font-size: 16px;
+        }
+
+
+        /* =========================================================
+           NOTIFICATIONS
+        ========================================================= */
+
+        .notification-button {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            background: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 19px;
+            cursor: pointer;
+        }
+
+        .notification-button:hover {
+            background: var(--background);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 4px;
+            border-radius: 20px;
+            background: var(--danger);
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-menu {
+            width: 330px;
+            max-width: calc(100vw - 30px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .notification-header {
+            padding: 13px 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notification-header strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .notification-header small {
+            color: var(--secondary-text);
+            font-size: 11px;
+        }
+
+        .notification-empty {
+            padding: 25px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--secondary-text);
+        }
+
+        .notification-empty i {
+            font-size: 25px;
+            color: var(--success);
+        }
+
+        .notification-empty strong {
+            display: block;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .notification-empty small {
+            font-size: 11px;
+        }
+
+        .notification-item {
+            background: var(--surface);
+        }
+
+
+        /* =========================================================
+           REGISTER VISITOR MODAL
+        ========================================================= */
+
+        .visitor-form-container {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2050;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.62);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .visitor-form-container.show {
+            display: flex;
+        }
+
+        .visitor-form-container > .panel {
+            width: min(900px, 100%);
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
+            margin: 0;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 70px rgba(0, 51, 119, 0.28);
+            animation: visitorModalIn .18s ease-out;
+        }
+
+        @keyframes visitorModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .visitor-form-container .panel-header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: 18px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .visitor-form-container .p-3 {
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            padding: 20px !important;
+        }
+
+        .visitor-form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .visitor-form-close {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--secondary-text);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .visitor-form-close:hover {
+            background: var(--background);
+            color: var(--danger);
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .visitor-form .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .visitor-form .form-control,
+        .visitor-form .form-select {
+            min-height: 42px;
+            border-radius: 8px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .visitor-form .form-control::placeholder {
+            color: var(--secondary-text);
+            opacity: 1;
+        }
+
+        .visitor-form .form-control:focus,
+        .visitor-form .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 .2rem rgba(0, 51, 119, .12);
+        }
+
+        .visitor-form textarea.form-control {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .required-star {
+            color: var(--danger);
+        }
+
+        .visitor-form .form-text {
+            color: var(--secondary-text);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .visitor-form .input-group-text {
+            border-color: var(--border);
+            background: var(--light-blue);
+            color: var(--secondary-text);
+        }
+
+        .detect-button {
+            min-height: 42px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           CAMERA / OCR
+           Preserved for existing camera/OCR functionality
+        ========================================================= */
+
+        .visitor-camera-container {
+            position: relative;
+            width: 100%;
+            min-height: 390px;
+            overflow: hidden;
+            background: var(--text);
+            border-radius: 9px;
+            border: 1px solid var(--border);
+        }
+
+        .visitor-camera-container img {
+            width: 100%;
+            height: 390px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .visitor-camera-status {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, .75);
+            color: #F0AD00;
+            font-size: 13px;
+            z-index: 5;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .camera-corner {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border-color: #00FF88;
+            border-style: solid;
+        }
+
+        .camera-corner.top-left {
+            top: 20px;
+            left: 20px;
+            border-width: 3px 0 0 3px;
+        }
+
+        .camera-corner.top-right {
+            top: 20px;
+            right: 20px;
+            border-width: 3px 3px 0 0;
+        }
+
+        .camera-corner.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-width: 0 0 3px 3px;
+        }
+
+        .camera-corner.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-width: 0 3px 3px 0;
+        }
+
+        .ocr-result-box {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--background);
+        }
+
+        .ocr-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 5px;
+        }
+
+        .ocr-number {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--primary-light);
+        }
+
+        .ocr-confidence {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-top: 3px;
+        }
+
+        .ocr-status {
+            min-height: 20px;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .visitor-form .btn-primary,
+        .visitor-toolbar .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .visitor-form .btn-primary:hover,
+        .visitor-toolbar .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 992px) {
+
+            .visitor-content > .container-fluid {
+                padding-top: 16px !important;
+            }
+
+            .admin-navbar .navbar-page-heading {
+                margin-left: 12px;
+                margin-right: 10px;
+                gap: 9px;
+            }
+
+            .admin-navbar .navbar-page-heading p.text-muted {
+                display: none;
+            }
+
+            .admin-navbar .navbar-page-heading h1 {
+                font-size: 16px;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+
+            .visitor-content > .container-fluid {
+                padding-top: 14px !important;
+            }
+
+            .visitor-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .visitor-toolbar .register-visitor-btn {
+                width: 100%;
+            }
+
+            .visitor-form-container {
+                padding: 10px;
+            }
+
+            .visitor-form-container > .panel {
+                max-height: calc(100vh - 20px);
+                border-radius: 12px;
+            }
+
+            .visitor-form-container .p-3 {
+                max-height: calc(100vh - 145px);
+            }
+
+            .visitor-form-header .text-muted {
+                display: none;
+            }
+        }
+
+
+        @media (max-width: 576px) {
+
+            .visitor-content > .container-fluid {
+                padding-top: 12px !important;
+            }
+
+            .admin-navbar .navbar-page-heading {
+                margin-left: 8px;
+            }
+
+            .admin-navbar .navbar-page-heading .page-icon,
+            .admin-navbar .navbar-page-heading .eyebrow {
+                display: none;
+            }
+
+            .admin-navbar .navbar-page-heading h1 {
+                font-size: 15px;
+            }
+
+            .visitor-toolbar .register-visitor-btn {
+                height: 42px;
+                min-width: 0;
+            }
+
+            .visitor-search .form-control {
+                height: 42px;
+            }
+
+            .visitor-form-container .p-3 {
+                padding: 14px !important;
+            }
+
+            .visitor-form-container .d-flex.gap-2 {
+                flex-direction: column;
+            }
+
+            .visitor-form-container .d-flex.gap-2 .btn {
+                width: 100%;
+            }
+
+            .live-time {
+                font-size: 12px;
+                gap: 4px;
+            }
+
+            .notification-menu {
+                width: 290px;
+            }
+
+            .visitor-camera-container,
+            .visitor-camera-container img {
+                min-height: 280px;
+                height: 280px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="admin-shell">
+
+    <!-- SIDEBAR BACKDROP -->
+
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+        aria-label="Main navigation">
+
+        <div class="sidebar-header">
+
+            <a
+                class="brand-mark"
+                href="index.html"
+                aria-label="INOUTX dashboard">
+
+                <span class="brand-icon">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                </span>
+
+                <span class="brand-copy">
+
+                    <span class="brand-title">
+                        INOUTX
+                    </span>
+
+                    <span class="brand-subtitle">
+                        Admin Dashboard
+                    </span>
+
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a
+                class="nav-link"
+                href="index.html">
+
+                <span class="nav-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="nav-link"
+                href="vehicle.html">
+
+                <span class="nav-icon">
+                    <i class="bi bi-bus-front"></i>
+                </span>
+
+                <span class="nav-text">
+                    Vehicle Movements
+                </span>
+
+            </a>
+
+
+            <a
+                class="nav-link"
+                href="staff-vehicles.html">
+
+                <span class="nav-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </span>
+
+                <span class="nav-text">
+                    Staff Vehicles
+                </span>
+
+            </a>
+
+
+            <a
+                class="nav-link active"
+                href="visitor.html"
+                aria-current="page">
+
+                <span class="nav-icon">
+                    <i class="bi bi-people-fill"></i>
+                </span>
+
+                <span class="nav-text">
+                    Visitor Vehicles
+                </span>
+
+            </a>
+
+
+            <a
+                class="nav-link"
+                href="download.html">
+
+                <span class="nav-icon">
+                    <i class="bi bi-download"></i>
+                </span>
+
+                <span class="nav-text">
+                    Download Data
+                </span>
+
+            </a>
+
+
+            <a
+                class="nav-link"
+                href="profile.html">
+
+                <span class="nav-icon">
+                    <i class="bi bi-person-badge"></i>
+                </span>
+
+                <span class="nav-text">
+                    Profile
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <div class="admin-main">
+
+
+        <!-- =================================================
+             NAVBAR
+        ================================================== -->
+
+        <nav class="navbar admin-navbar navbar-expand bg-white">
+
+            <div class="container-fluid px-3 px-lg-4">
+
+                <button
+                    class="sidebar-toggle"
+                    type="button"
+                    data-sidebar-toggle
+                    aria-controls="adminSidebar"
+                    aria-expanded="true"
+                    aria-label="Toggle sidebar">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                <!-- PAGE HEADING -->
+
+                <div class="page-heading-copy navbar-page-heading">
+
+                    <span class="page-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </span>
+
+                    <div>
+
+                        <p class="eyebrow mb-1">
+                            Management
+                        </p>
+
+                        <h1 class="h3 mb-1">
+                            Visitor Management
+                        </h1>
+
+                        <p class="text-muted mb-0">
+                            Visitor registration, vehicle detection, and campus entry tracking
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NAVBAR ACTIONS -->
+
+                <div class="navbar-actions ms-auto">
+
+                    <div class="live-time">
+
+                        <i class="bi bi-clock"></i>
+
+                        <span id="live-time">
+                            --:--:--
+                        </span>
+
+                    </div>
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <div class="dropdown">
+
+                        <button
+                            class="notification-button"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="Notifications">
+
+                            <i class="bi bi-bell"></i>
+
+                            <span
+                                id="notification-badge"
+                                class="notification-badge"
+                                style="display:none;">
+
+                                0
+
+                            </span>
+
+                        </button>
+
+
+                        <div class="dropdown-menu dropdown-menu-end notification-menu">
+
+                            <div class="notification-header">
+
+                                <div>
+
+                                    <strong>
+                                        Notifications
+                                    </strong>
+
+                                    <small id="notification-count">
+                                        No new notifications
+                                    </small>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="clear-notifications"
+                                    class="btn btn-sm btn-link">
+
+                                    Clear
+
+                                </button>
+
+                            </div>
+
+
+                            <div id="notification-list">
+
+                                <div
+                                    id="notification-empty"
+                                    class="notification-empty">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    <div>
+
+                                        <strong>
+                                            No new notifications
+                                        </strong>
+
+                                        <small>
+                                            You're all caught up.
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROFILE -->
+
+                    <div class="dropdown">
+
+                        <button
+                            class="profile-button dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                            <span
+                                class="avatar-img avatar-sm profile-avatar"
+                                id="currentUserInitials"></span>
+
+                            <span class="profile-user-copy">
+
+                                <span id="currentUserName">
+                                    Loading...
+                                </span>
+
+                                <small id="currentUserRole"></small>
+
+                            </span>
+
+                        </button>
+
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="profile.html">
+
+                                    <i class="bi bi-person me-2"></i>
+
+                                    Profile
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="login.html">
+
+                                    <i class="bi bi-box-arrow-right me-2"></i>
+
+                                    Sign out
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <main class="visitor-content">
+
+            <div class="container-fluid px-3 px-lg-4">
+
+
+                <!-- SEARCH + REGISTER -->
+
+                <section>
+
+                    <div class="visitor-toolbar">
+
+                        <div class="visitor-search">
+
+                            <i
+                                class="bi bi-search"
+                                aria-hidden="true">
+                            </i>
+
+                            <input
+                                type="search"
+                                id="visitor-search"
+                                class="form-control"
+                                placeholder="Search Visitor / Vehicle"
+                                aria-label="Search Visitor or Vehicle">
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="open-visitor-form"
+                            class="btn btn-primary register-visitor-btn"
+                            aria-haspopup="dialog"
+                            aria-expanded="false">
+
+                            <i class="bi bi-plus-lg"></i>
+
+                            <span>
+                                Register Visitor
+                            </span>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         REGISTER VISITOR MODAL
+                    ================================================== -->
+
+                    <div
+                        id="visitor-form-container"
+                        class="visitor-form-container"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="visitor-modal-title">
+
+                        <div class="panel">
+
+
+                            <!-- MODAL HEADER -->
+
+                            <div class="panel-header">
+
+                                <div class="visitor-form-header">
+
+                                    <div>
+
+                                        <h2
+                                            id="visitor-modal-title"
+                                            class="h5 mb-1 section-title">
+
+                                            <i class="bi bi-person-plus me-1"></i>
+
+                                            Register Visitor
+
+                                        </h2>
+
+                                        <p class="text-muted mb-0">
+                                            Enter visitor information
+                                        </p>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        id="close-visitor-form"
+                                        class="visitor-form-close"
+                                        aria-label="Close visitor registration">
+
+                                        <i class="bi bi-x-lg"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- MODAL BODY -->
+
+                            <div class="p-3">
+
+                                <form
+                                    id="visitor-registration-form"
+                                    class="visitor-form"
+                                    novalidate>
+
+
+                                    <!-- VEHICLE NUMBER -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="vehicle-number"
+                                            class="form-label">
+
+                                            Vehicle Number
+
+                                            <span class="required-star">
+                                                *
+                                            </span>
+
+                                        </label>
+
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+
+                                                <i class="bi bi-car-front"></i>
+
+                                            </span>
+
+                                            <input
+                                                type="text"
+                                                id="vehicle-number"
+                                                name="vehicle_number"
+                                                class="form-control"
+                                                placeholder="TN 45 AB 1234"
+                                                autocomplete="off"
+                                                required>
+
+                                        </div>
+
+
+                                        <div class="form-text">
+                                            Automatically filled from OCR or enter manually.
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- VISITOR NAME -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="visitor-name"
+                                            class="form-label">
+
+                                            Visitor Name
+
+                                            <span class="required-star">
+                                                *
+                                            </span>
+
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="visitor-name"
+                                            name="visitor_name"
+                                            class="form-control"
+                                            placeholder="Enter visitor name"
+                                            required>
+
+                                    </div>
+
+
+                                    <!-- PHONE -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="visitor-phone"
+                                            class="form-label">
+
+                                            Phone Number
+
+                                            <span class="required-star">
+                                                *
+                                            </span>
+
+                                        </label>
+
+                                        <input
+                                            type="tel"
+                                            id="visitor-phone"
+                                            name="phone"
+                                            class="form-control"
+                                            placeholder="Enter phone number"
+                                            maxlength="15"
+                                            required>
+
+                                    </div>
+
+
+                                    <!-- PURPOSE -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="visit-purpose"
+                                            class="form-label">
+
+                                            Purpose of Visit
+
+                                            <span class="required-star">
+                                                *
+                                            </span>
+
+                                        </label>
+
+                                        <select
+                                            id="visit-purpose"
+                                            name="purpose"
+                                            class="form-select"
+                                            required>
+
+                                            <option value="">
+                                                Select purpose
+                                            </option>
+
+                                            <option value="Meeting">
+                                                Meeting
+                                            </option>
+
+                                            <option value="Official Work">
+                                                Official Work
+                                            </option>
+
+                                            <option value="Admission">
+                                                Admission
+                                            </option>
+
+                                            <option value="Parent Visit">
+                                                Parent Visit
+                                            </option>
+
+                                            <option value="Delivery">
+                                                Delivery
+                                            </option>
+
+                                            <option value="Maintenance">
+                                                Maintenance
+                                            </option>
+
+                                            <option value="Interview">
+                                                Interview
+                                            </option>
+
+                                            <option value="Other">
+                                                Other
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- PERSON TO VISIT -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="person-to-visit"
+                                            class="form-label">
+
+                                            Person to Visit
+
+                                            <span class="required-star">
+                                                *
+                                            </span>
+
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="person-to-visit"
+                                            name="person_to_visit"
+                                            class="form-control"
+                                            placeholder="Faculty / Staff / Student name"
+                                            required>
+
+                                    </div>
+
+
+                                    <!-- NUMBER OF VISITORS -->
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="number-of-visitors"
+                                            class="form-label">
+
+                                            Number of Visitors
+
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            id="number-of-visitors"
+                                            name="number_of_visitors"
+                                            class="form-control"
+                                            value="1"
+                                            min="1"
+                                            max="50">
+
+                                    </div>
+
+
+                                    <!-- DATE + TIME -->
+
+                                    <div class="row g-3">
+
+                                        <div class="col-md-6">
+
+                                            <label
+                                                for="visit-date"
+                                                class="form-label">
+
+                                                Visit Date
+
+                                            </label>
+
+                                            <input
+                                                type="date"
+                                                id="visit-date"
+                                                name="visit_date"
+                                                class="form-control">
+
+                                        </div>
+
+
+                                        <div class="col-md-6">
+
+                                            <label
+                                                for="entry-time"
+                                                class="form-label">
+
+                                                Entry Time
+
+                                            </label>
+
+                                            <input
+                                                type="time"
+                                                id="entry-time"
+                                                name="entry_time"
+                                                class="form-control">
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- STATUS -->
+
+                                    <div
+                                        id="registration-status"
+                                        class="alert d-none mt-3"
+                                        role="alert">
+                                    </div>
+
+
+                                    <!-- BUTTONS -->
+
+                                    <div class="d-flex gap-2 flex-wrap mt-3">
+
+                                        <button
+                                            type="submit"
+                                            id="register-visitor"
+                                            class="btn btn-primary">
+
+                                            <i class="bi bi-person-check me-1"></i>
+
+                                            Register Visitor
+
+                                        </button>
+
+
+                                        <button
+                                            type="reset"
+                                            id="reset-visitor-form"
+                                            class="btn btn-outline-secondary">
+
+                                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                                            Reset
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     VISITOR RECORDS
+                ================================================== -->
+
+                <section class="mt-3">
+
+                    <div class="visitor-record-panel">
+
+
+                        <!-- PANEL HEADER -->
+
+                        <div class="panel-header">
+
+                            <div>
+
+                                <h2 class="h5 mb-1 section-title">
+
+                                    <i
+                                        class="bi bi-list-check me-1"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    <span>
+                                        Visitor Records
+                                    </span>
+
+                                </h2>
+
+                                <p class="text-muted mb-0">
+                                    Registered visitors and current campus status
+                                </p>
+
+                            </div>
+
+
+                            <div class="d-flex gap-2 align-items-center flex-wrap">
+
+                                <button
+                                    type="button"
+                                    id="refresh-visitors"
+                                    class="btn btn-outline-secondary btn-sm">
+
+                                    <i class="bi bi-arrow-clockwise"></i>
+
+                                    Refresh
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TABLE -->
+
+                        <div class="visitor-table-wrapper">
+
+                            <table
+                                class="table mb-0 visitor-table"
+                                id="visitorTable">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>#</th>
+
+                                        <th>
+                                            Visitor
+                                        </th>
+
+                                        <th>
+                                            Vehicle
+                                        </th>
+
+                                        <th>
+                                            Phone
+                                        </th>
+
+                                        <th>
+                                            Purpose
+                                        </th>
+
+                                        <th>
+                                            Person to Visit
+                                        </th>
+
+                                        <th>
+                                            Entry
+                                        </th>
+
+                                        <th>
+                                            Expected Exit
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody id="visitor-table-body">
+
+                                    <tr>
+
+                                        <td
+                                            colspan="9"
+                                            class="visitor-empty">
+
+                                            <i class="bi bi-people"></i>
+
+                                            <strong>
+                                                No visitor records
+                                            </strong>
+
+                                            <div>
+                                                Registered visitors will appear here.
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =========================================================
+       API
+    ========================================================= */
+
+    const API_BASE = "http://127.0.0.1:5000";
+
+
+    /* =========================================================
+       LIVE CLOCK
+    ========================================================= */
+
+    function updateLiveTime() {
+
+        const clock =
+            document.getElementById("live-time");
+
+        if (!clock) return;
+
+        const now = new Date();
+
+        clock.textContent =
+            `${String(now.getHours()).padStart(2, "0")}:` +
+            `${String(now.getMinutes()).padStart(2, "0")}:` +
+            `${String(now.getSeconds()).padStart(2, "0")}`;
+    }
+
+
+    updateLiveTime();
+
+    setInterval(updateLiveTime, 1000);
+
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const visitorForm =
+        document.getElementById(
+            "visitor-registration-form"
+        );
+
+    const vehicleNumber =
+        document.getElementById(
+            "vehicle-number"
+        );
+
+    const visitorName =
+        document.getElementById(
+            "visitor-name"
+        );
+
+    const visitorPhone =
+        document.getElementById(
+            "visitor-phone"
+        );
+
+    const visitPurpose =
+        document.getElementById(
+            "visit-purpose"
+        );
+
+    const personToVisit =
+        document.getElementById(
+            "person-to-visit"
+        );
+
+    const numberOfVisitors =
+        document.getElementById(
+            "number-of-visitors"
+        );
+
+    const visitDate =
+        document.getElementById(
+            "visit-date"
+        );
+
+    const entryTime =
+        document.getElementById(
+            "entry-time"
+        );
+
+    const registrationStatus =
+        document.getElementById(
+            "registration-status"
+        );
+
+    const visitorTableBody =
+        document.getElementById(
+            "visitor-table-body"
+        );
+
+    const visitorSearch =
+        document.getElementById(
+            "visitor-search"
+        );
+
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+
+    const openVisitorForm =
+        document.getElementById(
+            "open-visitor-form"
+        );
+
+    const closeVisitorForm =
+        document.getElementById(
+            "close-visitor-form"
+        );
+
+    const visitorFormContainer =
+        document.getElementById(
+            "visitor-form-container"
+        );
+
+
+    function openVisitorRegistrationForm() {
+
+        if (!visitorFormContainer) return;
+
+        visitorFormContainer.classList.add("show");
+
+        document.body.classList.add(
+            "visitor-modal-open"
+        );
+
+        if (openVisitorForm) {
+
+            openVisitorForm.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+
+        setDefaultDateTime();
+
+        setTimeout(function () {
+
+            if (vehicleNumber) {
+                vehicleNumber.focus();
+            }
+
+        }, 50);
+    }
+
+
+    function closeVisitorRegistrationForm() {
+
+        if (!visitorFormContainer) return;
+
+        visitorFormContainer.classList.remove("show");
+
+        document.body.classList.remove(
+            "visitor-modal-open"
+        );
+
+        if (openVisitorForm) {
+
+            openVisitorForm.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+    }
+
+
+    if (openVisitorForm) {
+
+        openVisitorForm.addEventListener(
+            "click",
+            openVisitorRegistrationForm
+        );
+    }
+
+
+    if (closeVisitorForm) {
+
+        closeVisitorForm.addEventListener(
+            "click",
+            closeVisitorRegistrationForm
+        );
+    }
+
+
+    if (visitorFormContainer) {
+
+        visitorFormContainer.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    visitorFormContainer
+                ) {
+
+                    closeVisitorRegistrationForm();
+
+                }
+
+            }
+        );
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "Escape" &&
+                visitorFormContainer &&
+                visitorFormContainer.classList.contains("show")
+            ) {
+
+                closeVisitorRegistrationForm();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       DEFAULT DATE / TIME
+    ========================================================= */
+
+    function setDefaultDateTime() {
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(now.getMonth() + 1)
+                .padStart(2, "0");
+
+        const day =
+            String(now.getDate())
+                .padStart(2, "0");
+
+        const hours =
+            String(now.getHours())
+                .padStart(2, "0");
+
+        const minutes =
+            String(now.getMinutes())
+                .padStart(2, "0");
+
+
+        if (visitDate) {
+
+            visitDate.value =
+                `${year}-${month}-${day}`;
+
+        }
+
+
+        if (entryTime) {
+
+            entryTime.value =
+                `${hours}:${minutes}`;
+
+        }
+
+    }
+
+
+    setDefaultDateTime();
+
+
+    /* =========================================================
+       VISITOR DATA
+    ========================================================= */
+
+    let visitorRecords = [];
+
+
+    /* =========================================================
+       REGISTER VISITOR
+    ========================================================= */
+
+    if (visitorForm) {
+
+        visitorForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                if (!visitorForm.checkValidity()) {
+
+                    visitorForm.classList.add(
+                        "was-validated"
+                    );
+
+                    return;
+
+                }
+
+
+                const visitorData = {
+
+                    vehicle_number:
+                        vehicleNumber
+                            ? vehicleNumber.value
+                                .trim()
+                                .toUpperCase()
+                            : "",
+
+                    visitor_name:
+                        visitorName
+                            ? visitorName.value.trim()
+                            : "",
+
+                    phone:
+                        visitorPhone
+                            ? visitorPhone.value.trim()
+                            : "",
+
+                    purpose:
+                        visitPurpose
+                            ? visitPurpose.value
+                            : "",
+
+                    person_to_visit:
+                        personToVisit
+                            ? personToVisit.value.trim()
+                            : "",
+
+                    department: "",
+
+                    number_of_visitors:
+                        numberOfVisitors
+                            ? Number(
+                                numberOfVisitors.value || 1
+                            )
+                            : 1,
+
+                    visit_date:
+                        visitDate
+                            ? visitDate.value
+                            : "",
+
+                    entry_time:
+                        entryTime
+                            ? entryTime.value
+                            : "",
+
+                    expected_exit_time: "",
+
+                    remarks: "",
+
+                    status: "Inside"
+
+                };
+
+
+                if (registrationStatus) {
+
+                    registrationStatus.className =
+                        "alert alert-info mt-3";
+
+                    registrationStatus.textContent =
+                        "Registering visitor...";
+
+                }
+
+
+                const registerButton =
+                    document.getElementById(
+                        "register-visitor"
+                    );
+
+
+                if (registerButton) {
+
+                    registerButton.disabled = true;
+
+                    registerButton.innerHTML = `
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                        Registering...
+                    `;
+
+                }
+
+
+                try {
+
+                    console.log(
+                        "Sending visitor data:",
+                        visitorData
+                    );
+
+
+                    const response =
+                        await fetch(
+                            `${API_BASE}/api/visitors/register`,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        visitorData
+                                    )
+                            }
+                        );
+
+
+                    const contentType =
+                        response.headers.get(
+                            "content-type"
+                        ) || "";
+
+
+                    let result;
+
+
+                    if (
+                        contentType.includes(
+                            "application/json"
+                        )
+                    ) {
+
+                        result =
+                            await response.json();
+
+                    } else {
+
+                        const text =
+                            await response.text();
+
+                        console.error(
+                            "Non-JSON Flask response:",
+                            text
+                        );
+
+                        throw new Error(
+                            `Server returned HTTP ${response.status}. Check Flask API.`
+                        );
+
+                    }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.message ||
+                            result.error ||
+                            "Visitor registration failed"
+                        );
+
+                    }
+
+
+                    if (registrationStatus) {
+
+                        registrationStatus.className =
+                            "alert alert-success mt-3";
+
+                        registrationStatus.textContent =
+                            "Visitor registered successfully!";
+
+                    }
+
+
+                    console.log(
+                        "Visitor saved successfully:",
+                        result
+                    );
+
+
+                    await loadVisitors();
+
+
+                    visitorForm.reset();
+
+                    visitorForm.classList.remove(
+                        "was-validated"
+                    );
+
+                    setDefaultDateTime();
+
+
+                    setTimeout(
+                        function () {
+
+                            closeVisitorRegistrationForm();
+
+
+                            if (registrationStatus) {
+
+                                registrationStatus.className =
+                                    "alert d-none";
+
+                                registrationStatus.textContent =
+                                    "";
+
+                            }
+
+                        },
+                        700
+                    );
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        "Visitor registration error:",
+                        error
+                    );
+
+
+                    if (registrationStatus) {
+
+                        registrationStatus.className =
+                            "alert alert-danger mt-3";
+
+                        registrationStatus.textContent =
+                            error.message ||
+                            "Unable to register visitor.";
+
+                    }
+
+                }
+
+
+                finally {
+
+                    if (registerButton) {
+
+                        registerButton.disabled = false;
+
+                        registerButton.innerHTML = `
+                            <i class="bi bi-person-check me-1"></i>
+                            Register Visitor
+                        `;
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       LOAD VISITORS
+    ========================================================= */
+
+    async function loadVisitors() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/visitors`,
+                    {
+                        method: "GET",
+                        cache: "no-store"
+                    }
+                );
+
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            let result;
+
+
+            if (
+                contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                result =
+                    await response.json();
+
+            } else {
+
+                const text =
+                    await response.text();
+
+                console.error(
+                    "Visitor API returned non-JSON:",
+                    text
+                );
+
+                throw new Error(
+                    `Visitor API returned HTTP ${response.status}`
+                );
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    result.error ||
+                    "Unable to load visitors"
+                );
+
+            }
+
+
+            visitorRecords =
+                Array.isArray(
+                    result.visitors
+                )
+                    ? result.visitors
+                    : [];
+
+
+            renderVisitors(
+                visitorRecords
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Visitor loading error:",
+                error
+            );
+
+
+            if (visitorTableBody) {
+
+                visitorTableBody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="visitor-empty">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                            <strong>
+                                Unable to load visitor records
+                            </strong>
+
+                            <div>
+                                Check Flask API / MongoDB connection.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+    }
+
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =========================================================
+       STATUS BADGE
+    ========================================================= */
+
+    function getStatusBadge(status) {
+
+        const normalized =
+            String(
+                status || "Inside"
+            ).toLowerCase();
+
+
+        if (normalized === "inside") {
+
+            return `
+                <span class="visitor-status-badge status-inside">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Inside
+
+                </span>
+            `;
+
+        }
+
+
+        if (normalized === "expected") {
+
+            return `
+                <span class="visitor-status-badge status-expected">
+
+                    <i class="bi bi-clock"></i>
+
+                    Expected
+
+                </span>
+            `;
+
+        }
+
+
+        return `
+            <span class="visitor-status-badge status-exited">
+
+                <i class="bi bi-check-circle"></i>
+
+                Exited
+
+            </span>
+        `;
+
+    }
+
+
+    /* =========================================================
+       RENDER VISITORS
+    ========================================================= */
+
+    function renderVisitors(records) {
+
+        if (!visitorTableBody) return;
+
+
+        if (
+            !records ||
+            records.length === 0
+        ) {
+
+            visitorTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="visitor-empty">
+
+                        <i class="bi bi-people"></i>
+
+                        <strong>
+                            No visitor records
+                        </strong>
+
+                        <div>
+                            Registered visitors will appear here.
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        visitorTableBody.innerHTML =
+            records
+                .map(
+                    function (visitor, index) {
+
+                        return `
+
+                            <tr>
+
+                                <td>
+                                    ${index + 1}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="visitor-name">
+
+                                        ${escapeHtml(
+                                            visitor.visitor_name ||
+                                            visitor.name ||
+                                            "-"
+                                        )}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="visitor-plate">
+
+                                        ${escapeHtml(
+                                            visitor.vehicle_number ||
+                                            visitor.plate ||
+                                            "-"
+                                        )}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        visitor.phone ||
+                                        "-"
+                                    )}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        visitor.purpose ||
+                                        "-"
+                                    )}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        visitor.person_to_visit ||
+                                        visitor.person ||
+                                        "-"
+                                    )}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        visitor.entry_time ||
+                                        "-"
+                                    )}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        visitor.expected_exit_time ||
+                                        "-"
+                                    )}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${getStatusBadge(
+                                        visitor.status
+                                    )}
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    if (visitorSearch) {
+
+        visitorSearch.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!query) {
+
+                    renderVisitors(
+                        visitorRecords
+                    );
+
+                    return;
+
+                }
+
+
+                const filtered =
+                    visitorRecords.filter(
+                        function (visitor) {
+
+                            const searchableText = [
+
+                                visitor.visitor_name,
+                                visitor.name,
+                                visitor.vehicle_number,
+                                visitor.plate,
+                                visitor.phone,
+                                visitor.purpose,
+                                visitor.person_to_visit,
+                                visitor.person,
+                                visitor.status
+
+                            ]
+                                .filter(Boolean)
+                                .join(" ")
+                                .toLowerCase();
+
+
+                            return searchableText
+                                .includes(query);
+
+                        }
+                    );
+
+
+                renderVisitors(
+                    filtered
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       REFRESH
+    ========================================================= */
+
+    const refreshVisitors =
+        document.getElementById(
+            "refresh-visitors"
+        );
+
+
+    if (refreshVisitors) {
+
+        refreshVisitors.addEventListener(
+            "click",
+            loadVisitors
+        );
+
+    }
+
+
+    /* =========================================================
+       RESET FORM
+    ========================================================= */
+
+    const resetVisitorForm =
+        document.getElementById(
+            "reset-visitor-form"
+        );
+
+
+    if (resetVisitorForm) {
+
+        resetVisitorForm.addEventListener(
+            "click",
+            function () {
+
+                setTimeout(
+                    function () {
+
+                        if (visitorForm) {
+
+                            visitorForm.classList.remove(
+                                "was-validated"
+                            );
+
+                        }
+
+
+                        if (registrationStatus) {
+
+                            registrationStatus.className =
+                                "alert d-none";
+
+                            registrationStatus.textContent =
+                                "";
+
+                        }
+
+
+                        setDefaultDateTime();
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       NOTIFICATIONS
+    ========================================================= */
+
+    let notifications = [];
+
+
+    function updateNotificationUI() {
+
+        const list =
+            document.getElementById(
+                "notification-list"
+            );
+
+        const badge =
+            document.getElementById(
+                "notification-badge"
+            );
+
+        const count =
+            document.getElementById(
+                "notification-count"
+            );
+
+
+        if (
+            !list ||
+            !badge ||
+            !count
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            notifications.length === 0
+        ) {
+
+            badge.style.display =
+                "none";
+
+            count.textContent =
+                "No new notifications";
+
+
+            list.innerHTML = `
+
+                <div
+                    id="notification-empty"
+                    class="notification-empty">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    <div>
+
+                        <strong>
+                            No new notifications
+                        </strong>
+
+                        <small>
+                            You're all caught up.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        badge.textContent =
+            notifications.length;
+
+        badge.style.display =
+            "flex";
+
+
+        count.textContent =
+            `${notifications.length} new notification${
+                notifications.length > 1
+                    ? "s"
+                    : ""
+            }`;
+
+
+        list.innerHTML =
+            notifications
+                .map(
+                    function (notification) {
+
+                        return `
+
+                            <div
+                                class="notification-item p-3 border-bottom">
+
+                                <strong>
+
+                                    ${escapeHtml(
+                                        notification.title ||
+                                        "Notification"
+                                    )}
+
+                                </strong>
+
+                                <div
+                                    class="small text-muted">
+
+                                    ${escapeHtml(
+                                        notification.message ||
+                                        ""
+                                    )}
+
+                                </div>
+
+                                <div
+                                    class="small text-muted mt-1">
+
+                                    ${escapeHtml(
+                                        notification.time ||
+                                        ""
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    /* =========================================================
+       LOAD NOTIFICATIONS
+    ========================================================= */
+
+    async function loadNotifications() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/notifications`,
+                    {
+                        method: "GET",
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Notification API returned HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (Array.isArray(data)) {
+
+                notifications =
+                    data;
+
+            } else if (
+                data &&
+                Array.isArray(
+                    data.notifications
+                )
+            ) {
+
+                notifications =
+                    data.notifications;
+
+            } else {
+
+                notifications = [];
+
+            }
+
+
+            updateNotificationUI();
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Notification loading error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       CLEAR NOTIFICATIONS
+    ========================================================= */
+
+    const clearNotifications =
+        document.getElementById(
+            "clear-notifications"
+        );
+
+
+    if (clearNotifications) {
+
+        clearNotifications.addEventListener(
+            "click",
+            async function () {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `${API_BASE}/api/notifications/clear`,
+                            {
+                                method: "POST"
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to clear notifications"
+                        );
+
+                    }
+
+
+                    notifications = [];
+
+                    updateNotificationUI();
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        "Clear notification error:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       INITIAL LOAD
+    ========================================================= */
+
+    loadVisitors();
+
+    loadNotifications();
+
+
+    /* =========================================================
+       AUTO REFRESH
+    ========================================================= */
+
+    setInterval(
+        loadVisitors,
+        5000
+    );
+
+    setInterval(
+        loadNotifications,
+        3000
+    );
+
+</script>
+
+
+<!-- =========================================================
+     BOOTSTRAP + COMMON JS
+========================================================= -->
+
+<script src="../assets/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
+
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+</html>

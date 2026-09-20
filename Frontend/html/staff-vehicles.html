@@ -1,0 +1,3198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="INOUTX Staff Vehicles">
+  <title>Staff Vehicles | INOUTX</title>
+
+  <link rel="Icon" type="image/png" href="pic.PNG">
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <style>
+
+    body,
+    .admin-shell,
+    .admin-content,
+    .staff-content {
+      font-family: Arial, sans-serif;
+    }
+
+    /* ==========================================
+       STAFF TABLE
+    ========================================== */
+
+    #staffTable {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    #staffTable th,
+    #staffTable td {
+      vertical-align: middle !important;
+      text-align: center !important;
+      padding: 14px 16px;
+      border-color: #E7ECF1;
+      font-family: Arial, sans-serif;
+    }
+
+    #staffTable thead th {
+      background:#003377;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      white-space: nowrap;
+    }
+
+    #staffTable tbody td {
+      color: #17202A;
+      font-size: 13px;
+      background: #FFFFFF;
+      white-space: nowrap;
+    }
+
+    #staffTable tbody tr:hover td {
+      background: #F4F7FA;
+    }
+
+    #staffTable th:nth-child(1),
+    #staffTable td:nth-child(1) {
+      width: 14%;
+    }
+
+    #staffTable th:nth-child(2),
+    #staffTable td:nth-child(2) {
+      width: 14%;
+    }
+
+    #staffTable th:nth-child(3),
+    #staffTable td:nth-child(3) {
+      width: 12%;
+    }
+
+    #staffTable th:nth-child(4),
+    #staffTable td:nth-child(4) {
+      width: 10%;
+    }
+
+    #staffTable th:nth-child(5),
+    #staffTable td:nth-child(5) {
+      width: 12%;
+    }
+
+    #staffTable th:nth-child(6),
+    #staffTable td:nth-child(6) {
+      width: 12%;
+    }
+
+    #staffTable th:nth-child(7),
+    #staffTable td:nth-child(7) {
+      width: 12%;
+    }
+
+    #staffTable th:nth-child(8),
+    #staffTable td:nth-child(8) {
+      width: 14%;
+    }
+
+
+    /* ==========================================
+       SUMMARY CARDS
+    ========================================== */
+
+    .staff-summary-card {
+      border: 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 51, 119, 0.06);
+      background: #FFFFFF;
+    }
+
+    .staff-summary-card .card-body {
+      padding: 20px;
+    }
+
+    .staff-summary-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #5B6775;
+      margin-bottom: 5px;
+    }
+
+    .staff-summary-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #17202A;
+      line-height: 1.2;
+    }
+
+    .staff-summary-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .staff-summary-icon.blue {
+      background: #EAF2FA;
+      color: #003377;
+    }
+
+    .staff-summary-icon.green {
+      background: #EAF2FA;
+      color: #198754;
+    }
+
+    .staff-summary-icon.cyan {
+      background: #EAF2FA;
+      color: #0D6EFD;
+    }
+
+
+    /* ==========================================
+       CAPTURED IMAGE
+    ========================================== */
+
+    .captured-staff-image {
+      width: 100px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #D5DCE5;
+      display: inline-block;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .captured-staff-image:hover {
+      transform: scale(1.05);
+    }
+
+    .no-image {
+      color: #5B6775;
+      font-size: 13px;
+    }
+
+
+    /* ==========================================
+       IMAGE POPUP
+    ========================================== */
+
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+
+      justify-content: center;
+      align-items: center;
+
+      padding: 30px;
+      box-sizing: border-box;
+    }
+
+    .image-modal.active {
+      display: flex;
+    }
+
+    .large-image {
+      max-width: 90%;
+      max-height: 90%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      cursor: default;
+    }
+
+    .close-image {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+
+      color: white;
+      font-size: 40px;
+      line-height: 1;
+
+      cursor: pointer;
+      z-index: 10000;
+      user-select: none;
+    }
+
+    .close-image:hover {
+      opacity: 0.75;
+    }
+
+
+    /* ==========================================
+       LIVE TIME
+    ========================================== */
+
+    .live-time {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #17202A;
+      white-space: nowrap;
+    }
+
+    .live-time i {
+      font-size: 16px;
+    }
+
+
+    /* ==========================================
+       NOTIFICATION BUTTON
+    ========================================== */
+
+    .notification-button {
+      position: relative;
+      width: 40px;
+      height: 40px;
+
+      border: 0;
+      background: transparent;
+      border-radius: 8px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: #17202A;
+      font-size: 19px;
+
+      cursor: pointer;
+    }
+
+    .notification-button:hover {
+      background: #F4F7FA;
+    }
+
+
+    /* ==========================================
+       NOTIFICATION BADGE
+    ========================================== */
+
+    .notification-badge {
+      position: absolute;
+
+      top: 3px;
+      right: 3px;
+
+      min-width: 17px;
+      height: 17px;
+
+      padding: 0 4px;
+
+      border-radius: 20px;
+
+      background: #C62828;
+      color: white;
+
+      font-size: 10px;
+      font-weight: 700;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* ==========================================
+       NOTIFICATION MENU
+    ========================================== */
+
+    .notification-menu {
+      width: 330px;
+      max-width: calc(100vw - 30px);
+
+      border: 1px solid #D5DCE5;
+      border-radius: 10px;
+
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .notification-header {
+      padding: 13px 15px;
+
+      border-bottom: 1px solid #D5DCE5;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .notification-header strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .notification-header small {
+      color: #5B6775;
+      font-size: 11px;
+    }
+
+    .notification-empty {
+      padding: 25px 15px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+
+      color: #5B6775;
+    }
+
+    .notification-empty i {
+      font-size: 25px;
+      color: #198754;
+    }
+
+    .notification-empty strong {
+      display: block;
+
+      font-size: 13px;
+      color: #17202A;
+    }
+
+    .notification-empty small {
+      font-size: 11px;
+    }
+
+    .notification-item {
+      background: #FFFFFF;
+    }
+
+
+    /* ==========================================
+       REGISTER STAFF VEHICLE
+    ========================================== */
+
+    .register-staff-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .staff-register-modal .modal-content {
+      border: 0;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .staff-register-modal .modal-header {
+      border-bottom: 1px solid #D5DCE5;
+      padding: 18px 20px;
+    }
+
+    .staff-register-modal .modal-body {
+      padding: 20px;
+    }
+
+    .staff-register-modal .modal-footer {
+      border-top: 1px solid #D5DCE5;
+      padding: 15px 20px;
+    }
+
+    .staff-register-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #17202A;
+      margin-bottom: 6px;
+    }
+
+    .staff-register-input {
+      border-radius: 8px;
+      min-height: 42px;
+    }
+
+    .staff-register-input:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0, 51, 119, 0.12);
+    }
+
+    .staff-register-status {
+      display: none;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .staff-register-status.show {
+      display: block;
+    }
+
+    /* REGISTER STAFF VEHICLE MODAL LIGHT THEME FIX */
+
+    #registerStaffVehicleModal {
+      color: #17202A !important;
+    }
+
+    #registerStaffVehicleModal .modal-content,
+    #registerStaffVehicleModal .modal-header,
+    #registerStaffVehicleModal .modal-body,
+    #registerStaffVehicleModal .modal-footer {
+      background: #FFFFFF !important;
+      color: #17202A !important;
+    }
+
+    #registerStaffVehicleModal .modal-title,
+    #registerStaffVehicleModal .staff-register-label {
+      color: #17202A !important;
+    }
+
+    #registerStaffVehicleModal .form-control,
+    #registerStaffVehicleModal .form-select {
+      background: #FFFFFF !important;
+      color: #17202A !important;
+      border: 1px solid #D5DCE5 !important;
+    }
+
+    #registerStaffVehicleModal .form-control::placeholder {
+      color: #5B6775 !important;
+      opacity: 1 !important;
+    }
+
+    #registerStaffVehicleModal .form-select option {
+      background: #FFFFFF !important;
+      color: #17202A !important;
+    }
+
+    #registerStaffVehicleModal .text-muted {
+      color: #5B6775 !important;
+    }
+
+    #registerStaffVehicleModal .btn-light {
+      background: #F4F7FA !important;
+      color: #17202A !important;
+      border-color: #D5DCE5 !important;
+    }
+
+    /* ==========================================
+       TOP SEARCH + REGISTER CONTROLS
+    ========================================== */
+
+    .staff-top-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .staff-top-search {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .staff-top-search .bi-search {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5B6775;
+      font-size: 18px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .staff-top-search .form-control {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px 0 43px;
+      border: 1px solid #D5DCE5;
+      border-radius: 8px;
+      background: #FFFFFF;
+      color: #17202A;
+      font-size: 15px;
+      outline: none;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .staff-top-search .form-control::placeholder {
+      color: #5B6775;
+      opacity: 1;
+    }
+
+    .staff-top-search .form-control:focus {
+      border-color: #003377;
+      box-shadow: 0 0 0 3px rgba(0, 51, 119, 0.10);
+    }
+
+    .staff-top-controls .register-staff-btn {
+      height: 44px;
+      min-width: 220px;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 0 18px;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 576px) {
+      .staff-top-controls {
+        gap: 10px;
+      }
+
+      .staff-top-search .form-control {
+        min-height: 42px;
+        padding-left: 38px;
+      }
+
+      .staff-top-controls .register-staff-btn {
+        min-height: 42px;
+        padding: 0 13px;
+      }
+
+      .staff-top-controls .register-staff-btn span {
+        display: none;
+      }
+    }
+
+
+    /* ==========================================
+       RESPONSIVE
+    ========================================== */
+
+    @media (max-width: 767px) {
+
+      .staff-summary-value {
+        font-size: 24px;
+      }
+
+    }
+
+
+    @media (max-width: 576px) {
+
+      .live-time {
+        font-size: 12px;
+        gap: 4px;
+      }
+
+      .notification-menu {
+        width: 290px;
+      }
+
+    }
+
+  
+        /* ==========================================
+           PAGE TITLE IN NAVBAR
+        ========================================== */
+
+        .admin-navbar .navbar-page-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            margin-left: 18px;
+            margin-right: 18px;
+        }
+
+        .admin-navbar .navbar-page-heading .page-icon {
+            flex: 0 0 auto;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-navbar .navbar-page-heading .eyebrow {
+            margin-bottom: 0.1rem !important;
+            font-size: 10px;
+            line-height: 1.1;
+        }
+
+        .admin-navbar .navbar-page-heading h1 {
+            margin-bottom: 0 !important;
+            font-size: 18px;
+            line-height: 1.15;
+        }
+
+        .admin-navbar .navbar-page-heading p.text-muted {
+            margin-top: 2px;
+            font-size: 11px;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: min(430px, 38vw);
+        }
+
+        @media (max-width: 992px) {
+            .admin-navbar .navbar-page-heading {
+                margin-left: 12px;
+                margin-right: 10px;
+                gap: 9px;
+            }
+
+            .admin-navbar .navbar-page-heading p.text-muted {
+                display: none;
+            }
+
+            .admin-navbar .navbar-page-heading h1 {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .admin-navbar .navbar-page-heading {
+                margin-left: 8px;
+            }
+
+            .admin-navbar .navbar-page-heading .page-icon {
+                display: none;
+            }
+
+            .admin-navbar .navbar-page-heading .eyebrow {
+                display: none;
+            }
+
+            .admin-navbar .navbar-page-heading h1 {
+                font-size: 15px;
+            }
+        }
+
+</style>
+
+</head>
+
+
+<body>
+
+  <div class="admin-shell">
+
+
+    <!-- SIDEBAR BACKDROP -->
+
+    <div
+      class="sidebar-backdrop"
+      data-sidebar-close>
+    </div>
+
+
+    <!-- ==========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside
+      class="admin-sidebar"
+      id="adminSidebar"
+      aria-label="Main navigation">
+
+
+      <!-- SIDEBAR HEADER -->
+
+      <div class="sidebar-header">
+
+        <a
+          class="brand-mark"
+          href="index.html"
+          aria-label="INOUTX dashboard">
+
+          <span class="brand-icon">
+
+            <i
+              class="bi bi-grid-1x2-fill"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+
+          <span class="brand-copy">
+
+            <span class="brand-title">
+              INOUTX
+            </span>
+
+            <span class="brand-subtitle">
+              Admin Dashboard
+            </span>
+
+          </span>
+
+        </a>
+
+      </div>
+
+
+      <!-- SIDEBAR NAVIGATION -->
+
+      <nav class="sidebar-nav">
+
+
+        <!-- DASHBOARD -->
+
+        <a
+          class="nav-link"
+          href="index.html">
+
+          <span class="nav-icon">
+
+            <i
+              class="bi bi-speedometer2"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <span class="nav-text">
+            Dashboard
+          </span>
+
+        </a>
+
+
+        <!-- VEHICLE MOVEMENTS -->
+
+        <a
+          class="nav-link"
+          href="vehicle.html">
+
+          <span class="nav-icon">
+
+            <i
+              class="bi bi-bus-front"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <span class="nav-text">
+            Vehicle Movements
+          </span>
+
+        </a>
+
+
+        <!-- STAFF VEHICLES -->
+
+        <a
+          class="nav-link active"
+          href="staff-vehicles.html"
+          aria-current="page">
+
+          <span class="nav-icon">
+
+            <i
+              class="bi bi-person-vcard"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <span class="nav-text">
+            Staff Vehicles
+          </span>
+
+        </a>
+           <!-- VISITOR  VEHICLES -->
+
+                <a
+                    class="nav-link"
+                    href="visitor.html">
+
+
+                    <span class="nav-icon">
+
+                        <i
+                            class="bi bi-question-circle"
+                            aria-hidden="true">
+                        </i>
+
+                    </span>
+
+
+                    <span class="nav-text">
+                        Visitor Vehicles
+                    </span>
+
+
+                </a>
+
+       
+
+
+        <!-- DOWNLOAD DATA -->
+
+        <a
+          class="nav-link"
+          href="download.html">
+
+          <span class="nav-icon">
+
+            <i
+              class="bi bi-download"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <span class="nav-text">
+            Download Data
+          </span>
+
+        </a>
+
+
+        <!-- PROFILE -->
+
+        <a
+          class="nav-link"
+          href="profile.html">
+
+          <span class="nav-icon">
+
+            <i
+              class="bi bi-person-badge"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <span class="nav-text">
+            Profile
+          </span>
+
+        </a>
+
+      </nav>
+
+    </aside>
+
+
+    <!-- ==========================================
+         MAIN
+    ========================================== -->
+
+    <div class="admin-main">
+
+
+      <!-- ==========================================
+           NAVBAR
+      ========================================== -->
+
+      <nav
+        class="navbar admin-navbar navbar-expand bg-white">
+
+        <div
+          class="container-fluid px-3 px-lg-4">
+
+
+          <!-- SIDEBAR TOGGLE -->
+
+          <button
+            class="sidebar-toggle"
+            type="button"
+            data-sidebar-toggle
+            aria-controls="adminSidebar"
+            aria-expanded="true"
+            aria-label="Toggle sidebar">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+          </button>
+
+
+          <!-- PAGE TITLE -->
+
+<div class="page-heading-copy navbar-page-heading">
+
+
+              <span class="page-icon">
+
+                <i
+                  class="bi bi-person-vcard"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+
+              <div>
+
+                <p class="eyebrow mb-1">
+                  Management
+                </p>
+
+
+                <h1 class="h3 mb-1">
+                  Staff Vehicles
+                </h1>
+
+
+                <p class="text-muted mb-0">
+                  Live status of registered staff vehicles.
+                </p>
+
+              </div>
+
+            </div>
+
+
+
+          <!-- NAVBAR ACTIONS -->
+
+          <div
+            class="navbar-actions ms-auto">
+
+
+            <!-- LIVE TIME -->
+
+            <div class="live-time">
+
+              <i
+                class="bi bi-clock"
+                aria-hidden="true">
+              </i>
+
+              <span id="live-time">
+                --:--:--
+              </span>
+
+            </div>
+
+
+            <!-- NOTIFICATIONS -->
+
+            <div class="dropdown">
+
+              <button
+                class="notification-button"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Notifications">
+
+                <i
+                  class="bi bi-bell"
+                  aria-hidden="true">
+                </i>
+
+
+                <span
+                  id="notification-badge"
+                  class="notification-badge"
+                  style="display:none;">
+
+                  0
+
+                </span>
+
+              </button>
+
+
+              <div
+                class="dropdown-menu dropdown-menu-end notification-menu">
+
+
+                <!-- HEADER -->
+
+                <div class="notification-header">
+
+                  <div>
+
+                    <strong>
+                      Notifications
+                    </strong>
+
+                    <small id="notification-count">
+                      No new notifications
+                    </small>
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    id="clear-notifications"
+                    class="btn btn-sm btn-link">
+
+                    Clear
+
+                  </button>
+
+                </div>
+
+
+                <!-- NOTIFICATION LIST -->
+
+                <div id="notification-list">
+
+                  <div
+                    id="notification-empty"
+                    class="notification-empty">
+
+                    <i
+                      class="bi bi-check-circle"
+                      aria-hidden="true">
+                    </i>
+
+
+                    <div>
+
+                      <strong>
+                        No new notifications
+                      </strong>
+
+                      <small>
+                        You're all caught up.
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- ADMIN PROFILE -->
+
+            <div class="dropdown">
+
+              <button
+                class="profile-button dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+
+
+                <span
+                  class="avatar-img avatar-sm profile-avatar"
+                  id="currentUserInitials"></span>
+
+
+                <span class="profile-user-copy">
+                  <span id="currentUserName">Loading...</span>
+                  <small id="currentUserRole"></small>
+                </span>
+
+              </button>
+
+
+              <ul
+                class="dropdown-menu dropdown-menu-end">
+
+
+                <li>
+
+                  <a
+                    class="dropdown-item"
+                    href="profile.html">
+
+                    Profile
+
+                  </a>
+
+                </li>
+
+
+                <li>
+
+                  <hr class="dropdown-divider">
+
+                </li>
+
+
+                <li>
+
+                  <a
+                    class="dropdown-item"
+                    href="login.html">
+
+                    Sign out
+
+                  </a>
+
+                </li>
+
+              </ul>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </nav>
+
+
+      <!-- ==========================================
+           CONTENT
+      ========================================== -->
+
+      <main class="dashboard-content">
+
+        <div
+          class="container-fluid px-3 px-lg-4 py-4">
+
+
+          <!-- ==================================
+               TOP SEARCH + REGISTER
+          =================================== -->
+
+          <div class="staff-top-controls">
+
+            <div class="staff-top-search">
+
+              <i
+                class="bi bi-search"
+                aria-hidden="true">
+              </i>
+
+              <input
+                class="form-control"
+                type="search"
+                id="staffSearch"
+                placeholder="Search Staff / Vehicle"
+                aria-label="Search Staff or Vehicle">
+
+            </div>
+
+
+            <button
+              type="button"
+              class="btn btn-primary register-staff-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#registerStaffVehicleModal">
+
+              <i
+                class="bi bi-plus-lg"
+                aria-hidden="true">
+              </i>
+
+              <span>
+                Register Staff Vehicle
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- ==================================
+               STAFF SUMMARY CARDS
+          =================================== -->
+
+          <div class="row g-3 mb-3">
+
+
+            <!-- TOTAL REGISTERED STAFF VEHICLES -->
+
+            <div class="col-md-4">
+
+              <div class="card staff-summary-card h-100">
+
+                <div class="card-body">
+
+                  <div
+                    class="d-flex align-items-center justify-content-between">
+
+                    <div>
+
+                      <p class="staff-summary-label">
+                        Total Registered Staff Vehicles
+                      </p>
+
+                      <div
+                        class="staff-summary-value"
+                        id="totalRegisteredStaffVehicles">
+
+                        0
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="staff-summary-icon blue">
+
+                      <i class="bi bi-car-front"></i>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- CURRENTLY ON CAMPUS -->
+
+            <div class="col-md-4">
+
+              <div class="card staff-summary-card h-100">
+
+                <div class="card-body">
+
+                  <div
+                    class="d-flex align-items-center justify-content-between">
+
+                    <div>
+
+                      <p class="staff-summary-label">
+                        Currently On Campus
+                      </p>
+
+                      <div
+                        class="staff-summary-value"
+                        id="staffCurrentlyOnCampus">
+
+                        0
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="staff-summary-icon green">
+
+                      <i class="bi bi-building-check"></i>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACTIVE STAFF VEHICLES -->
+
+            <div class="col-md-4">
+
+              <div class="card staff-summary-card h-100">
+
+                <div class="card-body">
+
+                  <div
+                    class="d-flex align-items-center justify-content-between">
+
+                    <div>
+
+                      <p class="staff-summary-label">
+                        Active Staff Vehicles
+                      </p>
+
+                      <div
+                        class="staff-summary-value"
+                        id="activeStaffVehicles">
+
+                        0
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="staff-summary-icon cyan">
+
+                      <i class="bi bi-car-front-fill"></i>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ==================================
+               STAFF VEHICLE TABLE
+          =================================== -->
+
+          <section class="panel mt-3">
+
+
+            <!-- PANEL HEADER -->
+
+            <div class="panel-header">
+
+
+              <div>
+
+                <h2 class="h5 mb-1 section-title">
+
+                  <i
+                    class="bi bi-table"
+                    aria-hidden="true">
+                  </i>
+
+                  <span>
+                    Staff Vehicle List
+                  </span>
+
+                </h2>
+
+
+                <p class="text-muted mb-0">
+                  Search by staff name or number plate.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-responsive">
+
+              <table
+                class="table align-middle mb-0"
+                id="staffTable">
+
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      Staff Name
+                    </th>
+
+                    <th>
+                      Number Plate
+                    </th>
+
+                    <th>
+                      Vehicle Type
+                    </th>
+
+                    <th>
+                      Institution
+                    </th>
+
+                    <th class="text-center">
+                      Status
+                    </th>
+
+                    <th class="text-center">
+                      Entry Time
+                    </th>
+
+                    <th class="text-center">
+                      Exit Time
+                    </th>
+
+                    <th class="text-center">
+                      Captured Image
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody id="staffTableBody">
+
+                  <tr>
+
+                    <td
+                      colspan="8"
+                      class="text-center text-muted py-4">
+
+                      Loading staff vehicles...
+
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================
+       REGISTER STAFF VEHICLE MODAL
+  ========================================== -->
+
+  <div
+    class="modal fade staff-register-modal"
+    id="registerStaffVehicleModal"
+    tabindex="-1"
+    aria-labelledby="registerStaffVehicleModalLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <div>
+
+            <h5
+              class="modal-title"
+              id="registerStaffVehicleModalLabel">
+
+              <i class="bi bi-car-front me-2"></i>
+              Register Staff Vehicle
+
+            </h5>
+
+            <small class="text-muted">
+              Add a new staff vehicle to the system.
+            </small>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close">
+          </button>
+
+        </div>
+
+        <form id="registerStaffVehicleForm">
+
+          <div class="modal-body">
+
+            <div
+              id="staffRegisterStatus"
+              class="alert staff-register-status"
+              role="alert">
+            </div>
+
+            <div class="row g-3">
+
+              <div class="col-md-6">
+
+                <label
+                  for="staffName"
+                  class="staff-register-label">
+
+                  Staff Name
+
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control staff-register-input"
+                  id="staffName"
+                  name="staff_name"
+                  placeholder="Enter staff name"
+                  required>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <label
+                  for="staffInstitution"
+                  class="staff-register-label">
+
+                  Institution
+
+                </label>
+
+                <select
+                  class="form-select staff-register-input"
+                  id="staffInstitution"
+                  name="institution"
+                  required>
+
+                  <option value="" selected disabled>
+                    Select Institution
+                  </option>
+
+                  <option value="KRCT">
+                    KRCT
+                  </option>
+
+                  <option value="KRCE">
+                    KRCE
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <label
+                  for="staffPlate"
+                  class="staff-register-label">
+
+                  Number Plate
+
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control staff-register-input"
+                  id="staffPlate"
+                  name="plate"
+                  placeholder="Example: TN45AB1234"
+                  required>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <label
+                  for="staffVehicleType"
+                  class="staff-register-label">
+
+                  Vehicle Type
+
+                </label>
+
+                <select
+                  class="form-select staff-register-input"
+                  id="staffVehicleType"
+                  name="vehicle_type"
+                  required>
+
+                  <option value="" selected disabled>
+                    Select Vehicle Type
+                  </option>
+
+                  <option value="CAR">
+                    CAR
+                  </option>
+
+                  <option value="BIKE">
+                    BIKE
+                  </option>
+
+                  <option value="SCOOTER">
+                    SCOOTER
+                  </option>
+
+                  <option value="OTHER">
+                    OTHER
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <label
+                  for="staffCurrentStatus"
+                  class="staff-register-label">
+
+                  Current Status
+
+                </label>
+
+                <select
+                  class="form-select staff-register-input"
+                  id="staffCurrentStatus"
+                  name="status"
+                  required>
+
+                  <option value="" selected disabled>
+                    Select Status
+                  </option>
+
+                  <option value="ACTIVE">
+                    ACTIVE
+                  </option>
+
+                  <option value="INACTIVE">
+                    INACTIVE
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+
+            <button
+              type="button"
+              class="btn btn-light"
+              data-bs-dismiss="modal">
+
+              Cancel
+
+            </button>
+
+            <button
+              type="submit"
+              id="registerStaffVehicleButton"
+              class="btn btn-primary">
+
+              <span id="registerStaffVehicleButtonText">
+                Register Staff Vehicle
+              </span>
+
+              <span
+                id="registerStaffVehicleSpinner"
+                class="spinner-border spinner-border-sm ms-2"
+                style="display:none;"
+                aria-hidden="true">
+              </span>
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================
+       IMAGE POPUP
+  ========================================== -->
+
+  <div
+    id="imageModal"
+    class="image-modal"
+    onclick="closeImage()">
+
+
+    <span
+      class="close-image"
+      onclick="closeImage()">
+
+      &times;
+
+    </span>
+
+
+    <img
+      id="largeImage"
+      class="large-image"
+      alt="Captured Staff Vehicle"
+      onclick="event.stopPropagation();">
+
+  </div>
+
+
+  <!-- ==========================================
+       JAVASCRIPT
+  ========================================== -->
+
+  <script>
+
+
+    /* ==========================================
+       API
+    ========================================== */
+
+    const API =
+      "http://127.0.0.1:5000";
+
+
+    let allStaffVehicles = [];
+
+
+    /* ==========================================
+       LIVE CLOCK
+    ========================================== */
+
+    function updateLiveTime() {
+
+      const clock =
+        document.getElementById(
+          "live-time"
+        );
+
+
+      if (!clock) {
+        return;
+      }
+
+
+      const now =
+        new Date();
+
+
+      const hours =
+        String(
+          now.getHours()
+        ).padStart(
+          2,
+          "0"
+        );
+
+
+      const minutes =
+        String(
+          now.getMinutes()
+        ).padStart(
+          2,
+          "0"
+        );
+
+
+      const seconds =
+        String(
+          now.getSeconds()
+        ).padStart(
+          2,
+          "0"
+        );
+
+
+      clock.textContent =
+        `${hours}:${minutes}:${seconds}`;
+
+    }
+
+
+    updateLiveTime();
+
+
+    setInterval(
+      updateLiveTime,
+      1000
+    );
+
+
+    /* ==========================================
+       NOTIFICATIONS
+    ========================================== */
+
+    let notifications = [];
+
+
+    function updateNotificationUI() {
+
+      const list =
+        document.getElementById(
+          "notification-list"
+        );
+
+
+      const badge =
+        document.getElementById(
+          "notification-badge"
+        );
+
+
+      const count =
+        document.getElementById(
+          "notification-count"
+        );
+
+
+      if (
+        !list ||
+        !badge ||
+        !count
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        notifications.length === 0
+      ) {
+
+        badge.style.display =
+          "none";
+
+
+        count.textContent =
+          "No new notifications";
+
+
+        list.innerHTML = `
+
+          <div
+            id="notification-empty"
+            class="notification-empty">
+
+            <i
+              class="bi bi-check-circle"
+              aria-hidden="true">
+            </i>
+
+            <div>
+
+              <strong>
+                No new notifications
+              </strong>
+
+              <small>
+                You're all caught up.
+              </small>
+
+            </div>
+
+          </div>
+
+        `;
+
+
+        return;
+
+      }
+
+
+      badge.textContent =
+        notifications.length;
+
+
+      badge.style.display =
+        "flex";
+
+
+      count.textContent =
+        `${notifications.length} new notification${notifications.length > 1 ? "s" : ""}`;
+
+
+      list.innerHTML =
+        notifications
+          .map(
+            notification => `
+
+              <div
+                class="notification-item p-3 border-bottom">
+
+                <strong>
+                  ${escapeHtml(
+                    notification.title
+                  )}
+                </strong>
+
+                <div class="small text-muted">
+
+                  ${escapeHtml(
+                    notification.message
+                  )}
+
+                </div>
+
+                <div class="small text-muted mt-1">
+
+                  ${escapeHtml(
+                    notification.time
+                  )}
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+    }
+
+
+    /* ==========================================
+       ADD NOTIFICATION
+    ========================================== */
+
+    function addNotification(
+      title,
+      message
+    ) {
+
+      notifications.unshift({
+
+        title:
+          title,
+
+        message:
+          message,
+
+        time:
+          new Date().toLocaleTimeString(
+            "en-IN"
+          )
+
+      });
+
+
+      notifications =
+        notifications.slice(
+          0,
+          10
+        );
+
+
+      updateNotificationUI();
+
+    }
+
+
+    /* ==========================================
+       CLEAR NOTIFICATIONS
+    ========================================== */
+
+    const clearNotifications =
+      document.getElementById(
+        "clear-notifications"
+      );
+
+
+    if (
+      clearNotifications
+    ) {
+
+      clearNotifications.addEventListener(
+        "click",
+        function () {
+
+          notifications =
+            [];
+
+          updateNotificationUI();
+
+        }
+      );
+
+    }
+
+
+    updateNotificationUI();
+
+
+    /* ==========================================
+       IMAGE URL
+    ========================================== */
+
+    function getImageUrl(
+      imagePath
+    ) {
+
+      if (!imagePath) {
+        return "";
+      }
+
+
+      const normalizedPath =
+        String(
+          imagePath
+        ).replace(
+          /\\/g,
+          "/"
+        );
+
+
+      const filename =
+        normalizedPath
+          .split("/")
+          .pop();
+
+
+      if (!filename) {
+        return "";
+      }
+
+
+      return (
+        API +
+        "/captured-frames/" +
+        encodeURIComponent(
+          filename
+        )
+      );
+
+    }
+
+
+    /* ==========================================
+       LOAD STAFF VEHICLES
+    ========================================== */
+
+    async function loadStaffVehicles() {
+
+      try {
+
+        const response =
+          await fetch(
+            API +
+            "/api/staff",
+            {
+              cache:
+                "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Failed to load staff vehicles"
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (
+          !Array.isArray(data)
+        ) {
+
+          throw new Error(
+            "Invalid data received"
+          );
+
+        }
+
+
+        allStaffVehicles =
+          data;
+
+
+        updateStaffSummaryCards(
+          allStaffVehicles
+        );
+
+
+        renderStaffTable(
+          allStaffVehicles
+        );
+
+      }
+
+
+      catch (error) {
+
+        console.error(
+          "Staff vehicles error:",
+          error
+        );
+
+
+        updateStaffSummaryCards(
+          []
+        );
+
+
+        document.getElementById(
+          "staffTableBody"
+        ).innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="8"
+              class="text-center text-danger py-4">
+
+              Unable to load staff vehicles
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+
+    }
+
+
+    /* ==========================================
+       UPDATE SUMMARY CARDS
+    ========================================== */
+
+    function updateStaffSummaryCards(
+      vehicles
+    ) {
+
+      const totalElement =
+        document.getElementById(
+          "totalRegisteredStaffVehicles"
+        );
+
+
+      const campusElement =
+        document.getElementById(
+          "staffCurrentlyOnCampus"
+        );
+
+
+      const activeElement =
+        document.getElementById(
+          "activeStaffVehicles"
+        );
+
+
+      if (
+        !totalElement ||
+        !campusElement ||
+        !activeElement
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        !Array.isArray(
+          vehicles
+        )
+      ) {
+
+        totalElement.textContent =
+          "0";
+
+        campusElement.textContent =
+          "0";
+
+        activeElement.textContent =
+          "0";
+
+        return;
+
+      }
+
+
+      /* ==================================
+         TOTAL REGISTERED
+      ================================== */
+
+      const total =
+        vehicles.length;
+
+
+      /* ==================================
+         CURRENTLY ON CAMPUS
+      ================================== */
+
+      const currentlyOnCampus =
+        vehicles.filter(
+          vehicle => {
+
+            const status =
+              String(
+                vehicle.status ||
+                ""
+              )
+              .trim()
+              .toLowerCase();
+
+
+            return (
+              status === "active" ||
+              status === "inside" ||
+              status === "entry" ||
+              status === "on campus" ||
+              status === "on_campus" ||
+              status === "verified"
+            );
+
+          }
+        ).length;
+
+
+      /* ==================================
+         ACTIVE STAFF VEHICLES
+      ================================== */
+
+      const activeVehicles =
+        vehicles.filter(
+          vehicle => {
+
+            const status =
+              String(
+                vehicle.status ||
+                ""
+              )
+              .trim()
+              .toLowerCase();
+
+
+            return (
+              status === "active" ||
+              status === "verified"
+            );
+
+          }
+        ).length;
+
+
+      totalElement.textContent =
+        total;
+
+
+      campusElement.textContent =
+        currentlyOnCampus;
+
+
+      activeElement.textContent =
+        activeVehicles;
+
+    }
+
+
+    /* ==========================================
+       RENDER STAFF TABLE
+    ========================================== */
+
+    function renderStaffTable(
+      vehicles
+    ) {
+
+      const tableBody =
+        document.getElementById(
+          "staffTableBody"
+        );
+
+
+      tableBody.innerHTML =
+        "";
+
+
+      if (
+        !Array.isArray(
+          vehicles
+        ) ||
+        vehicles.length === 0
+      ) {
+
+        tableBody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="8"
+              class="text-center text-muted py-4">
+
+              No staff vehicles found
+
+            </td>
+
+          </tr>
+
+        `;
+
+        return;
+
+      }
+
+
+      vehicles.forEach(
+        vehicle => {
+
+
+          /* STAFF NAME */
+
+          const staffName =
+            vehicle.staff_name ||
+            vehicle.name ||
+            "-";
+
+
+          /* NUMBER PLATE */
+
+          const numberPlate =
+            vehicle.plate ||
+            vehicle.vehicle_no ||
+            vehicle.vehicle_number ||
+            "-";
+
+
+          /* VEHICLE TYPE */
+
+          const vehicleType =
+            vehicle.vehicle_type ||
+            vehicle.type ||
+            "-";
+
+
+          /* INSTITUTION */
+
+          const institution =
+            vehicle.institution ||
+            "Not specified";
+
+
+          /* STATUS */
+
+          const status =
+            vehicle.status ||
+            "-";
+
+
+          /* ENTRY TIME */
+
+          const entryTime =
+            vehicle.entry_time ||
+            vehicle.entryTime ||
+            vehicle.time ||
+            "-";
+
+
+          /* EXIT TIME */
+
+          const exitTime =
+            vehicle.exit_time ||
+            vehicle.exitTime ||
+            "-";
+
+
+          const statusText =
+            String(
+              status
+            );
+
+
+          const statusLower =
+            statusText.toLowerCase();
+
+
+          /* DEFAULT BADGE */
+
+          let badge =
+            "secondary";
+
+
+          /* ACTIVE */
+
+          if (
+            statusLower === "active" ||
+            statusLower === "verified" ||
+            statusLower === "inside" ||
+            statusLower === "entry"
+          ) {
+
+            badge =
+              "success";
+
+          }
+
+
+          /* INACTIVE */
+
+          else if (
+            statusLower === "inactive" ||
+            statusLower === "exit" ||
+            statusLower === "outside"
+          ) {
+
+            badge =
+              "danger";
+
+          }
+
+
+          /* PENDING */
+
+          else if (
+            statusLower === "pending"
+          ) {
+
+            badge =
+              "warning";
+
+          }
+
+
+          /* ==================================
+             CAPTURED IMAGE
+          =================================== */
+
+          let imageHTML = `
+
+            <span class="no-image">
+              No Image
+            </span>
+
+          `;
+
+
+          if (
+            vehicle.image
+          ) {
+
+            const imageURL =
+              getImageUrl(
+                vehicle.image
+              );
+
+
+            if (
+              imageURL
+            ) {
+
+              imageHTML = `
+
+                <img
+                  src="${imageURL}"
+                  alt="Captured Staff Vehicle"
+                  class="captured-staff-image"
+                  loading="lazy"
+                  onclick="openImage('${imageURL}')"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+
+
+                <span
+                  class="no-image"
+                  style="display:none;">
+
+                  Image Not Found
+
+                </span>
+
+              `;
+
+            }
+
+          }
+
+
+          /* ==================================
+             TABLE ROW
+          =================================== */
+
+          tableBody.innerHTML += `
+
+            <tr>
+
+              <td class="fw-semibold">
+
+                ${escapeHtml(
+                  staffName
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${escapeHtml(
+                  numberPlate
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${escapeHtml(
+                  vehicleType
+                )}
+
+              </td>
+
+
+              <td>
+
+                ${escapeHtml(
+                  institution
+                )}
+
+              </td>
+
+
+              <td class="text-center">
+
+                <span
+                  class="status-badge bg-${badge}">
+
+                  ${escapeHtml(
+                    statusText
+                  )}
+
+                </span>
+
+              </td>
+
+
+              <td class="text-center">
+
+                ${escapeHtml(
+                  entryTime
+                )}
+
+              </td>
+
+
+              <td class="text-center">
+
+                ${escapeHtml(
+                  exitTime
+                )}
+
+              </td>
+
+
+              <td class="text-center">
+
+                ${imageHTML}
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      );
+
+    }
+
+
+    /* ==========================================
+       SEARCH
+    ========================================== */
+
+    const staffSearch =
+      document.getElementById(
+        "staffSearch"
+      );
+
+
+    if (
+      staffSearch
+    ) {
+
+      staffSearch.addEventListener(
+        "input",
+        function () {
+
+          const searchValue =
+            this.value
+              .trim()
+              .toLowerCase();
+
+
+          if (
+            searchValue === ""
+          ) {
+
+            renderStaffTable(
+              allStaffVehicles
+            );
+
+            return;
+
+          }
+
+
+          const filtered =
+            allStaffVehicles.filter(
+              vehicle => {
+
+                const staffName =
+                  String(
+                    vehicle.staff_name ||
+                    vehicle.name ||
+                    ""
+                  ).toLowerCase();
+
+
+                const numberPlate =
+                  String(
+                    vehicle.plate ||
+                    vehicle.vehicle_no ||
+                    vehicle.vehicle_number ||
+                    ""
+                  ).toLowerCase();
+
+
+                const vehicleType =
+                  String(
+                    vehicle.vehicle_type ||
+                    vehicle.type ||
+                    ""
+                  ).toLowerCase();
+
+
+                const institution =
+                  String(
+                    vehicle.institution ||
+                    ""
+                  ).toLowerCase();
+
+
+                return (
+
+                  staffName.includes(
+                    searchValue
+                  )
+
+                  ||
+
+                  numberPlate.includes(
+                    searchValue
+                  )
+
+                  ||
+
+                  vehicleType.includes(
+                    searchValue
+                  )
+
+                  ||
+
+                  institution.includes(
+                    searchValue
+                  )
+
+                );
+
+              }
+            );
+
+
+          renderStaffTable(
+            filtered
+          );
+
+        }
+      );
+
+    }
+
+
+    /* ==========================================
+       HTML ESCAPE
+    ========================================== */
+
+    function escapeHtml(
+      value
+    ) {
+
+      return String(
+        value
+      )
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    /* ==========================================
+       OPEN IMAGE
+    ========================================== */
+
+    function openImage(
+      imageUrl
+    ) {
+
+      if (!imageUrl) {
+        return;
+      }
+
+
+      const modal =
+        document.getElementById(
+          "imageModal"
+        );
+
+
+      const largeImage =
+        document.getElementById(
+          "largeImage"
+        );
+
+
+      largeImage.src =
+        imageUrl;
+
+
+      modal.classList.add(
+        "active"
+      );
+
+    }
+
+
+    /* ==========================================
+       CLOSE IMAGE
+    ========================================== */
+
+    function closeImage() {
+
+      const modal =
+        document.getElementById(
+          "imageModal"
+        );
+
+
+      const largeImage =
+        document.getElementById(
+          "largeImage"
+        );
+
+
+      modal.classList.remove(
+        "active"
+      );
+
+
+      largeImage.src =
+        "";
+
+    }
+
+
+    /* ==========================================
+       ESC KEY
+    ========================================== */
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeImage();
+
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       REGISTER STAFF VEHICLE
+    ========================================== */
+
+    const registerStaffVehicleForm =
+      document.getElementById(
+        "registerStaffVehicleForm"
+      );
+
+    const staffRegisterStatus =
+      document.getElementById(
+        "staffRegisterStatus"
+      );
+
+    const registerStaffVehicleButton =
+      document.getElementById(
+        "registerStaffVehicleButton"
+      );
+
+    const registerStaffVehicleButtonText =
+      document.getElementById(
+        "registerStaffVehicleButtonText"
+      );
+
+    const registerStaffVehicleSpinner =
+      document.getElementById(
+        "registerStaffVehicleSpinner"
+      );
+
+    function showStaffRegisterStatus(
+      message,
+      type
+    ) {
+
+      staffRegisterStatus.textContent =
+        message;
+
+      staffRegisterStatus.className =
+        "alert staff-register-status show alert-" +
+        type;
+
+    }
+
+
+    function resetStaffRegisterStatus() {
+
+      staffRegisterStatus.textContent =
+        "";
+
+      staffRegisterStatus.className =
+        "alert staff-register-status";
+
+    }
+
+
+    function setStaffRegisterLoading(
+      loading
+    ) {
+
+      registerStaffVehicleButton.disabled =
+        loading;
+
+      if (loading) {
+
+        registerStaffVehicleButtonText.textContent =
+          "Registering";
+
+        registerStaffVehicleSpinner.style.display =
+          "inline-block";
+
+      } else {
+
+        registerStaffVehicleButtonText.textContent =
+          "Register Staff Vehicle";
+
+        registerStaffVehicleSpinner.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    if (registerStaffVehicleForm) {
+
+      registerStaffVehicleForm.addEventListener(
+        "submit",
+        async function (event) {
+
+          event.preventDefault();
+
+          resetStaffRegisterStatus();
+
+          const formData =
+            new FormData(
+              registerStaffVehicleForm
+            );
+
+          const staffName =
+            String(
+              formData.get("staff_name") || ""
+            ).trim();
+
+          const plate =
+            String(
+              formData.get("plate") || ""
+            ).trim().toUpperCase();
+
+          const vehicleType =
+            String(
+              formData.get("vehicle_type") || ""
+            ).trim().toUpperCase();
+
+          const institution =
+            String(
+              formData.get("institution") || ""
+            ).trim().toUpperCase();
+
+          const status =
+            String(
+              formData.get("status") || ""
+            ).trim().toUpperCase();
+
+          if (
+            !staffName ||
+            !plate ||
+            !vehicleType ||
+            !institution ||
+            !status
+          ) {
+
+            showStaffRegisterStatus(
+              "Please fill all required fields.",
+              "danger"
+            );
+
+            return;
+
+          }
+
+          const payload = {
+
+            staff_name:
+              staffName,
+
+            plate:
+              plate,
+
+            vehicle_type:
+              vehicleType,
+
+            institution:
+              institution,
+
+            status:
+              status
+
+          };
+
+          try {
+
+            setStaffRegisterLoading(
+              true
+            );
+
+            const response =
+              await fetch(
+                API +
+                "/api/staff/register",
+                {
+                  method:
+                    "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:
+                    JSON.stringify(
+                      payload
+                    )
+                }
+              );
+
+            let result = null;
+
+            try {
+
+              result =
+                await response.json();
+
+            } catch (jsonError) {
+
+              result =
+                null;
+
+            }
+
+            if (!response.ok) {
+
+              const errorMessage =
+                result &&
+                (
+                  result.message ||
+                  result.error
+                )
+                  ?
+                  (
+                    result.message ||
+                    result.error
+                  )
+                  :
+                  "Failed to register staff vehicle.";
+
+              throw new Error(
+                errorMessage
+              );
+
+            }
+
+            showStaffRegisterStatus(
+              result &&
+              result.message
+                ?
+                result.message
+                :
+                "Staff vehicle registered successfully.",
+              "success"
+            );
+
+            notifications.unshift({
+
+              title:
+                "Staff Vehicle Registered",
+
+              message:
+                `${staffName} (${plate}) registered successfully.`,
+
+              time:
+                new Date().toLocaleTimeString(
+                  "en-IN"
+                )
+
+            });
+
+            notifications =
+              notifications.slice(
+                0,
+                10
+              );
+
+            updateNotificationUI();
+
+            registerStaffVehicleForm.reset();
+
+            setTimeout(
+              async function () {
+
+                const modalElement =
+                  document.getElementById(
+                    "registerStaffVehicleModal"
+                  );
+
+                const modalInstance =
+                  bootstrap.Modal.getInstance(
+                    modalElement
+                  );
+
+                if (modalInstance) {
+                  modalInstance.hide();
+                }
+
+                resetStaffRegisterStatus();
+
+                await loadStaffVehicles();
+
+              },
+              800
+            );
+
+          } catch (error) {
+
+            console.error(
+              "Register staff vehicle error:",
+              error
+            );
+
+            showStaffRegisterStatus(
+              error.message ||
+              "Unable to register staff vehicle.",
+              "danger"
+            );
+
+          } finally {
+
+            setStaffRegisterLoading(
+              false
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    const registerStaffVehicleModal =
+      document.getElementById(
+        "registerStaffVehicleModal"
+      );
+
+    if (registerStaffVehicleModal) {
+
+      registerStaffVehicleModal.addEventListener(
+        "hidden.bs.modal",
+        function () {
+
+          if (registerStaffVehicleForm) {
+            registerStaffVehicleForm.reset();
+          }
+
+          resetStaffRegisterStatus();
+
+          setStaffRegisterLoading(
+            false
+          );
+
+        }
+      );
+
+    }
+
+
+    /* ==========================================
+       INITIAL LOAD
+    ========================================== */
+
+    loadStaffVehicles();
+
+
+    /* ==========================================
+       AUTO REFRESH
+    ========================================== */
+
+    setInterval(
+      loadStaffVehicles,
+      3000
+    );
+
+  </script>
+
+
+  <!-- ==========================================
+       BOOTSTRAP JS
+  ========================================== -->
+
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+
+</html>

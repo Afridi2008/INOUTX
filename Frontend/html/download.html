@@ -1,0 +1,3030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="INOUTX Analytics and Data Export Center">
+
+    <title>
+        Download Data | INOUTX
+    </title>
+
+
+    <!-- =====================================================
+         FAVICON
+    ====================================================== -->
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="pic.PNG">
+
+
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/bootstrap.min.css">
+
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+
+
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css">
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL DOWNLOAD PAGE
+        ====================================================== */
+
+        .download-page {
+
+            background: #f5f7fa;
+
+            min-height: calc(100vh - 65px);
+
+        }
+
+
+        /* =====================================================
+           NAVBAR PAGE TITLE
+        ====================================================== */
+
+        .admin-navbar .navbar-page-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            min-width: 0;
+
+            margin-left: 18px;
+
+            margin-right: 18px;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading .page-icon {
+
+            flex: 0 0 auto;
+
+            width: 38px;
+
+            height: 38px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 9px;
+
+          
+
+            color: #000000;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading h1 {
+
+            margin: 0 !important;
+
+            font-size: 18px;
+
+            line-height: 1.2;
+
+            font-weight: 700;
+
+            color: #172033;
+
+        }
+
+
+        .admin-navbar .navbar-page-heading p {
+
+            margin-top: 3px;
+
+            margin-bottom: 0;
+
+            font-size: 11px;
+
+            line-height: 1.2;
+
+            color: #697386;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            max-width: min(480px, 40vw);
+
+        }
+
+
+        /* =====================================================
+           LIVE CLOCK
+        ====================================================== */
+
+        .live-time {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #374151;
+
+            white-space: nowrap;
+
+        }
+
+
+        .live-time i {
+
+            font-size: 16px;
+
+            color: #5B6775;
+
+        }
+
+
+        /* =====================================================
+           NOTIFICATION BUTTON
+        ====================================================== */
+
+        .notification-button {
+
+            position: relative;
+
+            width: 40px;
+
+            height: 40px;
+
+            border: 0;
+
+            background: transparent;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #374151;
+
+            font-size: 19px;
+
+            cursor: pointer;
+
+        }
+
+
+        .notification-button:hover {
+
+            background: #f1f5f9;
+
+            color: #004A9F;
+
+        }
+
+
+        /* =====================================================
+           NOTIFICATION BADGE
+        ====================================================== */
+
+        .notification-badge {
+
+            position: absolute;
+
+            top: 3px;
+
+            right: 3px;
+
+            min-width: 17px;
+
+            height: 17px;
+
+            padding: 0 4px;
+
+            border-radius: 20px;
+
+            background: #C62828;
+
+            color: #ffffff;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        /* =====================================================
+           NOTIFICATION MENU
+        ====================================================== */
+
+        .notification-menu {
+
+            width: 330px;
+
+            max-width: calc(100vw - 30px);
+
+            border: 1px solid #dfe4ea;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            padding: 0;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            backdrop-filter: blur(12px);
+
+            -webkit-backdrop-filter: blur(12px);
+
+            box-shadow:
+                0 12px 30px rgba(15, 23, 42, 0.12);
+
+        }
+
+
+        .notification-header {
+
+            padding: 13px 15px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+        }
+
+
+        .notification-header strong {
+
+            display: block;
+
+            font-size: 14px;
+
+            color: #17202A;
+
+        }
+
+
+        .notification-header small {
+
+            color: #6b7280;
+
+            font-size: 11px;
+
+        }
+
+
+        .notification-empty {
+
+            padding: 25px 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: #6b7280;
+
+        }
+
+
+        .notification-empty i {
+
+            font-size: 25px;
+
+            color: #198754;
+
+        }
+
+
+        .notification-empty strong {
+
+            display: block;
+
+            font-size: 13px;
+
+            color: #374151;
+
+        }
+
+
+        .notification-empty small {
+
+            font-size: 11px;
+
+        }
+
+
+        .notification-item {
+
+            background: rgba(255,255,255,.90);
+
+        }
+
+
+        /* =====================================================
+           PROFESSIONAL PROFILE DROPDOWN
+        ====================================================== */
+
+        .profile-button {
+
+            background: rgba(255,255,255,0.92) !important;
+
+            border: 1px solid #dbe2ea !important;
+
+            color: #273142 !important;
+
+            border-radius: 9px !important;
+
+            box-shadow: none !important;
+
+        }
+
+
+        .profile-button:hover {
+
+            background: rgba(248,250,252,0.95) !important;
+
+            border-color: #cbd5e1 !important;
+
+        }
+
+
+        .profile-button:focus {
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,.10) !important;
+
+        }
+
+
+        .admin-main .dropdown-menu {
+
+            background: rgba(255,255,255,0.82) !important;
+
+            backdrop-filter: blur(16px);
+
+            -webkit-backdrop-filter: blur(16px);
+
+            border: 1px solid rgba(203,213,225,0.75) !important;
+
+            border-radius: 10px !important;
+
+            box-shadow:
+                0 14px 35px rgba(15,23,42,0.13) !important;
+
+            padding: 6px !important;
+
+        }
+
+
+        .admin-main .dropdown-menu .dropdown-item {
+
+            background: transparent !important;
+
+            color: #334155 !important;
+
+            border-radius: 7px;
+
+            padding: 9px 11px;
+
+            font-size: 14px;
+
+        }
+
+
+        .admin-main .dropdown-menu .dropdown-item:hover,
+
+        .admin-main .dropdown-menu .dropdown-item:focus {
+
+            background: rgba(241,245,249,.75) !important;
+
+            color: #004A9F !important;
+
+        }
+
+
+        .admin-main .dropdown-divider {
+
+            border-color: rgba(203,213,225,.65);
+
+        }
+
+
+        /* =====================================================
+           PAGE CONTENT
+        ====================================================== */
+
+        .download-content {
+
+            padding: 28px 0 40px;
+
+        }
+
+
+        /* =====================================================
+           REPORT HEADER
+        ====================================================== */
+
+        .report-header {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .report-header-left h2 {
+
+            margin: 0;
+
+            font-size: 23px;
+
+            font-weight: 700;
+
+            color: #172033;
+
+            letter-spacing: -0.2px;
+
+        }
+
+
+        .report-header-left p {
+
+            margin: 6px 0 0;
+
+            font-size: 13px;
+
+            color: #5B6775;
+
+        }
+
+
+        .report-system-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 11px;
+
+            border: 1px solid #dbe3ec;
+
+            background: #ffffff;
+
+            border-radius: 7px;
+
+            color: #475569;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .status-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #004A9F;
+
+        }
+
+
+        /* =====================================================
+           EXPORT PANEL
+        ====================================================== */
+
+        .export-panel {
+
+            background: #ffffff;
+
+            border: 1px solid #dbe2ea;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 3px 12px rgba(15,23,42,.04);
+
+            overflow: hidden;
+
+        }
+
+
+        .export-panel-header {
+
+            padding: 18px 20px;
+
+            border-bottom: 1px solid #e8edf2;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+        }
+
+
+        .export-panel-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+        }
+
+
+        .export-panel-icon {
+
+            width: 36px;
+
+            height: 36px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f1f5f9;
+
+            color: #334155;
+
+            font-size: 17px;
+
+        }
+
+
+        .export-panel-title h3 {
+
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #1e293b;
+
+        }
+
+
+        .export-panel-title p {
+
+            margin: 3px 0 0;
+
+            font-size: 11px;
+
+            color: #5B6775;
+
+        }
+
+
+        /* =====================================================
+           REPORT PERIOD GRID
+        ====================================================== */
+
+        .report-periods {
+
+            padding: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 14px;
+
+        }
+
+
+        /* =====================================================
+           REPORT CARD
+        ====================================================== */
+
+        .report-card {
+
+            border: 1px solid #dfe5eb;
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            padding: 17px;
+
+            transition:
+                border-color .18s ease,
+                box-shadow .18s ease,
+                transform .18s ease;
+
+        }
+
+
+        .report-card:hover {
+
+            border-color: #c7d2df;
+
+            box-shadow:
+                0 7px 18px rgba(15,23,42,.07);
+
+            transform: translateY(-1px);
+
+        }
+
+
+        .report-card-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .report-period-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f8fafc;
+
+            color: #334155;
+
+            font-size: 17px;
+
+            border: 1px solid #e5eaf0;
+
+        }
+
+
+        .report-period-badge {
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .5px;
+
+            color: #5B6775;
+
+        }
+
+
+        .report-card h4 {
+
+            margin: 0;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #1e293b;
+
+        }
+
+
+        .report-card-description {
+
+            margin: 5px 0 17px;
+
+            min-height: 34px;
+
+            font-size: 11px;
+
+            line-height: 1.55;
+
+            color: #5B6775;
+
+        }
+
+
+        /* =====================================================
+           EXPORT BUTTONS
+        ====================================================== */
+
+        .export-actions {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 8px;
+
+        }
+
+
+        .export-btn {
+
+            min-height: 38px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            border-radius: 7px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            transition: all .18s ease;
+
+            cursor: pointer;
+
+        }
+
+
+        .export-btn:disabled {
+
+            opacity: .65;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .export-btn-excel {
+
+            background: #004A9F;
+
+            border: 1px solid #004A9F;
+
+            color: #ffffff;
+
+        }
+
+
+        .export-btn-excel:hover:not(:disabled) {
+
+            background: #1e40af;
+
+            border-color: #1e40af;
+
+            color: #ffffff;
+
+        }
+
+
+        .export-btn-pdf {
+
+            background: #ffffff;
+
+            border: 1px solid #cbd5e1;
+
+            color: #334155;
+
+        }
+
+
+        .export-btn-pdf:hover:not(:disabled) {
+
+            background: #f8fafc;
+
+            border-color: #94a3b8;
+
+            color: #1e293b;
+
+        }
+
+
+        /* =====================================================
+           EXPORT INFORMATION
+        ====================================================== */
+
+        .export-info {
+
+            padding: 17px 20px;
+
+            border-top: 1px solid #e8edf2;
+
+            background: #fafbfc;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .export-info-icon {
+
+            width: 32px;
+
+            height: 32px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 7px;
+
+            background: #eef2f7;
+
+            color: #475569;
+
+        }
+
+
+        .export-info-text {
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            color: #5B6775;
+
+        }
+
+
+        .export-info-text strong {
+
+            color: #334155;
+
+        }
+
+
+        /* =====================================================
+           EXPORT STATUS
+        ====================================================== */
+
+        .export-status {
+
+            display: none;
+
+            margin: 0 20px 20px;
+
+            padding: 10px 12px;
+
+            border-radius: 7px;
+
+            border: 1px solid #dbe3ec;
+
+            background: #f8fafc;
+
+            color: #475569;
+
+            font-size: 12px;
+
+        }
+
+
+        .export-status.show {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+
+        .export-status.success {
+
+            background: #f0fdf4;
+
+            border-color: #bbf7d0;
+
+            color: #166534;
+
+        }
+
+
+        .export-status.error {
+
+            background: #fef2f2;
+
+            border-color: #fecaca;
+
+            color: #991b1b;
+
+        }
+
+
+        .export-status.loading {
+
+            background: #eff6ff;
+
+            border-color: #EAF2FA;
+
+            color: #1e40af;
+
+        }
+
+
+        /* =====================================================
+           REPORT FEATURES
+        ====================================================== */
+
+        .report-features {
+
+            margin-top: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 14px;
+
+        }
+
+
+        .feature-item {
+
+            background: #ffffff;
+
+            border: 1px solid #dfe5eb;
+
+            border-radius: 9px;
+
+            padding: 16px;
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 11px;
+
+        }
+
+
+        .feature-icon {
+
+            width: 34px;
+
+            height: 34px;
+
+            flex: 0 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #f1f5f9;
+
+            border-radius: 7px;
+
+            color: #475569;
+
+        }
+
+
+        .feature-item strong {
+
+            display: block;
+
+            font-size: 12px;
+
+            color: #1e293b;
+
+            margin-bottom: 3px;
+
+        }
+
+
+        .feature-item span {
+
+            display: block;
+
+            font-size: 10px;
+
+            line-height: 1.45;
+
+            color: #5B6775;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 992px) {
+
+            .report-periods {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+
+            .report-features {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
+
+            .admin-navbar .navbar-page-heading {
+
+                margin-left: 12px;
+
+                margin-right: 10px;
+
+                gap: 9px;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading p {
+
+                display: none;
+
+            }
+
+        }
+
+
+        @media (max-width: 576px) {
+
+            .download-content {
+
+                padding-top: 20px;
+
+            }
+
+
+            .report-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+            }
+
+
+            .report-header-left h2 {
+
+                font-size: 20px;
+
+            }
+
+
+            .report-periods {
+
+                grid-template-columns: 1fr;
+
+                padding: 14px;
+
+            }
+
+
+            .report-features {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .export-actions {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading {
+
+                margin-left: 8px;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading .page-icon {
+
+                display: none;
+
+            }
+
+
+            .admin-navbar .navbar-page-heading h1 {
+
+                font-size: 15px;
+
+            }
+
+
+            .live-time {
+
+                display: none;
+
+            }
+
+
+            .notification-menu {
+
+                width: 290px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-shell">
+
+
+    <!-- =====================================================
+         SIDEBAR BACKDROP
+    ====================================================== -->
+
+    <div
+        class="sidebar-backdrop"
+        data-sidebar-close>
+    </div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+        aria-label="Main navigation">
+
+
+        <!-- SIDEBAR HEADER -->
+
+        <div class="sidebar-header">
+
+            <a
+                class="brand-mark"
+                href="index.html"
+                aria-label="INOUTX Dashboard">
+
+                <span class="brand-icon">
+
+                    <i
+                        class="bi bi-grid-1x2-fill"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+
+                <span class="brand-copy">
+
+                    <span class="brand-title">
+                        INOUTX
+                    </span>
+
+                    <span class="brand-subtitle">
+                        Admin Dashboard
+                    </span>
+
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             SIDEBAR NAVIGATION
+        ================================================== -->
+
+        <nav class="sidebar-nav">
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                class="nav-link"
+                href="index.html">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-speedometer2"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- VEHICLE MOVEMENTS -->
+
+            <a
+                class="nav-link"
+                href="vehicle.html">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-bus-front"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Vehicle Movements
+                </span>
+
+            </a>
+
+
+            <!-- STAFF VEHICLES -->
+
+            <a
+                class="nav-link"
+                href="staff-vehicles.html">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-person-vcard"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Staff Vehicles
+                </span>
+
+            </a>
+
+
+            <!-- VISITOR VEHICLES -->
+
+            <a
+                class="nav-link"
+                href="visitor.html">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-question-circle"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Visitor Vehicles
+                </span>
+
+            </a>
+
+
+            <!-- DOWNLOAD DATA -->
+
+            <a
+                class="nav-link active"
+                href="download.html"
+                aria-current="page">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-download"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Download Data
+                </span>
+
+            </a>
+
+
+            <!-- PROFILE -->
+
+            <a
+                class="nav-link"
+                href="profile.html">
+
+                <span class="nav-icon">
+
+                    <i
+                        class="bi bi-person-badge"
+                        aria-hidden="true">
+                    </i>
+
+                </span>
+
+                <span class="nav-text">
+                    Profile
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <div class="admin-main">
+
+
+        <!-- =================================================
+             NAVBAR
+        ================================================== -->
+
+        <nav
+            class="navbar admin-navbar navbar-expand bg-white">
+
+            <div
+                class="container-fluid px-3 px-lg-4">
+
+
+                <!-- SIDEBAR TOGGLE -->
+
+                <button
+                    class="sidebar-toggle"
+                    type="button"
+                    data-sidebar-toggle
+                    aria-controls="adminSidebar"
+                    aria-expanded="true"
+                    aria-label="Toggle sidebar">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                <!-- PAGE TITLE -->
+
+                <div class="page-heading-copy navbar-page-heading">
+
+                    <span class="page-icon">
+
+                        <i
+                            class="bi bi-download"
+                            aria-hidden="true">
+                        </i>
+
+                    </span>
+
+
+                    <div>
+
+                        <h1>
+                            Analytics & Reports Center
+                        </h1>
+
+                        <p>
+                            Traffic trends, vehicle movements and security data exports
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NAVBAR ACTIONS -->
+
+                <div class="navbar-actions ms-auto">
+
+
+                    <!-- LIVE TIME -->
+
+                    <div class="live-time">
+
+                        <i
+                            class="bi bi-clock"
+                            aria-hidden="true">
+                        </i>
+
+                        <span id="live-time">
+                            --:--:--
+                        </span>
+
+                    </div>
+
+
+                    <!-- NOTIFICATIONS -->
+
+                    <div class="dropdown">
+
+                        <button
+                            class="notification-button"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="Notifications">
+
+                            <i
+                                class="bi bi-bell"
+                                aria-hidden="true">
+                            </i>
+
+                            <span
+                                id="notification-badge"
+                                class="notification-badge"
+                                style="display:none;">
+                                0
+                            </span>
+
+                        </button>
+
+
+                        <div
+                            class="dropdown-menu dropdown-menu-end notification-menu">
+
+
+                            <div class="notification-header">
+
+                                <div>
+
+                                    <strong>
+                                        Notifications
+                                    </strong>
+
+                                    <small id="notification-count">
+                                        No new notifications
+                                    </small>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    id="clear-notifications"
+                                    class="btn btn-sm btn-link">
+
+                                    Clear
+
+                                </button>
+
+                            </div>
+
+
+                            <div id="notification-list">
+
+                                <div
+                                    id="notification-empty"
+                                    class="notification-empty">
+
+                                    <i
+                                        class="bi bi-check-circle"
+                                        aria-hidden="true">
+                                    </i>
+
+                                    <div>
+
+                                        <strong>
+                                            No new notifications
+                                        </strong>
+
+                                        <small>
+                                            You're all caught up.
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADMIN PROFILE -->
+
+                    <div class="dropdown">
+
+                        <button
+                            class="profile-button dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+
+                            <span
+                                class="avatar-img avatar-sm profile-avatar"
+                                id="currentUserInitials"></span>
+
+                            <span class="profile-user-copy">
+                                <span id="currentUserName">Loading...</span>
+                                    <small id="currentUserRole"></small>
+                            </span>
+
+                        </button>
+
+
+                        <ul
+                            class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="profile.html">
+
+                                    <i
+                                        class="bi bi-person me-2">
+                                    </i>
+
+                                    Profile
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="login.html">
+
+                                    <i
+                                        class="bi bi-box-arrow-right me-2">
+                                    </i>
+
+                                    Sign out
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
+        <main class="download-page">
+
+
+            <div
+                class="container-fluid px-3 px-lg-4 download-content">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+
+                <div class="report-header">
+
+                    <div class="report-header-left">
+
+                        <h2>
+                            Data Export
+                        </h2>
+
+                        <p>
+                            Generate official reports from INOUTX vehicle and visitor records.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     EXPORT PANEL
+                ================================================== -->
+
+                <section
+                    class="export-panel"
+                    aria-label="Data export">
+
+
+                    <!-- PANEL HEADER -->
+
+                    <div class="export-panel-header">
+
+                        <div class="export-panel-title">
+
+                            <div class="export-panel-icon">
+
+                                <i class="bi bi-file-earmark-bar-graph"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <h3>
+                                    Generate Report
+                                </h3>
+
+                                <p>
+                                    Select a reporting period and file format
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         REPORT PERIODS
+                    ================================================== -->
+
+                    <div class="report-periods">
+
+
+                        <!-- TODAY -->
+
+                        <article class="report-card">
+
+
+                            <div class="report-card-top">
+
+                                <div class="report-period-icon">
+
+                                    <i class="bi bi-calendar-day"></i>
+
+                                </div>
+
+                                <span class="report-period-badge">
+                                    Daily
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+                                Today's Report
+                            </h4>
+
+
+                            <p class="report-card-description">
+                                Vehicle entries, exits, visitors and captured detections for today.
+                            </p>
+
+
+                            <div class="export-actions">
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-excel"
+                                    onclick="downloadReport('today','xlsx', this)">
+
+                                    <i class="bi bi-file-earmark-spreadsheet"></i>
+
+                                    Excel
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-pdf"
+                                    onclick="downloadReport('today','pdf', this)">
+
+                                    <i class="bi bi-file-earmark-pdf"></i>
+
+                                    PDF
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- WEEKLY -->
+
+                        <article class="report-card">
+
+
+                            <div class="report-card-top">
+
+                                <div class="report-period-icon">
+
+                                    <i class="bi bi-calendar-week"></i>
+
+                                </div>
+
+                                <span class="report-period-badge">
+                                    Weekly
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+                                Weekly Report
+                            </h4>
+
+
+                            <p class="report-card-description">
+                                Weekly vehicle movement statistics and security activity records.
+                            </p>
+
+
+                            <div class="export-actions">
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-excel"
+                                    onclick="downloadReport('weekly','xlsx', this)">
+
+                                    <i class="bi bi-file-earmark-spreadsheet"></i>
+
+                                    Excel
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-pdf"
+                                    onclick="downloadReport('weekly','pdf', this)">
+
+                                    <i class="bi bi-file-earmark-pdf"></i>
+
+                                    PDF
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+                        <!-- MONTHLY -->
+
+                        <article class="report-card">
+
+
+                            <div class="report-card-top">
+
+                                <div class="report-period-icon">
+
+                                    <i class="bi bi-calendar-month"></i>
+
+                                </div>
+
+                                <span class="report-period-badge">
+                                    Monthly
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+                                Monthly Report
+                            </h4>
+
+
+                            <p class="report-card-description">
+                                Complete monthly traffic, vehicle and visitor activity report.
+                            </p>
+
+
+                            <div class="export-actions">
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-excel"
+                                    onclick="downloadReport('monthly','xlsx', this)">
+
+                                    <i class="bi bi-file-earmark-spreadsheet"></i>
+
+                                    Excel
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="export-btn export-btn-pdf"
+                                    onclick="downloadReport('monthly','pdf', this)">
+
+                                    <i class="bi bi-file-earmark-pdf"></i>
+
+                                    PDF
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+
+                    <!-- =================================================
+                         STATUS
+                    ================================================== -->
+
+                    <div
+                        id="export-status"
+                        class="export-status">
+
+                        <i
+                            id="export-status-icon"
+                            class="bi bi-arrow-down-circle">
+                        </i>
+
+                        <span id="export-status-text">
+                            Preparing report...
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         INFORMATION
+                    ================================================== -->
+
+                    <div class="export-info">
+
+
+                        <div class="export-info-icon">
+
+                            <i class="bi bi-info-circle"></i>
+
+                        </div>
+
+
+                        <div class="export-info-text">
+
+                            <strong>
+                                PDF reports
+                            </strong>
+                            include vehicle detection records and available captured images.
+
+                            <br>
+
+                            <strong>
+                                Excel reports
+                            </strong>
+                            contain structured vehicle, visitor and movement data for analysis.
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+             
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+
+    /* =====================================================
+       API BASE
+    ====================================================== */
+
+    const API_BASE =
+        window.location.origin;
+
+
+    /* =====================================================
+       DOM REFERENCES
+    ====================================================== */
+
+    const exportStatus =
+        document.getElementById(
+            "export-status"
+        );
+
+
+    const exportStatusText =
+        document.getElementById(
+            "export-status-text"
+        );
+
+
+    const exportStatusIcon =
+        document.getElementById(
+            "export-status-icon"
+        );
+
+
+    /* =====================================================
+       SET EXPORT STATUS
+    ====================================================== */
+
+    function setExportStatus(
+        message,
+        type = "loading"
+    ) {
+
+        if (
+            !exportStatus ||
+            !exportStatusText
+        ) {
+
+            return;
+
+        }
+
+
+        exportStatus.classList.remove(
+            "loading",
+            "success",
+            "error"
+        );
+
+
+        exportStatus.classList.add(
+            "show",
+            type
+        );
+
+
+        exportStatusText.textContent =
+            message;
+
+
+        if (exportStatusIcon) {
+
+            exportStatusIcon.className =
+                "bi";
+
+
+            if (type === "loading") {
+
+                exportStatusIcon.classList.add(
+                    "bi-arrow-repeat"
+                );
+
+            }
+
+            else if (type === "success") {
+
+                exportStatusIcon.classList.add(
+                    "bi-check-circle"
+                );
+
+            }
+
+            else {
+
+                exportStatusIcon.classList.add(
+                    "bi-exclamation-circle"
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESET BUTTON
+    ====================================================== */
+
+    function resetExportButton(
+        button
+    ) {
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        button.disabled =
+            false;
+
+
+        if (button.dataset.originalHtml) {
+
+            button.innerHTML =
+                button.dataset.originalHtml;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PREPARE BUTTON
+    ====================================================== */
+
+    function prepareExportButton(
+        button,
+        format
+    ) {
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        if (!button.dataset.originalHtml) {
+
+            button.dataset.originalHtml =
+                button.innerHTML;
+
+        }
+
+
+        button.disabled =
+            true;
+
+
+        button.innerHTML = `
+
+            <i class="bi bi-arrow-repeat"></i>
+
+            Preparing...
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       DOWNLOAD REPORT
+       
+       IMPORTANT:
+       
+       Excel:
+       /api/download/today
+       /api/download/weekly
+       /api/download/monthly
+
+       PDF:
+       /api/download/pdf?period=today
+       /api/download/pdf?period=weekly
+       /api/download/pdf?period=monthly
+    ====================================================== */
+
+    async function downloadReport(
+        period,
+        format,
+        button
+    ) {
+
+
+        const validPeriods = [
+            "today",
+            "weekly",
+            "monthly"
+        ];
+
+
+        const validFormats = [
+            "xlsx",
+            "pdf"
+        ];
+
+
+        if (
+            !validPeriods.includes(period)
+        ) {
+
+            setExportStatus(
+                "Invalid report period.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !validFormats.includes(format)
+        ) {
+
+            setExportStatus(
+                "Invalid report format.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const formatName =
+            format === "xlsx"
+                ? "Excel"
+                : "PDF";
+
+
+        const periodName =
+            period.charAt(0).toUpperCase() +
+            period.slice(1);
+
+
+        let url;
+
+
+        /* =================================================
+           EXCEL ENDPOINT
+        ================================================= */
+
+        if (
+            format === "xlsx"
+        ) {
+
+            url =
+                `${API_BASE}/api/download/${period}`;
+
+        }
+
+
+        /* =================================================
+           PDF ENDPOINT
+        ================================================= */
+
+        else {
+
+            url =
+                `${API_BASE}/api/download/pdf?period=${encodeURIComponent(period)}`;
+
+        }
+
+
+        prepareExportButton(
+            button,
+            format
+        );
+
+
+        setExportStatus(
+            `Preparing ${periodName} ${formatName} report...`,
+            "loading"
+        );
+
+
+        try {
+
+
+            /*
+             * Fetch the actual file first.
+             *
+             * This allows us to detect JSON API errors
+             * instead of downloading an error response
+             * as if it were a PDF/XLSX file.
+             */
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        credentials: "include",
+
+                        cache: "no-store"
+                    }
+                );
+
+
+            /* =============================================
+               HTTP ERROR
+            ============================================== */
+
+            if (!response.ok) {
+
+                let errorMessage =
+                    `Report generation failed. HTTP ${response.status}.`;
+
+
+                try {
+
+                    const contentType =
+                        response.headers.get(
+                            "content-type"
+                        );
+
+
+                    if (
+                        contentType &&
+                        contentType.includes(
+                            "application/json"
+                        )
+                    ) {
+
+                        const errorData =
+                            await response.json();
+
+
+                        if (
+                            errorData &&
+                            errorData.error
+                        ) {
+
+                            errorMessage =
+                                errorData.error;
+
+                        }
+
+                    }
+
+                }
+
+                catch (jsonError) {
+
+                    console.error(
+                        "Error reading API error:",
+                        jsonError
+                    );
+
+                }
+
+
+                throw new Error(
+                    errorMessage
+                );
+
+            }
+
+
+            /* =============================================
+               CHECK CONTENT TYPE
+            ============================================== */
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            /*
+             * If Flask accidentally returns JSON,
+             * display the actual error rather than
+             * saving it as a PDF/XLSX file.
+             */
+
+            if (
+                contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                const data =
+                    await response.json();
+
+
+                throw new Error(
+                    data.error ||
+                    "The server returned an unexpected JSON response."
+                );
+
+            }
+
+
+            /* =============================================
+               GET FILE BLOB
+            ============================================== */
+
+            const blob =
+                await response.blob();
+
+
+            if (
+                !blob ||
+                blob.size === 0
+            ) {
+
+                throw new Error(
+                    "The server returned an empty file."
+                );
+
+            }
+
+
+            /* =============================================
+               DETERMINE FILENAME
+            ============================================== */
+
+            let filename =
+                `${periodName}_Report.${format === "xlsx" ? "xlsx" : "pdf"}`;
+
+
+            const contentDisposition =
+                response.headers.get(
+                    "content-disposition"
+                );
+
+
+            if (
+                contentDisposition
+            ) {
+
+                const filenameMatch =
+                    contentDisposition.match(
+                        /filename\*?=(?:UTF-8'')?["']?([^;"']+)["']?/i
+                    );
+
+
+                if (
+                    filenameMatch &&
+                    filenameMatch[1]
+                ) {
+
+                    filename =
+                        decodeURIComponent(
+                            filenameMatch[1]
+                        );
+
+                }
+
+            }
+
+
+            /* =============================================
+               CREATE TEMPORARY DOWNLOAD LINK
+            ============================================== */
+
+            const blobUrl =
+                window.URL.createObjectURL(
+                    blob
+                );
+
+
+            const downloadLink =
+                document.createElement(
+                    "a"
+                );
+
+
+            downloadLink.href =
+                blobUrl;
+
+
+            downloadLink.download =
+                filename;
+
+
+            downloadLink.style.display =
+                "none";
+
+
+            document.body.appendChild(
+                downloadLink
+            );
+
+
+            downloadLink.click();
+
+
+            downloadLink.remove();
+
+
+            /*
+             * Release temporary browser URL
+             * after the download has started.
+             */
+
+            setTimeout(
+                function () {
+
+                    window.URL.revokeObjectURL(
+                        blobUrl
+                    );
+
+                },
+                1000
+            );
+
+
+            /* =============================================
+               SUCCESS
+            ============================================== */
+
+            setExportStatus(
+                `${periodName} ${formatName} report downloaded successfully.`,
+                "success"
+            );
+
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Report download error:",
+                error
+            );
+
+
+            setExportStatus(
+                `Unable to download ${periodName} ${formatName} report: ${error.message}`,
+                "error"
+            );
+
+        }
+
+
+        finally {
+
+            /*
+             * Restore the button after download
+             * processing has finished.
+             */
+
+            setTimeout(
+                function () {
+
+                    resetExportButton(
+                        button
+                    );
+
+                },
+                1200
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LIVE CLOCK
+    ====================================================== */
+
+    function updateLiveTime() {
+
+
+        const clock =
+            document.getElementById(
+                "live-time"
+            );
+
+
+        if (!clock) {
+
+            return;
+
+        }
+
+
+        const now =
+            new Date();
+
+
+        const hours =
+            String(
+                now.getHours()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const minutes =
+            String(
+                now.getMinutes()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const seconds =
+            String(
+                now.getSeconds()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        clock.textContent =
+            `${hours}:${minutes}:${seconds}`;
+
+    }
+
+
+    updateLiveTime();
+
+
+    setInterval(
+        updateLiveTime,
+        1000
+    );
+
+
+    /* =====================================================
+       NOTIFICATIONS
+    ====================================================== */
+
+    let notifications = [];
+
+
+    function updateNotificationUI() {
+
+
+        const list =
+            document.getElementById(
+                "notification-list"
+            );
+
+
+        const badge =
+            document.getElementById(
+                "notification-badge"
+            );
+
+
+        const count =
+            document.getElementById(
+                "notification-count"
+            );
+
+
+        if (
+            !list ||
+            !badge ||
+            !count
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            notifications.length === 0
+        ) {
+
+
+            badge.style.display =
+                "none";
+
+
+            count.textContent =
+                "No new notifications";
+
+
+            list.innerHTML = `
+
+                <div
+                    id="notification-empty"
+                    class="notification-empty">
+
+                    <i
+                        class="bi bi-check-circle"
+                        aria-hidden="true">
+                    </i>
+
+                    <div>
+
+                        <strong>
+                            No new notifications
+                        </strong>
+
+                        <small>
+                            You're all caught up.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        badge.textContent =
+            notifications.length;
+
+
+        badge.style.display =
+            "flex";
+
+
+        count.textContent =
+            `${notifications.length} new notification${notifications.length > 1 ? "s" : ""}`;
+
+
+        list.innerHTML =
+            notifications
+                .map(
+                    notification => `
+
+                        <div
+                            class="notification-item p-3 border-bottom">
+
+                            <strong>
+                                ${escapeHtml(
+                                    notification.title
+                                )}
+                            </strong>
+
+                            <div
+                                class="small text-muted">
+
+                                ${escapeHtml(
+                                    notification.message
+                                )}
+
+                            </div>
+
+                            <div
+                                class="small text-muted mt-1">
+
+                                ${escapeHtml(
+                                    notification.time
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `
+                )
+                .join("");
+
+    }
+
+
+    /* =====================================================
+       LOAD NOTIFICATIONS
+    ====================================================== */
+
+    async function loadNotifications() {
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/notifications",
+                    {
+                        method: "GET",
+
+                        cache: "no-store",
+
+                        credentials: "include"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Notification API returned HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            notifications =
+                Array.isArray(data)
+                    ? data.map(
+                        notification => ({
+
+                            title:
+                                notification.title ||
+                                "Notification",
+
+                            message:
+                                notification.message ||
+                                "",
+
+                            time:
+                                notification.created_at
+                                    ? new Date(
+                                        notification.created_at
+                                      ).toLocaleTimeString(
+                                        "en-IN"
+                                      )
+                                    : ""
+
+                        })
+                    )
+                    : [];
+
+
+            updateNotificationUI();
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Notification loading error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLEAR NOTIFICATIONS
+    ====================================================== */
+
+    const clearNotifications =
+        document.getElementById(
+            "clear-notifications"
+        );
+
+
+    if (clearNotifications) {
+
+
+        clearNotifications.addEventListener(
+            "click",
+            async function () {
+
+
+                try {
+
+
+                    const response =
+                        await fetch(
+                            API_BASE +
+                            "/api/notifications/clear",
+                            {
+                                method: "POST",
+
+                                credentials: "include"
+                            }
+                        );
+
+
+                    if (
+                        !response.ok
+                    ) {
+
+                        throw new Error(
+                            "HTTP " +
+                            response.status
+                        );
+
+                    }
+
+
+                    notifications =
+                        [];
+
+
+                    updateNotificationUI();
+
+                }
+
+
+                catch (error) {
+
+                    console.error(
+                        "Clear notification error:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       HTML ESCAPE
+    ====================================================== */
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =====================================================
+       INITIAL NOTIFICATIONS
+    ====================================================== */
+
+    loadNotifications();
+
+
+    setInterval(
+        loadNotifications,
+        3000
+    );
+
+</script>
+
+
+<!-- =====================================================
+     BOOTSTRAP
+====================================================== -->
+
+<script
+    src="../assets/js/bootstrap.bundle.min.js">
+</script>
+
+
+<!-- =====================================================
+     MAIN JS
+====================================================== -->
+
+<script
+    src="../assets/js/main.js">
+</script>
+
+
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+
+</html>

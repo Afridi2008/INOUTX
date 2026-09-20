@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="INOUTX Admin Profile">
+    <title>Profile | INOUTX</title>
+
+    <link rel="icon" type="image/png" href="pic.PNG">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <style>
+        :root {
+            --profile-primary: #003377;
+            --profile-primary-soft: #eff6ff;
+            --profile-text: #172033;
+            --profile-muted: #5B6775;
+            --profile-border: #e2e8f0;
+            --profile-bg: #f8fafc;
+        }
+
+        body {
+            background: #f5f8fc;
+        }
+
+        .admin-navbar {
+            min-height: 68px;
+            background: rgba(255, 255, 255, .97) !important;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 5px rgba(15, 23, 42, .03);
+        }
+
+        .navbar-page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .sidebar-toggle {
+            width: 42px;
+            height: 42px;
+            border: 1px solid #dbe3f0;
+            border-radius: 10px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 4px;
+            transition: .2s ease;
+            flex: 0 0 auto;
+        }
+
+        .sidebar-toggle:hover {
+            background: #f8fafc;
+            border-color: #bfd0ea;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, .06);
+        }
+
+        .sidebar-toggle span {
+            width: 20px;
+            height: 2px;
+            background: #17202A;
+            border-radius: 2px;
+        }
+
+        .navbar-page-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            flex: 0 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+      
+            color: #000000;
+            font-size: 17px;
+        }
+
+        .navbar-page-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .navbar-page-heading {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 700;
+            color: #182238;
+            white-space: nowrap;
+        }
+
+        .navbar-page-subtitle {
+            margin-top: 2px;
+            font-size: 11px;
+            line-height: 15px;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .live-time {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .live-time i {
+            font-size: 15px;
+        }
+
+        .notification-button {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            background: transparent;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #374151;
+            font-size: 19px;
+            transition: .2s ease;
+        }
+
+        .notification-button:hover {
+            background: #f3f4f6;
+            color: #17202A;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 4px;
+            border-radius: 20px;
+            background: #C62828;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-navbar-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #eef4ff;
+            color: #000000;
+            border: 1px solid #dbe7ff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            overflow: hidden;
+            flex: 0 0 30px;
+        }
+
+        .profile-navbar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-button {
+            min-height: 42px;
+            padding: 4px 9px 4px 5px;
+            border: 1px solid #dbe3ef;
+            border-radius: 10px;
+            background: #fff;
+            color: #17202A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .profile-button:hover {
+            background: #f8fafc;
+        }
+
+        .profile-button::after {
+            margin-left: 2px;
+        }
+
+        .dropdown-menu {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .98);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .10);
+            padding: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 9px 11px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .dropdown-item:hover {
+            background: #f3f6fa;
+            color: #000000;
+        }
+
+        .notification-menu {
+            width: 330px;
+            max-width: calc(100vw - 30px);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .notification-header {
+            padding: 14px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notification-header strong {
+            display: block;
+            font-size: 14px;
+            color: #17202A;
+        }
+
+        .notification-header small {
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        .notification-empty {
+            padding: 26px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #6b7280;
+        }
+
+        .notification-empty i {
+            font-size: 25px;
+            color: #198754;
+        }
+
+        .notification-empty strong {
+            display: block;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .notification-empty small {
+            font-size: 11px;
+        }
+
+        .profile-page {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .profile-card,
+        .profile-form-card {
+            border: 1px solid var(--profile-border);
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .045);
+            overflow: hidden;
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-cover {
+            height: 125px;
+            background: linear-gradient(135deg, #eef4ff, #f8fafc);
+            border-bottom: 1px solid #e8edf3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-cover-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .86);
+            border: 1px solid #dbe7ff;
+            color: #003377;
+            font-size: 25px;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, .08);
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 92px;
+            height: 92px;
+            margin: -46px auto 0;
+            padding: 4px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .10);
+        }
+
+        .profile-avatar {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dbe7ff;
+            background: #eef4ff;
+            color: #000000;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .profile-card-body {
+            padding: 14px 24px 26px;
+        }
+
+        .profile-name {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--profile-text);
+            word-break: break-word;
+        }
+
+        .profile-role {
+            margin: 4px 0 15px;
+            font-size: 13px;
+            color: var(--profile-muted);
+            text-transform: capitalize;
+        }
+
+        .profile-status {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .profile-status .badge {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .profile-info {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #edf0f4;
+            text-align: left;
+        }
+
+        .profile-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 13px;
+            min-width: 0;
+        }
+
+        .profile-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .profile-info-icon {
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #f5f7fa;
+            color: #5B6775;
+            font-size: 14px;
+        }
+
+        .profile-info-label {
+            margin: 0;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .profile-info-value {
+            margin: 1px 0 0;
+            font-size: 12px;
+            color: #334155;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-form-card {
+            padding: 26px;
+        }
+
+        .profile-form-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .profile-form-header-icon {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: #f1f5f9;
+            color: #000000;
+            font-size: 17px;
+        }
+
+        .profile-form-title {
+            margin: 0 0 3px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--profile-text);
+        }
+
+        .profile-form-subtitle {
+            margin: 0;
+            font-size: 13px;
+            color: #5B6775;
+        }
+
+        .profile-field {
+            margin-bottom: 18px;
+        }
+
+        .profile-form-label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 650;
+            color: #334155;
+        }
+
+        .profile-input-wrapper {
+            position: relative;
+        }
+
+        .profile-input-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 15px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .profile-form-control {
+            min-height: 46px;
+            width: 100%;
+            padding: 10px 13px 10px 40px;
+            border: 1px solid #d9e0e8;
+            border-radius: 9px;
+            background: #fff;
+            color: #1e293b;
+            font-size: 13px;
+            transition: .2s ease;
+        }
+
+        .profile-form-control:hover {
+            border-color: #c5ceda;
+        }
+
+        .profile-form-control:focus {
+            border-color: #4f8df7;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+            outline: none;
+        }
+
+        .profile-form-control::placeholder {
+            color: #a1aab8;
+            opacity: 1;
+        }
+
+        .profile-form-control:disabled {
+            background: #f8fafc;
+            color: #5B6775;
+            cursor: not-allowed;
+        }
+
+        .password-input {
+            padding-right: 48px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: 0;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            background: #f3f4f6;
+            color: #475569;
+        }
+
+        .profile-password-note {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 7px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .profile-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+            padding-top: 5px;
+        }
+
+        .profile-save-btn,
+        .profile-reset-btn {
+            min-height: 42px;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .profile-save-btn {
+            box-shadow: 0 2px 5px rgba(37, 99, 235, .16);
+        }
+
+        .profile-reset-btn {
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+        }
+
+        .profile-reset-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        #profileStatus {
+            border-radius: 9px;
+            font-size: 13px;
+            padding: 11px 13px;
+        }
+
+        .invalid-feedback {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .profile-loading {
+            padding: 40px 20px;
+            text-align: center;
+            color: #5B6775;
+        }
+
+        .profile-error {
+            margin: 20px 0 0;
+        }
+
+        .save-spinner {
+            width: 15px;
+            height: 15px;
+            border-width: 2px;
+        }
+
+        @media (max-width:992px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-card {
+                max-width: 600px;
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width:576px) {
+            .navbar-page-title {
+                gap: 8px;
+            }
+
+            .navbar-page-icon {
+                width: 36px;
+                height: 36px;
+                flex-basis: 36px;
+                font-size: 15px;
+            }
+
+            .navbar-page-heading {
+                font-size: 14px;
+            }
+
+            .navbar-page-subtitle {
+                font-size: 10px;
+            }
+
+            .live-time {
+                display: none;
+            }
+
+            .navbar-actions {
+                gap: 6px;
+            }
+
+            .profile-form-card {
+                padding: 20px 17px;
+            }
+
+            .profile-cover {
+                height: 105px;
+            }
+
+            .profile-form-actions {
+                width: 100%;
+            }
+
+            .profile-save-btn,
+            .profile-reset-btn {
+                flex: 1;
+            }
+
+            .notification-menu {
+                width: 290px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-shell">
+        <div class="sidebar-backdrop" data-sidebar-close></div>
+
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+            <div class="sidebar-header">
+                <a class="brand-mark" href="index.html" aria-label="INOUTX Dashboard">
+                    <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
+                    <span class="brand-copy">
+                        <span class="brand-title">INOUTX</span>
+                        <span class="brand-subtitle">Admin Dashboard</span>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="nav-link" href="index.html"><span class="nav-icon"><i
+                            class="bi bi-speedometer2"></i></span><span class="nav-text">Dashboard</span></a>
+                <a class="nav-link" href="vehicle.html"><span class="nav-icon"><i
+                            class="bi bi-bus-front"></i></span><span class="nav-text">Vehicle Movements</span></a>
+                <a class="nav-link" href="staff-vehicles.html"><span class="nav-icon"><i
+                            class="bi bi-person-vcard"></i></span><span class="nav-text">Staff Vehicles</span></a>
+                <a class="nav-link" href="visitor.html"><span class="nav-icon"><i
+                            class="bi bi-question-circle"></i></span><span class="nav-text">Visitor Vehicles</span></a>
+                <a class="nav-link" href="download.html"><span class="nav-icon"><i
+                            class="bi bi-download"></i></span><span class="nav-text">Download Data</span></a>
+                <a class="nav-link active" href="profile.html" aria-current="page"><span class="nav-icon"><i
+                            class="bi bi-person-badge"></i></span><span class="nav-text">Profile</span></a>
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+            <nav class="navbar admin-navbar navbar-expand bg-white">
+                <div class="container-fluid px-3 px-lg-4">
+                    <div class="navbar-page-title">
+                        <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-controls="adminSidebar"
+                            aria-expanded="true" aria-label="Toggle sidebar">
+                            <span></span><span></span><span></span>
+                        </button>
+
+                        <div class="navbar-page-icon" aria-hidden="true"><i class="bi bi-person-badge"></i></div>
+
+                        <div class="navbar-page-copy">
+                            <div class="navbar-page-heading">Account</div>
+                            <div class="navbar-page-subtitle">Manage your account</div>
+                        </div>
+                    </div>
+
+                    <div class="navbar-actions ms-auto">
+                        <div class="live-time"><i class="bi bi-clock"></i><span id="live-time">--:--:--</span></div>
+
+                        <div class="dropdown">
+                            <button class="notification-button" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false" aria-label="Notifications">
+                                <i class="bi bi-bell"></i>
+                                <span id="notification-badge" class="notification-badge" style="display:none;">0</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end notification-menu">
+                                <div class="notification-header">
+                                    <div><strong>Notifications</strong><small id="notification-count">No new
+                                            notifications</small></div>
+                                    <button type="button" id="clear-notifications"
+                                        class="btn btn-sm btn-link">Clear</button>
+                                </div>
+                                <div id="notification-list">
+                                    <div class="notification-empty"><i class="bi bi-check-circle"></i>
+                                        <div><strong>No new notifications</strong><small>You're all caught up.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <button class="profile-button dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <span class="profile-navbar-avatar" id="currentUserInitials"></span>
+                                <span class="profile-user-copy">
+                                    <span id="currentUserName">Loading...</span>
+                                    <small id="currentUserRole"></small>
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="profile.html"><i
+                                            class="bi bi-person me-2"></i>Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><button class="dropdown-item" type="button" id="signOutButton"><i
+                                            class="bi bi-box-arrow-right me-2"></i>Sign out</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <main class="dashboard-content">
+                <div class="container-fluid px-3 px-lg-4 py-4 profile-page">
+                    <section class="profile-layout" id="profileContent">
+                        <div class="profile-loading" style="grid-column:1/-1;">
+                            <div class="spinner-border text-primary mb-2" role="status" aria-hidden="true"></div>
+                            <div>Loading account details...</div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const state = { user: null };
+            const content = document.getElementById("profileContent");
+            const statusBox = document.createElement("div");
+
+            function escapeHtml(value) {
+                return String(value ?? "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function initials(name) {
+                const value = String(name || "").trim();
+                if (!value) return "—";
+                const parts = value.split(/\s+/).filter(Boolean);
+                return parts.length === 1
+                    ? parts[0].slice(0, 2).toUpperCase()
+                    : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            }
+
+            function roleLabel(role) {
+                const value = String(role || "").replace(/[_-]+/g, " ").trim();
+                return value ? value.replace(/\b\w/g, c => c.toUpperCase()) : "Not available";
+            }
+
+            function renderProfile(user) {
+                const name = String(user.name || "").trim() || "Not available";
+                const email = String(user.email || "").trim() || "Not available";
+                const role = roleLabel(user.role);
+                const activeKnown = typeof user.active === "boolean";
+                const active = user.active === true;
+                const initialsText = initials(user.name);
+
+                document.getElementById("currentUserName").textContent = name;
+                document.getElementById("currentUserInitials").textContent = initialsText;
+                document.getElementById("currentUserRole").textContent = role;
+
+                content.innerHTML = `
+            <div class="profile-card">
+                <div class="profile-cover">
+                
+                </div>
+
+                <div class="profile-avatar-wrapper">
+                    <div class="profile-avatar" aria-label="${escapeHtml(name)}">${escapeHtml(initialsText)}</div>
+                </div>
+
+                <div class="profile-card-body">
+                    <h1 class="profile-name">${escapeHtml(name)}</h1>
+                    <p class="profile-role">${escapeHtml(role)}</p>
+
+                    <div class="profile-status">
+                        <span class="badge text-bg-primary"><i class="bi bi-shield-check me-1"></i>${escapeHtml(role)}</span>
+                        <span class="badge ${active ? "text-bg-success" : "text-bg-secondary"}"><i class="bi ${active ? "bi-check-circle" : "bi-pause-circle"} me-1"></i>${active ? "Active" : "Inactive"}</span>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><i class="bi bi-envelope"></i></div>
+                            <div><p class="profile-info-label">Email</p><p class="profile-info-value">${escapeHtml(email)}</p></div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><i class="bi bi-person-check"></i></div>
+                            <div><p class="profile-info-label">Account Status</p><p class="profile-info-value">${activeKnown ? (active ? "Active" : "Inactive") : "Not available"}</p></div>
+                        </div>
+                        <div class="profile-info-item">
+                            <div class="profile-info-icon"><i class="bi bi-shield-lock"></i></div>
+                            <div><p class="profile-info-label">Access</p><p class="profile-info-value">${escapeHtml(role)}</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-form-card">
+                <div class="profile-form-header">
+                    <div class="profile-form-header-icon"><i class="bi bi-person-lines-fill"></i></div>
+                    <div>
+                        <h2 class="profile-form-title">Account Details</h2>
+                        <p class="profile-form-subtitle">Update the information associated with your INOUTX account.</p>
+                    </div>
+                </div>
+
+                <form id="profileForm" class="needs-validation" novalidate>
+                    <div class="profile-field">
+                        <label class="profile-form-label" for="profileName">Full name</label>
+                        <div class="profile-input-wrapper">
+                            <i class="bi bi-person profile-input-icon"></i>
+                            <input class="form-control profile-form-control" id="profileName" name="name" type="text" value="${escapeHtml(name)}" placeholder="Enter your full name" autocomplete="name" required>
+                        </div>
+                        <div class="invalid-feedback">Please enter your full name.</div>
+                    </div>
+
+                    <div class="profile-field">
+                        <label class="profile-form-label" for="profileEmail">Email address</label>
+                        <div class="profile-input-wrapper">
+                            <i class="bi bi-envelope profile-input-icon"></i>
+                            <input class="form-control profile-form-control" id="profileEmail" name="email" type="email" value="${escapeHtml(email === "Not available" ? "" : email)}" placeholder="Enter your email address" autocomplete="email" required>
+                        </div>
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+
+                    <div class="profile-field">
+                        <label class="profile-form-label" for="profilePassword">New password</label>
+                        <div class="profile-input-wrapper">
+                            <i class="bi bi-lock profile-input-icon"></i>
+                            <input class="form-control profile-form-control password-input" id="profilePassword" name="password" type="password" minlength="6" placeholder="Enter a new password" autocomplete="new-password">
+                            <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password"><i class="bi bi-eye" id="passwordIcon"></i></button>
+                        </div>
+                        <div class="profile-password-note"><i class="bi bi-info-circle"></i><span>Leave blank if you do not want to change your password.</span></div>
+                    </div>
+
+                    <div class="profile-form-actions">
+                        <button class="btn btn-primary profile-save-btn" id="saveProfileButton" type="submit"><i class="bi bi-check-lg"></i><span>Save Changes</span></button>
+                        <button class="profile-reset-btn" id="resetProfileButton" type="reset"><i class="bi bi-arrow-counterclockwise"></i><span>Reset</span></button>
+                    </div>
+                </form>
+                <div id="profileStatus" class="alert mt-3 d-none" role="alert"></div>
+            </div>
+        `;
+
+                bindForm();
+            }
+
+            function showStatus(message, type) {
+                const box = document.getElementById("profileStatus");
+                if (!box) return;
+                box.textContent = message;
+                box.className = "alert mt-3 alert-" + type;
+            }
+
+            function bindForm() {
+                const form = document.getElementById("profileForm");
+                const password = document.getElementById("profilePassword");
+                const toggle = document.getElementById("togglePassword");
+                const icon = document.getElementById("passwordIcon");
+                const reset = document.getElementById("resetProfileButton");
+                const save = document.getElementById("saveProfileButton");
+
+                toggle.addEventListener("click", function () {
+                    const visible = password.type === "text";
+                    password.type = visible ? "password" : "text";
+                    icon.className = visible ? "bi bi-eye" : "bi bi-eye-slash";
+                    toggle.setAttribute("aria-label", visible ? "Show password" : "Hide password");
+                });
+
+                form.addEventListener("submit", async function (event) {
+                    event.preventDefault();
+                    if (!form.checkValidity()) {
+                        form.classList.add("was-validated");
+                        return;
+                    }
+
+                    form.classList.remove("was-validated");
+                    save.disabled = true;
+                    save.innerHTML = '<span class="spinner-border save-spinner" role="status" aria-hidden="true"></span><span>Saving...</span>';
+
+                    try {
+                        const response = await fetch("/api/profile", {
+                            method: "PUT",
+                            credentials: "include",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                name: document.getElementById("profileName").value.trim(),
+                                email: document.getElementById("profileEmail").value.trim(),
+                                password: password.value
+                            })
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+                        if (!response.ok || !data.success) throw new Error(data.error || "Unable to update profile.");
+
+                        state.user = data.user;
+                        renderProfile(state.user);
+                        showStatus("Profile details updated successfully.", "success");
+                    } catch (error) {
+                        showStatus(error.message || "Unable to update profile.", "danger");
+                        save.disabled = false;
+                        save.innerHTML = '<i class="bi bi-check-lg"></i><span>Save Changes</span>';
+                    }
+                });
+
+                reset.addEventListener("click", function () {
+                    setTimeout(() => {
+                        form.classList.remove("was-validated");
+                        const box = document.getElementById("profileStatus");
+                        if (box) box.className = "alert mt-3 d-none";
+                    }, 0);
+                });
+            }
+
+            async function loadProfile() {
+                try {
+                    const response = await fetch("/api/profile", { credentials: "include" });
+                    const data = await response.json().catch(() => ({}));
+                    if (response.status === 401) {
+                        window.location.href = "login.html";
+                        return;
+                    }
+                    if (!response.ok || !data.success || !data.user) throw new Error(data.error || "Unable to load account details.");
+                    state.user = data.user;
+                    renderProfile(state.user);
+                } catch (error) {
+                    content.innerHTML = `<div class="profile-error alert alert-danger" style="grid-column:1/-1;"><i class="bi bi-exclamation-triangle me-2"></i>${escapeHtml(error.message || "Unable to load account details.")}</div>`;
+                }
+            }
+
+            document.getElementById("signOutButton").addEventListener("click", async function () {
+                try {
+                    await fetch("/api/logout", { method: "POST", credentials: "include" });
+                } finally {
+                    window.location.href = "login.html";
+                }
+            });
+
+            let notifications = [];
+            function updateNotifications() {
+                const badge = document.getElementById("notification-badge");
+                const count = document.getElementById("notification-count");
+                const list = document.getElementById("notification-list");
+                if (!badge || !count || !list) return;
+                if (!notifications.length) {
+                    badge.style.display = "none";
+                    count.textContent = "No new notifications";
+                    list.innerHTML = `<div class="notification-empty"><i class="bi bi-check-circle"></i><div><strong>No new notifications</strong><small>You're all caught up.</small></div></div>`;
+                    return;
+                }
+                badge.textContent = notifications.length;
+                badge.style.display = "flex";
+                count.textContent = notifications.length + " new notification" + (notifications.length > 1 ? "s" : "");
+            }
+            document.getElementById("clear-notifications").addEventListener("click", function () { notifications = []; updateNotifications(); });
+            updateNotifications();
+
+            function updateLiveTime() {
+                const clock = document.getElementById("live-time");
+                if (clock) clock.textContent = new Date().toLocaleTimeString("en-IN", { hour12: false });
+            }
+            updateLiveTime();
+            setInterval(updateLiveTime, 1000);
+
+            loadProfile();
+        })();
+    </script>
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+
+</html>

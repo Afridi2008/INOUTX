@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+venv313/
+.venv/
+.venv313/
+
+# Secrets
+.env
+
+# Node
+node_modules/
+Frontend/node_modules/
+
+# Vite build
+Frontend/dist/
+
+# Generated files
+captured_frames/
+runs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Python caches
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+# ML cache files
+*.cache

@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description"
+    content="INOUTX Smart Campus Vehicle Management System Login">
+
+  <title>Login | INOUTX</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet"
+    href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="pic.PNG">
+
+
+  <style>
+
+    /* =========================================================
+       ROOT
+       ========================================================= */
+
+    :root {
+
+      --inoutx-primary: #003377;
+      --inoutx-primary-dark: #002451;
+      --inoutx-secondary: #0055a4;
+
+      --inoutx-light: #f5f7fa;
+      --inoutx-border: #d9e1e8;
+
+      --inoutx-text: #17202a;
+      --inoutx-muted: #687582;
+
+      --inoutx-white: #ffffff;
+
+      --inoutx-ring:
+        0 0 0 3px rgba(0, 85, 164, 0.12);
+    }
+
+
+    /* =========================================================
+       GLOBAL
+       ========================================================= */
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+
+    body.auth-body {
+
+      min-height: 100vh;
+
+      font-family: Arial, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(0, 74, 159, 0.35),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(0, 51, 119, 0.25),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          var(--inoutx-primary-dark),
+          var(--inoutx-primary),
+          var(--inoutx-primary-dark)
+        );
+
+      color: var(--inoutx-text);
+    }
+
+
+    /* =========================================================
+       TOP HEADER
+       ========================================================= */
+
+    .portal-header {
+
+      min-height: 64px;
+
+      padding: 0 5%;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      background: #ffffff;
+
+      border-bottom:
+        1px solid var(--inoutx-border);
+
+      box-shadow:
+        0 1px 0 rgba(219, 228, 239, 0.9);
+    }
+
+
+    .portal-brand {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      text-decoration: none;
+
+      color: var(--inoutx-text);
+    }
+
+
+    .portal-logo {
+
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    
+
+      font-size: 19px;
+    }
+
+
+    .portal-brand-text strong {
+
+      display: block;
+
+      color: var(--inoutx-text);
+
+      font-size: 16px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.4px;
+    }
+
+
+    .portal-brand-text span {
+
+      display: block;
+
+      margin-top: 1px;
+
+      color: var(--inoutx-muted);
+
+      font-size: 10px;
+    }
+
+
+    .portal-header-right {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      color: var(--inoutx-muted);
+
+      font-size: 12px;
+    }
+
+
+    /* =========================================================
+       MAIN AUTH AREA
+       ========================================================= */
+
+    .auth-page {
+
+      min-height:
+        calc(100vh - 64px);
+
+      padding: 40px 20px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+
+    /* =========================================================
+       MAIN LOGIN BOX
+       ========================================================= */
+
+    .login-wrapper {
+
+      width: 100%;
+
+      max-width: 900px;
+
+      display: grid;
+
+      grid-template-columns:
+        0.88fr 1.12fr;
+
+      background: #ffffff;
+
+      border:
+        1px solid var(--inoutx-border);
+
+      border-radius: 12px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =========================================================
+       LEFT INFORMATION PANEL
+       ========================================================= */
+
+    .portal-information {
+
+      position: relative;
+
+      padding: 32px 36px;
+
+      background:
+        #f5f7fa;
+
+      border-right:
+        1px solid var(--inoutx-border);
+
+      overflow: hidden;
+    }
+
+
+    .information-content {
+
+      position: relative;
+
+      z-index: 2;
+    }
+
+
+    /* =========================================================
+       COLLEGE LOGOS
+       
+       IMPORTANT:
+       NO BACKGROUND
+       NO BORDER
+       NO CARD
+       NO CIRCLE
+       LARGER SIZE
+       ========================================================= */
+
+    .college-card {
+
+      width: 100%;
+
+      min-height: 100px;
+
+      margin-bottom: 20px;
+
+      padding: 0;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: transparent;
+
+      border: none;
+
+      border-radius: 0;
+
+      box-shadow: none;
+    }
+
+
+    .college-card-logos {
+
+      width: 100%;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 22px;
+    }
+
+
+    .college-card-logo {
+
+      width: 145px;
+
+      height: 82px;
+
+      object-fit: contain;
+
+      padding: 0;
+
+      background: transparent;
+
+      border: none;
+
+      border-radius: 0;
+
+      box-shadow: none;
+
+      display: block;
+    }
+
+
+    /* =========================================================
+       COLLEGE LABEL
+       ========================================================= */
+
+    .college-label {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      margin-bottom: 17px;
+
+      color:
+        var(--inoutx-primary-dark);
+
+      font-size: 11px;
+
+      font-weight: 700;
+    }
+
+
+    .college-label i {
+
+      font-size: 13px;
+    }
+
+
+    /* =========================================================
+       LEFT TITLE
+       ========================================================= */
+
+    .information-content h1 {
+
+      margin: 0 0 12px 0;
+
+      color:
+        var(--inoutx-text);
+
+      font-size: 32px;
+
+      line-height: 1.08;
+
+      font-weight: 800;
+
+      letter-spacing: 0;
+    }
+
+
+    .information-content h1 span {
+
+      color:
+        var(--inoutx-primary);
+    }
+
+
+    .information-subtitle {
+
+      max-width: 390px;
+
+      margin: 0 0 25px 0;
+
+      color:
+        var(--inoutx-muted);
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       FEATURE LIST
+       ========================================================= */
+
+    .feature-list {
+
+      display: grid;
+
+      gap: 0;
+
+      max-width: 390px;
+    }
+
+
+    .feature-item {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 11px;
+
+      padding: 9px 0;
+
+      background: transparent;
+
+      border: 0;
+
+      border-bottom:
+        1px solid var(--inoutx-border);
+    }
+
+
+    .feature-item:last-child {
+
+      border-bottom: none;
+    }
+
+
+    .feature-icon {
+
+      width: 30px;
+
+      height: 30px;
+
+      flex-shrink: 0;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 8px;
+
+      background: #eaf2fa;
+
+      color:
+        var(--inoutx-primary);
+
+      font-size: 14px;
+    }
+
+
+    .feature-item span {
+
+      color:
+        var(--inoutx-text);
+
+      font-size: 11px;
+
+      font-weight: 500;
+    }
+
+
+    /* =========================================================
+       RIGHT LOGIN PANEL
+       ========================================================= */
+
+    .login-panel {
+
+      padding:
+        38px 48px 32px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: center;
+
+      background: #ffffff;
+    }
+
+
+    /* =========================================================
+       INOUTX BRAND
+       ========================================================= */
+
+    .login-brand-wrap {
+
+      width: 100%;
+
+      display: flex;
+
+      justify-content: center;
+
+      margin-bottom: 18px;
+    }
+
+
+    .login-brand {
+
+      width: 100%;
+
+      max-width: 330px;
+
+      min-height: 66px;
+
+      padding: 8px 15px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 10px;
+
+      background: #ffffff;
+
+      border:
+        1px solid var(--inoutx-border);
+
+      border-radius: 9px;
+
+      box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .login-brand-logo {
+
+      width: 48px;
+
+      height: 48px;
+
+      flex-shrink: 0;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background:
+        var(--inoutx-primary);
+
+      color: #ffffff;
+
+      font-size: 23px;
+
+      font-weight: 800;
+
+      box-shadow:
+        0 5px 12px rgba(0, 51, 119, 0.15);
+    }
+
+
+    .login-brand-text {
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: flex-start;
+    }
+
+
+    .login-brand-title {
+
+      color:
+        var(--inoutx-primary);
+
+      font-size: 25px;
+
+      line-height: 1;
+
+      font-weight: 800;
+
+      letter-spacing: 1px;
+    }
+
+
+    .login-brand-subtitle {
+
+      margin-top: 4px;
+
+      color:
+        var(--inoutx-secondary);
+
+      font-size: 8px;
+
+      line-height: 1.3;
+
+      font-weight: 700;
+
+      letter-spacing: 0.6px;
+
+      text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       LOGIN HEADING
+       ========================================================= */
+
+    .login-heading {
+
+      margin-bottom: 24px;
+    }
+
+
+    .login-heading .eyebrow {
+
+      margin: 0 0 6px 0;
+
+      color:
+        var(--inoutx-secondary);
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      letter-spacing: 1.3px;
+
+      text-transform: uppercase;
+    }
+
+
+    .login-heading h2 {
+
+      margin: 0 0 6px 0;
+
+      color:
+        var(--inoutx-text);
+
+      font-size: 26px;
+
+      font-weight: 750;
+    }
+
+
+    .login-heading p {
+
+      margin: 0;
+
+      color:
+        var(--inoutx-muted);
+
+      font-size: 12px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       FORM
+       ========================================================= */
+
+    .form-label {
+
+      margin-bottom: 7px;
+
+      color: #344054;
+
+      font-size: 12px;
+
+      font-weight: 650;
+    }
+
+
+    .input-group-custom {
+
+      position: relative;
+    }
+
+
+    .input-group-custom > i {
+
+      position: absolute;
+
+      left: 14px;
+
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      z-index: 3;
+
+      color: #8b98a8;
+
+      font-size: 15px;
+    }
+
+
+    .input-group-custom .form-control {
+
+      padding-left: 40px;
+
+      padding-right: 42px;
+    }
+
+
+    .form-control {
+
+      min-height: 44px;
+
+      border:
+        1px solid var(--inoutx-border);
+
+      border-radius: 8px;
+
+      background: #ffffff;
+
+      color:
+        var(--inoutx-text);
+
+      font-size: 12px;
+
+      box-shadow: none;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+
+    .form-control:focus {
+
+      border-color:
+        var(--inoutx-secondary);
+
+      box-shadow:
+        var(--inoutx-ring);
+    }
+
+
+    .form-control::placeholder {
+
+      color: #a3acb9;
+    }
+
+
+    /* =========================================================
+       PASSWORD TOGGLE
+       ========================================================= */
+
+    .password-toggle {
+
+      position: absolute;
+
+      right: 10px;
+
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      z-index: 4;
+
+      padding: 5px;
+
+      border: none;
+
+      background: transparent;
+
+      color: #8995a5;
+
+      cursor: pointer;
+    }
+
+
+    .password-toggle:hover {
+
+      color:
+        var(--inoutx-primary);
+    }
+
+
+    /* =========================================================
+       FORGOT PASSWORD
+       ========================================================= */
+
+    .forgot-link {
+
+      color:
+        var(--inoutx-secondary);
+
+      font-size: 11px;
+
+      font-weight: 600;
+
+      text-decoration: none;
+    }
+
+
+    .forgot-link:hover {
+
+      text-decoration: underline;
+    }
+
+
+    /* =========================================================
+       REMEMBER ME
+       ========================================================= */
+
+    .form-check-input {
+
+      cursor: pointer;
+    }
+
+
+    .form-check-input:checked {
+
+      background-color:
+        var(--inoutx-primary);
+
+      border-color:
+        var(--inoutx-primary);
+    }
+
+
+    .form-check-label {
+
+      color:
+        var(--inoutx-muted);
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       ALERTS
+       ========================================================= */
+
+    #loginError,
+    #loginSuccess {
+
+      padding: 9px 11px;
+
+      margin-bottom: 14px;
+
+      border-radius: 7px;
+
+      font-size: 11px;
+    }
+
+
+    /* =========================================================
+       LOGIN BUTTON
+       ========================================================= */
+
+    #loginButton {
+
+      min-height: 44px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background:
+        var(--inoutx-primary);
+
+      color: #ffffff;
+
+      font-size: 12px;
+
+      font-weight: 650;
+
+      letter-spacing: 0.2px;
+
+      box-shadow: none;
+
+      transition:
+        background 0.2s ease;
+    }
+
+
+    #loginButton:hover:not(:disabled) {
+
+      background:
+        var(--inoutx-primary-dark);
+    }
+
+
+    #loginButton:disabled {
+
+      opacity: 0.75;
+
+      cursor: not-allowed;
+    }
+
+
+    /* =========================================================
+       REGISTER
+       ========================================================= */
+
+    .auth-footer {
+
+      margin-top: 20px;
+
+      padding-top: 15px;
+
+      border-top:
+        1px solid #edf0f4;
+
+      text-align: center;
+
+      color: #7a8492;
+
+      font-size: 11px;
+    }
+
+
+    .auth-footer a {
+
+      color:
+        var(--inoutx-secondary);
+
+      font-weight: 650;
+
+      text-decoration: none;
+    }
+
+
+    .auth-footer a:hover {
+
+      text-decoration: underline;
+    }
+
+
+    /* =========================================================
+       SECURITY
+       ========================================================= */
+
+    .security-note {
+
+      margin-top: 13px;
+
+      text-align: center;
+
+      color: #98a2b3;
+
+      font-size: 9px;
+    }
+
+
+    .security-note i {
+
+      margin-right: 3px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .login-wrapper {
+
+        max-width: 620px;
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .portal-information {
+
+        padding: 30px;
+
+        border-right: none;
+
+        border-bottom:
+          1px solid var(--inoutx-border);
+      }
+
+
+      .college-card-logo {
+
+        width: 135px;
+
+        height: 75px;
+      }
+
+
+      .feature-list {
+
+        grid-template-columns: 1fr 1fr;
+
+        max-width: 100%;
+      }
+
+
+      .information-subtitle {
+
+        max-width: 100%;
+      }
+
+
+      .login-panel {
+
+        padding: 35px;
+      }
+    }
+
+
+    @media (max-width: 600px) {
+
+      .portal-header {
+
+        padding: 0 18px;
+      }
+
+
+      .portal-header-right {
+
+        display: none;
+      }
+
+
+      .portal-brand-text span {
+
+        display: none;
+      }
+
+
+      .auth-page {
+
+        padding: 15px 10px;
+
+        align-items: flex-start;
+      }
+
+
+      .login-wrapper {
+
+        border-radius: 10px;
+      }
+
+
+      .portal-information {
+
+        padding: 25px 20px;
+      }
+
+
+      .college-card {
+
+        min-height: 75px;
+
+        margin-bottom: 15px;
+      }
+
+
+      .college-card-logos {
+
+        gap: 10px;
+      }
+
+
+      .college-card-logo {
+
+        width: 125px;
+
+        height: 68px;
+      }
+
+
+      .feature-list {
+
+        display: none;
+      }
+
+
+      .information-content h1 {
+
+        font-size: 28px;
+      }
+
+
+      .information-subtitle {
+
+        font-size: 12px;
+      }
+
+
+      .login-panel {
+
+        padding:
+          30px 22px 25px;
+      }
+
+
+      .login-brand {
+
+        min-height: 65px;
+      }
+
+
+      .login-brand-logo {
+
+        width: 45px;
+
+        height: 45px;
+
+        font-size: 21px;
+      }
+
+
+      .login-brand-title {
+
+        font-size: 23px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body class="auth-body login-page">
+
+
+  <!-- =======================================================
+       TOP HEADER
+       ======================================================= -->
+
+  <header class="portal-header">
+
+    <a href="index.html" class="portal-brand">
+
+      <div class="portal-logo">
+
+        <img src="../assets/images/logo.PNG" alt="INOUTX Project Logo" class="portal-logo-image">
+
+      </div>
+
+
+      <div class="portal-brand-text">
+
+        <strong>
+          INOUTX
+        </strong>
+
+        <span>
+          Smart Campus Vehicle Management System
+        </span>
+
+      </div>
+
+    </a>
+
+
+    <div class="portal-header-right">
+
+      <i class="bi bi-shield-lock"></i>
+
+      Secure Portal
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =======================================================
+       MAIN LOGIN AREA
+       ======================================================= -->
+
+  <main class="auth-page">
+
+
+    <section class="login-wrapper">
+
+
+      <!-- ===================================================
+           LEFT PANEL
+           =================================================== -->
+
+    
+<div class="portal-information">
+
+  <div class="information-content">
+
+
+    <!-- =================================================
+         COLLEGE LOGOS
+         ================================================= -->
+
+    <div class="college-card">
+
+      <div class="college-card-logos">
+
+        <img
+          class="college-card-logo"
+          src="../assets/images/krce_logo.png"
+          alt="KRCE Logo">
+
+        <img
+          class="college-card-logo"
+          src="../assets/images/krct_logo.png"
+          alt="KRCT Logo">
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SYSTEM LABEL
+         ================================================= -->
+
+    <div class="college-label">
+
+      <i class="bi bi-shield-check"></i>
+
+      Smart Campus Vehicle Security
+
+    </div>
+
+
+    <!-- =================================================
+         MAIN TITLE
+         ================================================= -->
+
+    <h1>
+
+      Welcome to<br>
+
+      <span>INOUTX</span>
+
+    </h1>
+
+
+    <!-- =================================================
+         SYSTEM DESCRIPTION
+         ================================================= -->
+
+    <p class="information-subtitle">
+
+      A smart campus vehicle management system
+      built to securely monitor, verify and manage
+      vehicle movement across campus entry and exit gates.
+
+    </p>
+
+
+    <!-- =================================================
+         INOUTX FEATURES
+         ================================================= -->
+
+    <div class="feature-list">
+
+
+      <!-- STUDENT VEHICLES -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-car-front"></i>
+
+        </div>
+
+        <span>
+          Student &amp; Faculty Vehicle Management
+        </span>
+
+      </div>
+
+
+      <!-- VISITOR MANAGEMENT -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-person-badge"></i>
+
+        </div>
+
+        <span>
+          Visitor Vehicle Registration
+        </span>
+
+      </div>
+
+
+      <!-- NUMBER PLATE RECOGNITION -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-camera"></i>
+
+        </div>
+
+        <span>
+          Automatic Number Plate Recognition
+        </span>
+
+      </div>
+
+
+      <!-- ENTRY EXIT -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-box-arrow-in-right"></i>
+
+        </div>
+
+        <span>
+          Smart Entry &amp; Exit Tracking
+        </span>
+
+      </div>
+
+
+      <!-- SECURITY -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-shield-check"></i>
+
+        </div>
+
+        <span>
+          Secure Campus Gate Monitoring
+        </span>
+
+      </div>
+
+
+      <!-- RECORDS -->
+
+      <div class="feature-item">
+
+        <div class="feature-icon">
+
+          <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <span>
+          Real-Time Vehicle Movement Records
+        </span>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+
+
+</div>
+
+
+
+
+      <!-- ===================================================
+           RIGHT LOGIN PANEL
+           =================================================== -->
+
+      <div class="login-panel">
+
+
+        <!-- =================================================
+             INOUTX BRAND
+             ================================================= -->
+
+        <div class="login-brand-wrap">
+
+
+          <div class="login-brand">
+
+
+            <div class="login-brand-logo">
+
+              <i class="bi bi-bus-front-fill"></i>
+
+            </div>
+
+
+            <div class="login-brand-text">
+
+              <div class="login-brand-title">
+
+          <img src="D:\11092026\IN_OUTX\Frontend\assets\images\logo.PNG" alt="INOUTX Project Logo" class="portal-logo-image">
+
+              </div>
+
+
+            
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             LOGIN HEADING
+             ================================================= -->
+
+        <div class="login-heading">
+
+
+          <p class="eyebrow">
+
+            Secure Access
+
+          </p>
+
+
+          <h2>
+
+            Sign in
+
+          </h2>
+
+
+          <p>
+
+            Enter your registered credentials
+            to access the INOUTX portal.
+
+          </p>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             LOGIN FORM
+             ================================================= -->
+
+        <form
+          id="loginForm"
+          class="needs-validation"
+          novalidate
+          autocomplete="on">
+
+
+          <!-- =================================================
+               COLLEGE EMAIL
+               ================================================= -->
+
+          <div class="mb-3">
+
+
+            <label
+              class="form-label"
+              for="loginEmail">
+
+              College Email address
+
+            </label>
+
+
+            <div class="input-group-custom">
+
+
+              <i class="bi bi-person"></i>
+
+
+              <input
+                class="form-control"
+                id="loginEmail"
+                name="email"
+                type="text"
+                placeholder="2503811714021008"
+                autocomplete="username"
+                required>
+
+
+            </div>
+
+
+            <div class="invalid-feedback">
+
+              Enter your College email address.
+
+            </div>
+
+
+          </div>
+
+
+
+          <!-- =================================================
+               PASSWORD
+               ================================================= -->
+
+          <div class="mb-3">
+
+
+            <div class="d-flex justify-content-between align-items-center">
+
+
+              <label
+                class="form-label"
+                for="loginPassword">
+
+                Password
+
+              </label>
+
+
+              <a
+                class="forgot-link"
+                href="forgot-password.html">
+
+                Forgot password?
+
+              </a>
+
+
+            </div>
+
+
+            <div class="input-group-custom">
+
+
+              <i class="bi bi-lock"></i>
+
+
+              <input
+                class="form-control"
+                id="loginPassword"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                minlength="6"
+                autocomplete="current-password"
+                required>
+
+
+              <button
+                type="button"
+                class="password-toggle"
+                id="passwordToggle"
+                aria-label="Show password">
+
+
+                <i
+                  id="passwordToggleIcon"
+                  class="bi bi-eye">
+                </i>
+
+
+              </button>
+
+
+            </div>
+
+
+            <div class="invalid-feedback">
+
+              Password must be at least 6 characters.
+
+            </div>
+
+
+          </div>
+
+
+
+          <!-- =================================================
+               REMEMBER ME
+               ================================================= -->
+
+          <div class="form-check mb-4">
+
+
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="rememberMe">
+
+
+            <label
+              class="form-check-label"
+              for="rememberMe">
+
+              Remember my email
+
+            </label>
+
+
+          </div>
+
+
+
+          <!-- =================================================
+               ERROR
+               ================================================= -->
+
+          <div
+            id="loginError"
+            class="alert alert-danger d-none"
+            role="alert">
+          </div>
+
+
+
+          <!-- =================================================
+               SUCCESS
+               ================================================= -->
+
+          <div
+            id="loginSuccess"
+            class="alert alert-success d-none"
+            role="alert">
+          </div>
+
+
+
+          <!-- =================================================
+               LOGIN BUTTON
+               ================================================= -->
+
+          <button
+            id="loginButton"
+            class="btn btn-primary w-100"
+            type="submit">
+
+
+            <i
+              id="loginIcon"
+              class="bi bi-box-arrow-in-right"
+              aria-hidden="true">
+            </i>
+
+
+            <span id="loginButtonText">
+
+              Login as Student
+
+            </span>
+
+
+          </button>
+
+
+        </form>
+
+
+
+        <!-- =================================================
+             REGISTER
+             ================================================= -->
+
+        <div class="auth-footer">
+
+          New to INOUTX?
+
+          <a href="register.html">
+
+            Create an account
+
+          </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SECURITY
+             ================================================= -->
+
+        <div class="security-note">
+
+          <i class="bi bi-shield-lock"></i>
+
+          Your login credentials are securely transmitted.
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- =======================================================
+       BOOTSTRAP JS
+       ======================================================= -->
+
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+
+  <!-- MAIN JS -->
+
+  <script src="../assets/js/main.js"></script>
+
+
+
+  <!-- =======================================================
+       LOGIN JAVASCRIPT
+       ======================================================= -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+
+        /* =================================================
+           ELEMENTS
+           ================================================= */
+
+        const loginForm =
+          document.getElementById("loginForm");
+
+        const loginEmail =
+          document.getElementById("loginEmail");
+
+        const loginPassword =
+          document.getElementById("loginPassword");
+
+        const loginButton =
+          document.getElementById("loginButton");
+
+        const loginButtonText =
+          document.getElementById("loginButtonText");
+
+        const loginIcon =
+          document.getElementById("loginIcon");
+
+        const loginError =
+          document.getElementById("loginError");
+
+        const loginSuccess =
+          document.getElementById("loginSuccess");
+
+        const rememberMe =
+          document.getElementById("rememberMe");
+
+        const passwordToggle =
+          document.getElementById("passwordToggle");
+
+        const passwordToggleIcon =
+          document.getElementById(
+            "passwordToggleIcon"
+          );
+
+
+
+        /* =================================================
+           PASSWORD SHOW / HIDE
+           ================================================= */
+
+        passwordToggle.addEventListener(
+          "click",
+          function () {
+
+
+            const isPassword =
+              loginPassword.type === "password";
+
+
+            loginPassword.type =
+              isPassword
+                ? "text"
+                : "password";
+
+
+            passwordToggleIcon.className =
+              isPassword
+                ? "bi bi-eye-slash"
+                : "bi bi-eye";
+
+
+            passwordToggle.setAttribute(
+              "aria-label",
+              isPassword
+                ? "Hide password"
+                : "Show password"
+            );
+
+
+          }
+        );
+
+
+
+        /* =================================================
+           LOGIN FORM
+           ================================================= */
+
+        loginForm.addEventListener(
+          "submit",
+          async function (event) {
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+
+            /* ---------------------------------------------
+               VALIDATION
+               --------------------------------------------- */
+
+            if (!loginForm.checkValidity()) {
+
+              loginForm.classList.add(
+                "was-validated"
+              );
+
+              return;
+
+            }
+
+
+
+            /* ---------------------------------------------
+               CLEAR MESSAGES
+               --------------------------------------------- */
+
+            loginError.classList.add(
+              "d-none"
+            );
+
+            loginSuccess.classList.add(
+              "d-none"
+            );
+
+            loginError.textContent = "";
+
+            loginSuccess.textContent = "";
+
+
+
+            /* ---------------------------------------------
+               GET INPUT VALUES
+               --------------------------------------------- */
+
+            const email =
+              loginEmail.value
+                .trim()
+                .toLowerCase();
+
+            const password =
+              loginPassword.value;
+
+
+
+            /* ---------------------------------------------
+               DISABLE BUTTON
+               --------------------------------------------- */
+
+            loginButton.disabled = true;
+
+            loginIcon.className =
+              "bi bi-arrow-repeat";
+
+            loginButtonText.textContent =
+              "Signing in...";
+
+
+
+            /* ---------------------------------------------
+               FLASK LOGIN API
+               --------------------------------------------- */
+
+            try {
+
+
+              const response =
+                await fetch(
+                  "/api/login",
+                  {
+
+                    method: "POST",
+
+                    headers: {
+
+                      "Content-Type":
+                        "application/json"
+
+                    },
+
+                    credentials: "include",
+
+                    body: JSON.stringify({
+
+                      email: email,
+
+                      password: password
+
+                    })
+
+                  }
+                );
+
+
+
+              /* -------------------------------------------
+                 READ RESPONSE
+                 ------------------------------------------- */
+
+              let data = {};
+
+
+              try {
+
+                data =
+                  await response.json();
+
+              }
+              catch (jsonError) {
+
+                data = {};
+
+              }
+
+
+
+              console.log(
+                "Login response:",
+                data
+              );
+
+
+
+              /* -------------------------------------------
+                 LOGIN FAILED
+                 ------------------------------------------- */
+
+              if (
+                !response.ok ||
+                !data.success
+              ) {
+
+
+                loginError.textContent =
+                  data.error ||
+                  "Invalid email or password.";
+
+
+                loginError.classList.remove(
+                  "d-none"
+                );
+
+
+                loginButton.disabled =
+                  false;
+
+
+                loginIcon.className =
+                  "bi bi-box-arrow-in-right";
+
+
+                loginButtonText.textContent =
+                  "Login as Student";
+
+
+                return;
+
+              }
+
+
+
+              /* -------------------------------------------
+                 LOGIN SUCCESS
+                 ------------------------------------------- */
+
+              console.log(
+                "INOUTX Login successful"
+              );
+
+
+              console.log(
+                "Logged in user:",
+                data.user
+              );
+
+
+
+              loginSuccess.textContent =
+                "Login successful. Redirecting...";
+
+
+              loginSuccess.classList.remove(
+                "d-none"
+              );
+
+
+
+              /* -------------------------------------------
+                 REMEMBER EMAIL
+                 ------------------------------------------- */
+
+              if (
+                rememberMe.checked
+              ) {
+
+
+                localStorage.setItem(
+                  "inoutx_remember_email",
+                  email
+                );
+
+
+              }
+              else {
+
+
+                localStorage.removeItem(
+                  "inoutx_remember_email"
+                );
+
+
+              }
+
+
+
+              /* -------------------------------------------
+                 SUCCESS BUTTON
+                 ------------------------------------------- */
+
+              loginIcon.className =
+                "bi bi-check-circle";
+
+
+              loginButtonText.textContent =
+                "Login Successful";
+
+
+
+              /* -------------------------------------------
+                 REDIRECT
+                 ------------------------------------------- */
+
+              setTimeout(
+                function () {
+
+                  window.location.href =
+                    "index.html";
+
+                },
+                500
+              );
+
+
+            }
+
+
+            /* ---------------------------------------------
+               SERVER / NETWORK ERROR
+               --------------------------------------------- */
+
+            catch (error) {
+
+
+              console.error(
+                "Login request failed:",
+                error
+              );
+
+
+              loginError.textContent =
+                "Unable to connect to the INOUTX server. Make sure Flask is running.";
+
+
+              loginError.classList.remove(
+                "d-none"
+              );
+
+
+              loginButton.disabled =
+                false;
+
+
+              loginIcon.className =
+                "bi bi-box-arrow-in-right";
+
+
+              loginButtonText.textContent =
+                "Login as Student";
+
+
+            }
+
+
+          }
+        );
+
+
+
+        /* =================================================
+           LOAD REMEMBERED EMAIL
+           ================================================= */
+
+        const rememberedEmail =
+          localStorage.getItem(
+            "inoutx_remember_email"
+          );
+
+
+        if (rememberedEmail) {
+
+
+          loginEmail.value =
+            rememberedEmail;
+
+
+          rememberMe.checked =
+            true;
+
+
+        }
+
+
+      }
+    );
+
+  </script>
+
+
+
+<footer class="auth-copyright">
+  2026 Designed by
+  <strong>Department Of CSE - KRCT</strong>.
+  All rights reserved.
+</footer>
+</body>
+
+</html>
