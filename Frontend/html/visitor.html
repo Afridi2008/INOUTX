@@ -7,7 +7,7 @@
     <meta name="description" content="INOUTX Visitor Management">
     <title>Visitors | INOUTX</title>
 
-    <link rel="icon" type="image/png" href="pic.PNG">
+    <link rel="icon" type="image/png" href="../assets/images/logo.PNG">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="../assets/css/style.css">
@@ -155,9 +155,9 @@
         }
 
         .visitor-table {
-            width: 100%;
+            width: max-content;
             min-width: 1050px;
-            table-layout: fixed;
+            table-layout: auto;
             margin-bottom: 0 !important;
             border-collapse: collapse;
         }
@@ -179,7 +179,34 @@
             vertical-align: middle !important;
             text-align: center !important;
             padding: 14px 16px;
+            white-space: nowrap;
+            word-break: normal;
+            overflow-wrap: normal;
         }
+
+        .visitor-table th:nth-child(1),
+        .visitor-table td:nth-child(1) { min-width: 60px; }
+
+        .visitor-table th:nth-child(2),
+        .visitor-table td:nth-child(2) { min-width: 150px; }
+
+        .visitor-table th:nth-child(3),
+        .visitor-table td:nth-child(3) { min-width: 145px; }
+
+        .visitor-table th:nth-child(4),
+        .visitor-table td:nth-child(4) { min-width: 135px; }
+
+        .visitor-table th:nth-child(5),
+        .visitor-table td:nth-child(5),
+        .visitor-table th:nth-child(6),
+        .visitor-table td:nth-child(6) { min-width: 165px; }
+
+        .visitor-table th:nth-child(7),
+        .visitor-table td:nth-child(7),
+        .visitor-table th:nth-child(8),
+        .visitor-table td:nth-child(8),
+        .visitor-table th:nth-child(9),
+        .visitor-table td:nth-child(9) { min-width: 125px; }
 
         .visitor-table th {
             background: var(--light-blue);

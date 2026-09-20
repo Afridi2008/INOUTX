@@ -2,17 +2,26 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <meta name="description" content="INOUTX Vehicle Movements">
+
   <title>Vehicle Movements | INOUTX</title>
 
-  <link rel="Icon" type="image/png" href="pic.PNG">
+  <link rel="icon" type="image/png" href="pic.PNG">
+
   <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/vendors/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="../assets/css/style.css">
 
+
   <style>
+
+    /* =========================================================
+       GLOBAL
+    ========================================================= */
 
     body,
     .admin-shell,
@@ -21,764 +30,1446 @@
       font-family: Arial, sans-serif;
     }
 
-    /* ==========================================
+
+    /* =========================================================
        VEHICLE SUMMARY CARDS
-       Design based on the supplied reference
-    ========================================== */
+    ========================================================= */
 
     .vehicle-summary-cards {
+
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
       gap: 16px;
+
       margin-top: 22px;
       margin-bottom: 18px;
     }
 
+
     .vehicle-summary-card {
+
       position: relative;
+
       min-height: 140px;
+
       padding: 24px 20px 18px 20px;
+
       background: #FFFFFF;
+
       border: 1px solid #D5DCE5;
+
       border-radius: 9px;
-      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05);
+
+      box-shadow:
+        0 2px 5px rgba(15, 23, 42, 0.05);
+
       overflow: hidden;
     }
 
+
     .vehicle-summary-card::before {
+
       content: "";
+
       position: absolute;
+
       left: 0;
       top: 0;
       bottom: 0;
+
       width: 4px;
-      border-radius: 9px 0 0 9px;
+
+      border-radius:
+        9px 0 0 9px;
     }
+
 
     .vehicle-summary-card.card-fleet::before {
       background: #003377;
     }
 
+
     .vehicle-summary-card.card-campus::before {
       background: #198f83;
     }
+
 
     .vehicle-summary-card.card-route::before {
       background: #003377;
     }
 
+
     .vehicle-summary-card-title {
+
       margin: 0;
+
       padding-right: 58px;
+
       color: #5B6775;
+
       font-size: 13px;
+
       line-height: 1.35;
+
       font-weight: 700;
+
       letter-spacing: 0.2px;
-      text-transform: none;
     }
 
+
     .vehicle-summary-card-value {
+
       margin-top: 25px;
+
       color: #17202A;
+
       font-size: 34px;
+
       line-height: 1;
+
       font-weight: 800;
     }
 
-    .vehicle-summary-card.card-campus .vehicle-summary-card-value {
+
+    .vehicle-summary-card.card-campus
+    .vehicle-summary-card-value {
+
       color: #198754;
     }
 
-    .vehicle-summary-card.card-route .vehicle-summary-card-value {
+
+    .vehicle-summary-card.card-route
+    .vehicle-summary-card-value {
+
       color: #003377;
     }
 
+
     .vehicle-summary-card-subtitle {
+
       margin-top: 12px;
+
       color: #5B6775;
+
       font-size: 13px;
+
       line-height: 1.35;
+
       font-weight: 500;
     }
 
+
     .vehicle-summary-card-icon {
+
       position: absolute;
+
       top: 18px;
       right: 18px;
+
       width: 42px;
       height: 42px;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       border-radius: 9px;
+
       font-size: 18px;
     }
 
-    .card-fleet .vehicle-summary-card-icon {
-      color: #003377;
+
+    .card-fleet .vehicle-summary-card-icon,
+    .card-campus .vehicle-summary-card-icon,
+    .card-route .vehicle-summary-card-icon {
+
       background: #EAF2FA;
+
       border: 1px solid #D5DCE5;
     }
+
+
+    .card-fleet .vehicle-summary-card-icon,
+    .card-route .vehicle-summary-card-icon {
+
+      color: #003377;
+    }
+
 
     .card-campus .vehicle-summary-card-icon {
+
       color: #198754;
-      background: #EAF2FA;
-      border: 1px solid #D5DCE5;
     }
 
-    .card-route .vehicle-summary-card-icon {
-      color: #003377;
-      background: #EAF2FA;
-      border: 1px solid #D5DCE5;
-    }
 
     @media (max-width: 992px) {
+
       .vehicle-summary-cards {
-        grid-template-columns: 1fr;
+
+        grid-template-columns:
+          1fr;
       }
     }
 
+
     @media (max-width: 576px) {
+
       .vehicle-summary-card {
+
         min-height: 130px;
-        padding: 21px 18px 17px 18px;
+
+        padding:
+          21px 18px 17px 18px;
       }
 
+
       .vehicle-summary-card-value {
+
         margin-top: 21px;
+
         font-size: 31px;
       }
     }
 
 
-    /* ==========================================
-       TABLE
-    ========================================== */
+    /* =========================================================
+       TODAY / YESTERDAY FILTER
+    ========================================================= */
 
-    #usersTable {
-      width: 100%;
-      table-layout: fixed;
-    }
+    .vehicle-date-filter {
 
-    #usersTable th,
-    #usersTable td {
-      vertical-align: middle !important;
-      text-align: center !important;
-      padding: 14px 16px;
-    }
-
-    #usersTable th:nth-child(1),
-    #usersTable td:nth-child(1) {
-      width: 10%;
-    }
-
-    #usersTable th:nth-child(2),
-    #usersTable td:nth-child(2) {
-      width: 18%;
-    }
-
-    #usersTable th:nth-child(3),
-    #usersTable td:nth-child(3) {
-      width: 20%;
-    }
-
-    #usersTable th:nth-child(4),
-    #usersTable td:nth-child(4) {
-      width: 12%;
-    }
-
-    #usersTable th:nth-child(5),
-    #usersTable td:nth-child(5) {
-      width: 12%;
-    }
-
-    #usersTable th:nth-child(6),
-    #usersTable td:nth-child(6) {
-      width: 12%;
-    }
-
-    #usersTable th:nth-child(7),
-    #usersTable td:nth-child(7) {
-      width: 16%;
-    }
-
-       .visitor-table-wrapper {
-            overflow-x: auto;
-            border: 1px solid #D5DCE5;
-            border-radius: 8px;
-            background: #FFFFFF;
-        }
-
-        .usersTable {
-            margin-bottom: 0;
-            min-width: 900px;
-        }
-
-        .usersTable th {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-            color: #5B6775;
-            font-weight: 700;
-            white-space: nowrap;
-            background: #EAF2FA;
-        }
-
-        .usersTable td {
-            font-size: 13px;
-            vertical-align: middle;
-            white-space: nowrap;
-            color: #17202A;
-            border-color: #E7ECF1;
-        }
-
-        .usersTable .visitor-plate {
-            font-weight: 700;
-            letter-spacing: .5px;
-            color: #003377;
-        }
-
-        .usersTable .visitor-name {
-            font-weight: 600;
-            color: #17202A;
-        }
-
-        .visitor-empty {
-            text-align: center;
-            padding: 45px 20px !important;
-            color: #5B6775;
-        }
-
-        .visitor-empty i {
-            font-size: 38px;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-
-    /* ==========================================
-       CAPTURED IMAGE
-    ========================================== */
-
-    .captured-bus-image {
-      width: 100px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #D5DCE5;
-      display: inline-block;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .captured-bus-image:hover {
-      transform: scale(1.05);
-    }
-
-    .no-image {
-      color: #5B6775;
-      font-size: 13px;
-    }
-
-
-    /* ==========================================
-       IMAGE POPUP
-    ========================================== */
-
-    .image-modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-      box-sizing: border-box;
-    }
-
-    .image-modal.active {
       display: flex;
-    }
 
-    .large-image {
-      max-width: 90%;
-      max-height: 90%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      border-radius: 10px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-      cursor: default;
-    }
-
-    .close-image {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      color: white;
-      font-size: 40px;
-      line-height: 1;
-      cursor: pointer;
-      z-index: 10000;
-      user-select: none;
-    }
-
-    .close-image:hover {
-      opacity: 0.75;
-    }
-
-
-    /* ==========================================
-       LIVE TIME
-    ========================================== */
-
-    .live-time {
-      display: flex;
       align-items: center;
-      gap: 7px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #17202A;
-      white-space: nowrap;
-    }
 
-    .live-time i {
-      font-size: 16px;
-    }
-
-
-    /* ==========================================
-       NOTIFICATION BUTTON
-    ========================================== */
-
-    .notification-button {
-      position: relative;
-      width: 40px;
-      height: 40px;
-      border: 0;
-      background: transparent;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #17202A;
-      font-size: 19px;
-      cursor: pointer;
-    }
-
-    .notification-button:hover {
-      background: #F4F7FA;
-    }
-
-
-    /* ==========================================
-       NOTIFICATION BADGE
-    ========================================== */
-
-    .notification-badge {
-      position: absolute;
-      top: 3px;
-      right: 3px;
-      min-width: 17px;
-      height: 17px;
-      padding: 0 4px;
-      border-radius: 20px;
-      background: #C62828;
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-
-    /* ==========================================
-       NOTIFICATION MENU
-    ========================================== */
-
-    .notification-menu {
-      width: 330px;
-      max-width: calc(100vw - 30px);
-      border: 1px solid #D5DCE5;
-      border-radius: 10px;
-      overflow: hidden;
-      padding: 0;
-    }
-
-    .notification-header {
-      padding: 13px 15px;
-      border-bottom: 1px solid #D5DCE5;
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
 
-    .notification-header strong {
-      display: block;
-      font-size: 14px;
-    }
+      gap: 14px;
 
-    .notification-header small {
-      color: #5B6775;
-      font-size: 11px;
-    }
+      margin-top: 14px;
 
-    .notification-empty {
-      padding: 25px 15px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #5B6775;
-    }
+      padding: 10px 12px;
 
-    .notification-empty i {
-      font-size: 25px;
-      color: #198754;
-    }
+      background: #F8FAFC;
 
-    .notification-empty strong {
-      display: block;
-      font-size: 13px;
-      color: #17202A;
-    }
+      border: 1px solid #D5DCE5;
 
-    .notification-empty small {
-      font-size: 11px;
-    }
-
-    .notification-item {
-      background: #FFFFFF;
+      border-radius: 8px;
     }
 
 
-    /* ==========================================
-       REGISTER BUS BUTTON
-    ========================================== */
+    .vehicle-date-buttons {
 
-    .register-bus-btn {
       display: inline-flex;
+
       align-items: center;
-      gap: 7px;
+
+      gap: 6px;
+    }
+
+
+    .vehicle-date-btn {
+
+      min-width: 96px;
+
+      height: 36px;
+
+      border: 1px solid #D5DCE5;
+
+      border-radius: 7px;
+
+      background: #FFFFFF;
+
+      color: #17202A;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        all 0.15s ease;
+    }
+
+
+    .vehicle-date-btn:hover {
+
+      border-color: #003377;
+
+      color: #003377;
+    }
+
+
+    .vehicle-date-btn.active {
+
+      background: #003377;
+
+      border-color: #003377;
+
+      color: #FFFFFF;
+    }
+
+
+    .vehicle-date-label {
+
+      color: #5B6775;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
       white-space: nowrap;
     }
 
-
-    /* ==========================================
-       REGISTER MODAL
-    ========================================== */
-
-    .register-modal .modal-content {
-      border: 0;
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .register-modal .modal-header {
-      border-bottom: 1px solid #D5DCE5;
-      padding: 18px 20px;
-    }
-
-    .register-modal .modal-body {
-      padding: 20px;
-    }
-
-    .register-modal .modal-footer {
-      border-top: 1px solid #D5DCE5;
-      padding: 15px 20px;
-    }
-
-    .register-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #17202A;
-      margin-bottom: 6px;
-    }
-
-    .register-input {
-      border-radius: 8px;
-      min-height: 42px;
-    }
-
-    .register-input:focus {
-      box-shadow: 0 0 0 0.2rem rgba(0, 51, 119, 0.12);
-    }
-
-    .register-status {
-      display: none;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 15px;
-    }
-
-    .register-status.show {
-      display: block;
-    }
-
-
-    /* ==========================================
-       RESPONSIVE NAVBAR
-    ========================================== */
 
     @media (max-width: 576px) {
 
-      .live-time {
-        font-size: 12px;
-        gap: 4px;
+      .vehicle-date-filter {
+
+        flex-direction: column;
+
+        align-items: stretch;
       }
 
-      .notification-menu {
-        width: 290px;
+
+      .vehicle-date-buttons {
+
+        width: 100%;
       }
 
-      .register-bus-btn span {
-        display: none;
+
+      .vehicle-date-btn {
+
+        flex: 1;
       }
 
+
+      .vehicle-date-label {
+
+        text-align: center;
+      }
     }
-/* REGISTER BUS MODAL LIGHT THEME FIX */
-
-#registerBusModal {
-  color: #17202A !important;
-}
-
-#registerBusModal .modal-content,
-#registerBusModal .modal-header,
-#registerBusModal .modal-body,
-#registerBusModal .modal-footer {
-  background: #FFFFFF !important;
-  color: #17202A !important;
-}
-
-#registerBusModal .modal-title,
-#registerBusModal .register-label {
-  color: #17202A !important;
-}
-
-#registerBusModal .form-control,
-#registerBusModal .form-select {
-  background: #FFFFFF !important;
-  color: #17202A !important;
-  border: 1px solid #D5DCE5 !important;
-}
-
-#registerBusModal .form-control::placeholder {
-  color: #5B6775 !important;
-  opacity: 1 !important;
-}
-
-#registerBusModal .form-select option {
-  background: #FFFFFF !important;
-  color: #17202A !important;
-}
-
-#registerBusModal .text-muted {
-  color: #5B6775 !important;
-}
-
-#registerBusModal .btn-light {
-  background: #F4F7FA !important;
-  color: #17202A !important;
-  border-color: #D5DCE5 !important;
-}
-
-#registerBusModal .btn-primary {
-  color: #FFFFFF !important;
-}
-
-#registerBusModal .btn-close {
-  filter: none !important;
-}
-  
-        /* ==========================================
-           PAGE TITLE IN NAVBAR
-        ========================================== */
-
-        .admin-navbar .navbar-page-heading {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-            margin-left: 18px;
-            margin-right: 18px;
-        }
-
-        .admin-navbar .navbar-page-heading .page-icon {
-            flex: 0 0 auto;
-            width: 38px;
-            height: 38px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .admin-navbar .navbar-page-heading .eyebrow {
-            margin-bottom: 0.1rem !important;
-            font-size: 10px;
-            line-height: 1.1;
-        }
-
-        .admin-navbar .navbar-page-heading h1 {
-            margin-bottom: 0 !important;
-            font-size: 18px;
-            line-height: 1.15;
-        }
-
-        .admin-navbar .navbar-page-heading p.text-muted {
-            margin-top: 2px;
-            font-size: 11px;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: min(430px, 38vw);
-        }
-
-        @media (max-width: 992px) {
-            .admin-navbar .navbar-page-heading {
-                margin-left: 12px;
-                margin-right: 10px;
-                gap: 9px;
-            }
-
-            .admin-navbar .navbar-page-heading p.text-muted {
-                display: none;
-            }
-
-            .admin-navbar .navbar-page-heading h1 {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .admin-navbar .navbar-page-heading {
-                margin-left: 8px;
-            }
-
-            .admin-navbar .navbar-page-heading .page-icon {
-                display: none;
-            }
-
-            .admin-navbar .navbar-page-heading .eyebrow {
-                display: none;
-            }
-
-            .admin-navbar .navbar-page-heading h1 {
-                font-size: 15px;
-            }
-        }
 
 
-    /* ==========================================
-       TOP SEARCH + REGISTER ACTIONS
-       Matching the supplied reference design
-    ========================================== */
+    /* =========================================================
+       SEARCH + REGISTER
+    ========================================================= */
 
     .vehicle-top-actions {
+
       display: flex;
+
       align-items: center;
+
       gap: 16px;
+
       width: 100%;
     }
 
+
     .vehicle-top-search {
+
       position: relative;
+
       flex: 1 1 auto;
+
       min-width: 0;
     }
 
+
     .vehicle-top-search .bi-search {
+
       position: absolute;
+
       left: 16px;
       top: 50%;
-      transform: translateY(-50%);
+
+      transform:
+        translateY(-50%);
+
       color: #5B6775;
+
       font-size: 18px;
+
       pointer-events: none;
+
       z-index: 2;
     }
 
-    .vehicle-top-search .vehicle-search-input {
+
+    .vehicle-search-input {
+
       width: 100%;
+
       height: 44px;
-      padding: 0 16px 0 43px;
-      border: 1px solid #D5DCE5;
+
+      padding:
+        0 16px 0 43px;
+
+      border:
+        1px solid #D5DCE5;
+
       border-radius: 8px;
+
       background: #FFFFFF;
+
       color: #17202A;
+
       font-size: 15px;
+
       outline: none;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+
+      box-shadow:
+        0 1px 2px
+        rgba(15, 23, 42, 0.03);
     }
 
-    .vehicle-top-search .vehicle-search-input::placeholder {
+
+    .vehicle-search-input::placeholder {
+
       color: #5B6775;
+
       opacity: 1;
     }
 
-    .vehicle-top-search .vehicle-search-input:focus {
+
+    .vehicle-search-input:focus {
+
       border-color: #003377;
-      box-shadow: 0 0 0 3px rgba(0, 51, 119, 0.10);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(0, 51, 119, 0.10);
     }
 
-    .vehicle-top-actions .register-bus-btn {
+
+    .vehicle-top-actions
+    .register-bus-btn {
+
       flex: 0 0 auto;
+
       height: 44px;
+
       min-width: 220px;
+
       justify-content: center;
+
       border-radius: 8px;
+
       font-size: 15px;
+
       font-weight: 700;
+
       padding: 0 18px;
     }
 
+
     @media (max-width: 768px) {
+
       .vehicle-top-actions {
+
         flex-direction: column;
+
         align-items: stretch;
+
         gap: 10px;
       }
 
-      .vehicle-top-actions .register-bus-btn {
+
+      .vehicle-top-actions
+      .register-bus-btn {
+
         width: 100%;
+
         min-width: 0;
       }
     }
 
+
     @media (max-width: 576px) {
-      .vehicle-top-search .vehicle-search-input {
+
+      .vehicle-top-search
+      .vehicle-search-input {
+
         height: 42px;
       }
 
-      .vehicle-top-actions .register-bus-btn {
+
+      .vehicle-top-actions
+      .register-bus-btn {
+
         height: 42px;
       }
     }
 
-</style>
+
+    /* =========================================================
+       COLLEGE BUS TABLE
+       
+       IMPORTANT:
+       #usersTable = ACTUAL TABLE
+       #vehicleTable = TBODY
+    ========================================================= */
+
+    .table-responsive {
+
+      width: 100%;
+
+      overflow-x: auto !important;
+
+      overflow-y: hidden;
+
+      -webkit-overflow-scrolling: touch;
+
+      border-radius: 6px;
+    }
+
+
+    #usersTable {
+
+      width: 100%;
+
+      min-width: 1100px;
+
+      margin-bottom: 0;
+
+      border-collapse: collapse;
+
+      table-layout: auto !important;
+    }
+
+
+    /* =========================================================
+       TABLE HEADER
+    ========================================================= */
+
+    #usersTable thead th {
+
+      background: #003377 !important;
+
+      color: #FFFFFF !important;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      text-align: center !important;
+
+      padding:
+        14px 16px !important;
+
+      height: 48px;
+
+      white-space: nowrap !important;
+
+      vertical-align: middle !important;
+
+      border-right:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+      border-bottom:
+        2px solid #00285F;
+    }
+
+
+    /* =========================================================
+       TABLE BODY
+    ========================================================= */
+
+    #usersTable tbody td {
+
+      padding:
+        14px 16px !important;
+
+      font-size: 13px;
+
+      color: #17202A;
+
+      text-align: center !important;
+
+      vertical-align: middle !important;
+
+      white-space: nowrap !important;
+
+      border-bottom:
+        1px solid #E7ECF1;
+    }
+
+
+    #usersTable tbody tr {
+
+      background: #FFFFFF;
+    }
+
+
+    #usersTable tbody tr:hover {
+
+      background: #F4F7FA;
+    }
+
+
+    /* =========================================================
+       COLUMN WIDTHS
+    ========================================================= */
+
+    /* BUS NO */
+
+    #usersTable th:nth-child(1),
+    #usersTable td:nth-child(1) {
+
+      min-width: 90px;
+
+      width: 90px;
+    }
+
+
+    /* VEHICLE NO */
+
+    #usersTable th:nth-child(2),
+    #usersTable td:nth-child(2) {
+
+      min-width: 155px;
+
+      width: 155px;
+    }
+
+
+    /* BUS ROUTE */
+
+    #usersTable th:nth-child(3),
+    #usersTable td:nth-child(3) {
+
+      min-width: 180px;
+
+      width: 180px;
+    }
+
+
+    /* STATUS */
+
+    #usersTable th:nth-child(4),
+    #usersTable td:nth-child(4) {
+
+      min-width: 135px;
+
+      width: 135px;
+    }
+
+
+    /* ENTRY TIME */
+
+    #usersTable th:nth-child(5),
+    #usersTable td:nth-child(5) {
+
+      min-width: 165px;
+
+      width: 165px;
+    }
+
+
+    /* EXIT TIME */
+
+    #usersTable th:nth-child(6),
+    #usersTable td:nth-child(6) {
+
+      min-width: 165px;
+
+      width: 165px;
+    }
+
+
+    /* CAPTURED IMAGE */
+
+    #usersTable th:nth-child(7),
+    #usersTable td:nth-child(7) {
+
+      min-width: 155px;
+
+      width: 155px;
+    }
+
+
+    /* =========================================================
+       STATUS BADGES
+    ========================================================= */
+
+    .status-badge {
+
+      display: inline-flex !important;
+
+      align-items: center;
+
+      justify-content: center;
+
+      min-width: 82px;
+
+      height: 30px;
+
+      padding:
+        5px 12px;
+
+      border-radius: 18px;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      line-height: 1;
+
+      white-space: nowrap !important;
+    }
+
+
+    .status-badge.bg-success {
+
+      background-color:
+        #198754 !important;
+
+      color: #FFFFFF !important;
+    }
+
+
+    .status-badge.bg-warning {
+
+      background-color:
+        #F2B705 !important;
+
+      color: #FFFFFF !important;
+    }
+
+
+    .status-badge.bg-danger {
+
+      background-color:
+        #C62828 !important;
+
+      color: #FFFFFF !important;
+    }
+
+
+    .status-badge.bg-secondary {
+
+      background-color:
+        #6C757D !important;
+
+      color: #FFFFFF !important;
+    }
+
+
+    /* =========================================================
+       CAPTURED IMAGE
+    ========================================================= */
+
+    .captured-bus-image {
+
+      width: 100px !important;
+
+      height: 60px !important;
+
+      object-fit: cover;
+
+      border-radius: 6px;
+
+      border:
+        1px solid #D5DCE5;
+
+      display: inline-block;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.2s ease;
+    }
+
+
+    .captured-bus-image:hover {
+
+      transform:
+        scale(1.05);
+    }
+
+
+    .no-image {
+
+      display: inline-block;
+
+      color: #5B6775;
+
+      font-size: 12px;
+
+      line-height: 1.25;
+
+      white-space: normal !important;
+
+      max-width: 80px;
+    }
+
+
+    /* =========================================================
+       MOBILE TABLE
+    ========================================================= */
+
+    @media (max-width: 768px) {
+
+      #usersTable {
+
+        min-width: 1100px;
+      }
+
+
+      #usersTable thead th {
+
+        font-size: 11px;
+
+        padding:
+          13px 14px !important;
+      }
+
+
+      #usersTable tbody td {
+
+        font-size: 13px;
+
+        padding:
+          14px !important;
+      }
+    }
+
+
+    /* =========================================================
+       IMAGE MODAL
+    ========================================================= */
+
+    .image-modal {
+
+      display: none;
+
+      position: fixed;
+
+      z-index: 9999;
+
+      left: 0;
+      top: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background:
+        rgba(0, 0, 0, 0.85);
+
+      justify-content: center;
+
+      align-items: center;
+
+      padding: 30px;
+
+      box-sizing: border-box;
+    }
+
+
+    .image-modal.active {
+
+      display: flex;
+    }
+
+
+    .large-image {
+
+      max-width: 90%;
+
+      max-height: 90%;
+
+      width: auto;
+
+      height: auto;
+
+      object-fit: contain;
+
+      border-radius: 10px;
+
+      box-shadow:
+        0 10px 40px
+        rgba(0, 0, 0, 0.5);
+    }
+
+
+    .close-image {
+
+      position: absolute;
+
+      top: 20px;
+
+      right: 30px;
+
+      color: white;
+
+      font-size: 40px;
+
+      line-height: 1;
+
+      cursor: pointer;
+
+      z-index: 10000;
+
+      user-select: none;
+    }
+
+
+    .close-image:hover {
+
+      opacity: 0.75;
+    }
+
+
+    /* =========================================================
+       LIVE TIME
+    ========================================================= */
+
+    .live-time {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      color: #17202A;
+
+      white-space: nowrap;
+    }
+
+
+    .live-time i {
+
+      font-size: 16px;
+    }
+
+
+    /* =========================================================
+       NOTIFICATIONS
+    ========================================================= */
+
+    .notification-button {
+
+      position: relative;
+
+      width: 40px;
+
+      height: 40px;
+
+      border: 0;
+
+      background: transparent;
+
+      border-radius: 8px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      color: #17202A;
+
+      font-size: 19px;
+
+      cursor: pointer;
+    }
+
+
+    .notification-button:hover {
+
+      background: #F4F7FA;
+    }
+
+
+    .notification-badge {
+
+      position: absolute;
+
+      top: 3px;
+      right: 3px;
+
+      min-width: 17px;
+
+      height: 17px;
+
+      padding: 0 4px;
+
+      border-radius: 20px;
+
+      background: #C62828;
+
+      color: white;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+
+    .notification-menu {
+
+      width: 330px;
+
+      max-width:
+        calc(100vw - 30px);
+
+      border:
+        1px solid #D5DCE5;
+
+      border-radius: 10px;
+
+      overflow: hidden;
+
+      padding: 0;
+    }
+
+
+    .notification-header {
+
+      padding:
+        13px 15px;
+
+      border-bottom:
+        1px solid #D5DCE5;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+    }
+
+
+    .notification-header strong {
+
+      display: block;
+
+      font-size: 14px;
+    }
+
+
+    .notification-header small {
+
+      color: #5B6775;
+
+      font-size: 11px;
+    }
+
+
+    .notification-empty {
+
+      padding:
+        25px 15px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      color: #5B6775;
+    }
+
+
+    .notification-empty i {
+
+      font-size: 25px;
+
+      color: #198754;
+    }
+
+
+    .notification-empty strong {
+
+      display: block;
+
+      font-size: 13px;
+
+      color: #17202A;
+    }
+
+
+    .notification-empty small {
+
+      font-size: 11px;
+    }
+
+
+    .notification-item {
+
+      background: #FFFFFF;
+    }
+
+
+    /* =========================================================
+       REGISTER BUS
+    ========================================================= */
+
+    .register-bus-btn {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      white-space: nowrap;
+    }
+
+
+    .register-modal .modal-content {
+
+      border: 0;
+
+      border-radius: 14px;
+
+      overflow: hidden;
+    }
+
+
+    .register-modal .modal-header {
+
+      border-bottom:
+        1px solid #D5DCE5;
+
+      padding:
+        18px 20px;
+    }
+
+
+    .register-modal .modal-body {
+
+      padding: 20px;
+    }
+
+
+    .register-modal .modal-footer {
+
+      border-top:
+        1px solid #D5DCE5;
+
+      padding:
+        15px 20px;
+    }
+
+
+    .register-label {
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      color: #17202A;
+
+      margin-bottom: 6px;
+    }
+
+
+    .register-input {
+
+      border-radius: 8px;
+
+      min-height: 42px;
+    }
+
+
+    .register-input:focus {
+
+      box-shadow:
+        0 0 0 0.2rem
+        rgba(0, 51, 119, 0.12);
+    }
+
+
+    .register-status {
+
+      display: none;
+
+      border-radius: 8px;
+
+      font-size: 13px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .register-status.show {
+
+      display: block;
+    }
+
+
+    /* =========================================================
+       REGISTER MODAL LIGHT THEME
+    ========================================================= */
+
+    #registerBusModal {
+
+      color: #17202A !important;
+    }
+
+
+    #registerBusModal .modal-content,
+    #registerBusModal .modal-header,
+    #registerBusModal .modal-body,
+    #registerBusModal .modal-footer {
+
+      background:
+        #FFFFFF !important;
+
+      color:
+        #17202A !important;
+    }
+
+
+    #registerBusModal .modal-title,
+    #registerBusModal .register-label {
+
+      color:
+        #17202A !important;
+    }
+
+
+    #registerBusModal .form-control,
+    #registerBusModal .form-select {
+
+      background:
+        #FFFFFF !important;
+
+      color:
+        #17202A !important;
+
+      border:
+        1px solid #D5DCE5 !important;
+    }
+
+
+    #registerBusModal
+    .form-control::placeholder {
+
+      color:
+        #5B6775 !important;
+
+      opacity: 1 !important;
+    }
+
+
+    #registerBusModal
+    .form-select option {
+
+      background:
+        #FFFFFF !important;
+
+      color:
+        #17202A !important;
+    }
+
+
+    #registerBusModal .text-muted {
+
+      color:
+        #5B6775 !important;
+    }
+
+
+    #registerBusModal .btn-light {
+
+      background:
+        #F4F7FA !important;
+
+      color:
+        #17202A !important;
+
+      border-color:
+        #D5DCE5 !important;
+    }
+
+
+    #registerBusModal .btn-primary {
+
+      color:
+        #FFFFFF !important;
+    }
+
+
+    #registerBusModal .btn-close {
+
+      filter: none !important;
+    }
+
+
+    /* =========================================================
+       PAGE TITLE
+    ========================================================= */
+
+    .admin-navbar .navbar-page-heading {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      min-width: 0;
+
+      margin-left: 18px;
+
+      margin-right: 18px;
+    }
+
+
+    .admin-navbar
+    .navbar-page-heading
+    .page-icon {
+
+      flex: 0 0 auto;
+
+      width: 38px;
+
+      height: 38px;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+    }
+
+
+    .admin-navbar
+    .navbar-page-heading h1 {
+
+      margin-bottom:
+        0 !important;
+
+      font-size: 18px;
+
+      line-height: 1.15;
+    }
+
+
+    .admin-navbar
+    .navbar-page-heading
+    p.text-muted {
+
+      margin-top: 2px;
+
+      font-size: 11px;
+
+      line-height: 1.2;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      max-width:
+        min(430px, 38vw);
+    }
+
+
+    @media (max-width: 992px) {
+
+      .admin-navbar
+      .navbar-page-heading {
+
+        margin-left: 12px;
+
+        margin-right: 10px;
+
+        gap: 9px;
+      }
+
+
+      .admin-navbar
+      .navbar-page-heading
+      p.text-muted {
+
+        display: none;
+      }
+
+
+      .admin-navbar
+      .navbar-page-heading h1 {
+
+        font-size: 16px;
+      }
+    }
+
+
+    @media (max-width: 576px) {
+
+      .admin-navbar
+      .navbar-page-heading {
+
+        margin-left: 8px;
+      }
+
+
+      .admin-navbar
+      .navbar-page-heading
+      .page-icon {
+
+        display: none;
+      }
+
+
+      .admin-navbar
+      .navbar-page-heading h1 {
+
+        font-size: 15px;
+      }
+    }
+
+  </style>
+
 </head>
 
 
 <body>
 
+
+  <!-- =========================================================
+       ADMIN SHELL
+  ========================================================= -->
+
   <div class="admin-shell">
 
-    <div class="sidebar-backdrop" data-sidebar-close></div>
+
+    <div
+      class="sidebar-backdrop"
+      data-sidebar-close>
+    </div>
 
 
-    <!-- ==========================================
+    <!-- =======================================================
          SIDEBAR
-    ========================================== -->
+    ======================================================= -->
 
     <aside
       class="admin-sidebar"
       id="adminSidebar"
       aria-label="Main navigation">
+
 
       <div class="sidebar-header">
 
@@ -788,12 +1479,7 @@
           aria-label="INOUTX dashboard">
 
           <span class="brand-icon">
-
-            <i
-              class="bi bi-grid-1x2-fill"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-grid-1x2-fill"></i>
           </span>
 
 
@@ -817,21 +1503,12 @@
       <nav class="sidebar-nav">
 
 
-        <!-- ==================================
-             DASHBOARD
-        ================================== -->
-
         <a
           class="nav-link"
           href="index.html">
 
           <span class="nav-icon">
-
-            <i
-              class="bi bi-speedometer2"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-speedometer2"></i>
           </span>
 
           <span class="nav-text">
@@ -841,22 +1518,13 @@
         </a>
 
 
-        <!-- ==================================
-             VEHICLE MOVEMENTS
-        ================================== -->
-
         <a
           class="nav-link active"
           href="vehicle.html"
           aria-current="page">
 
           <span class="nav-icon">
-
-            <i
-              class="bi bi-bus-front"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-bus-front"></i>
           </span>
 
           <span class="nav-text">
@@ -866,21 +1534,12 @@
         </a>
 
 
-        <!-- ==================================
-             STAFF VEHICLES
-        ================================== -->
-
         <a
           class="nav-link"
           href="staff-vehicles.html">
 
           <span class="nav-icon">
-
-            <i
-              class="bi bi-person-vcard"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-person-vcard"></i>
           </span>
 
           <span class="nav-text">
@@ -888,47 +1547,29 @@
           </span>
 
         </a>
-         <!-- VISITOR  VEHICLES -->
-
-                <a
-                    class="nav-link"
-                    href="visitor.html">
 
 
-                    <span class="nav-icon">
+        <a
+          class="nav-link"
+          href="visitor.html">
 
-                        <i
-                            class="bi bi-question-circle"
-                            aria-hidden="true">
-                        </i>
+          <span class="nav-icon">
+            <i class="bi bi-question-circle"></i>
+          </span>
 
-                    </span>
+          <span class="nav-text">
+            Visitor Vehicles
+          </span>
 
+        </a>
 
-                    <span class="nav-text">
-                        Visitor Vehicles
-                    </span>
-
-
-                </a>
-
-        
-
-        <!-- ==================================
-             DOWNLOAD DATA
-        ================================== -->
 
         <a
           class="nav-link"
           href="download.html">
 
           <span class="nav-icon">
-
-            <i
-              class="bi bi-download"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-download"></i>
           </span>
 
           <span class="nav-text">
@@ -938,21 +1579,12 @@
         </a>
 
 
-        <!-- ==================================
-             PROFILE
-        ================================== -->
-
         <a
           class="nav-link"
           href="profile.html">
 
           <span class="nav-icon">
-
-            <i
-              class="bi bi-person-badge"
-              aria-hidden="true">
-            </i>
-
+            <i class="bi bi-person-badge"></i>
           </span>
 
           <span class="nav-text">
@@ -961,31 +1593,30 @@
 
         </a>
 
+
       </nav>
 
     </aside>
 
 
-    <!-- ==========================================
+    <!-- =======================================================
          MAIN
-    ========================================== -->
+    ======================================================= -->
 
     <div class="admin-main">
 
 
-      <!-- ==========================================
+      <!-- =====================================================
            NAVBAR
-      ========================================== -->
+      ===================================================== -->
 
       <nav
         class="navbar admin-navbar navbar-expand bg-white">
 
-        <div class="container-fluid px-3 px-lg-4">
 
+        <div
+          class="container-fluid px-3 px-lg-4">
 
-          <!-- ==================================
-               SIDEBAR TOGGLE
-          ================================== -->
 
           <button
             class="sidebar-toggle"
@@ -1002,55 +1633,46 @@
           </button>
 
 
-          <!-- PAGE TITLE -->
-
-<div class="page-heading-copy navbar-page-heading">
-
-              <span class="page-icon">
-
-                <i
-                  class="bi bi-bus-front"
-                  aria-hidden="true">
-                </i>
-
-              </span>
+          <div
+            class="page-heading-copy navbar-page-heading">
 
 
-              <div>
+            <span class="page-icon">
 
-                
+              <i class="bi bi-bus-front"></i>
 
-                <h1 class="h3 mb-1">
-                 College Bus Fleet Management
-                </h1>
+            </span>
 
-                <p class="text-muted mb-0">
-                  Campus transit tracking, active route assignments, and trip cycle auditing
-                </p>
 
-              </div>
+            <div>
+
+              <h1 class="h3 mb-1">
+                College Bus Fleet Management
+              </h1>
+
+
+              <p class="text-muted mb-0">
+
+                Campus transit tracking,
+                active route assignments,
+                and trip cycle auditing
+
+              </p>
 
             </div>
 
+          </div>
 
 
-          <!-- ==================================
-               NAVBAR ACTIONS
-          ================================== -->
-
-          <div class="navbar-actions ms-auto">
+          <div
+            class="navbar-actions ms-auto">
 
 
-            <!-- ==================================
-                 LIVE TIME
-            ================================== -->
+            <!-- LIVE CLOCK -->
 
             <div class="live-time">
 
-              <i
-                class="bi bi-clock"
-                aria-hidden="true">
-              </i>
+              <i class="bi bi-clock"></i>
 
               <span id="live-time">
                 --:--:--
@@ -1059,11 +1681,10 @@
             </div>
 
 
-            <!-- ==================================
-                 NOTIFICATIONS
-            ================================== -->
+            <!-- NOTIFICATIONS -->
 
             <div class="dropdown">
+
 
               <button
                 class="notification-button"
@@ -1072,10 +1693,8 @@
                 aria-expanded="false"
                 aria-label="Notifications">
 
-                <i
-                  class="bi bi-bell"
-                  aria-hidden="true">
-                </i>
+                <i class="bi bi-bell"></i>
+
 
                 <span
                   id="notification-badge"
@@ -1093,15 +1712,15 @@
                 class="dropdown-menu dropdown-menu-end notification-menu">
 
 
-                <!-- NOTIFICATION HEADER -->
-
                 <div class="notification-header">
+
 
                   <div>
 
                     <strong>
                       Notifications
                     </strong>
+
 
                     <small id="notification-count">
                       No new notifications
@@ -1119,21 +1738,20 @@
 
                   </button>
 
+
                 </div>
 
 
-                <!-- NOTIFICATION LIST -->
-
                 <div id="notification-list">
+
 
                   <div
                     id="notification-empty"
                     class="notification-empty">
 
-                    <i
-                      class="bi bi-check-circle"
-                      aria-hidden="true">
-                    </i>
+
+                    <i class="bi bi-check-circle"></i>
+
 
                     <div>
 
@@ -1147,20 +1765,22 @@
 
                     </div>
 
+
                   </div>
 
+
                 </div>
+
 
               </div>
 
             </div>
 
 
-            <!-- ==================================
-                 ADMIN PROFILE
-            ================================== -->
+            <!-- PROFILE -->
 
             <div class="dropdown">
+
 
               <button
                 class="profile-button dropdown-toggle"
@@ -1168,20 +1788,32 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
 
+
                 <span
                   class="avatar-img avatar-sm profile-avatar"
-                                id="currentUserInitials"></span>
+                  id="currentUserInitials">
+                </span>
+
 
                 <span class="profile-user-copy">
-                  <span id="currentUserName">Loading...</span>
-                                <small id="currentUserRole"></small>
+
+
+                  <span id="currentUserName">
+                    Loading...
+                  </span>
+
+
+                  <small id="currentUserRole"></small>
+
+
                 </span>
+
 
               </button>
 
 
-              <ul
-                class="dropdown-menu dropdown-menu-end">
+              <ul class="dropdown-menu dropdown-menu-end">
+
 
                 <li>
 
@@ -1198,7 +1830,8 @@
 
                 <li>
 
-                  <hr class="dropdown-divider">
+                  <hr
+                    class="dropdown-divider">
 
                 </li>
 
@@ -1215,9 +1848,11 @@
 
                 </li>
 
+
               </ul>
 
             </div>
+
 
           </div>
 
@@ -1226,37 +1861,45 @@
       </nav>
 
 
-      <!-- ==========================================
+      <!-- =====================================================
            CONTENT
-      ========================================== -->
+      ===================================================== -->
 
       <main class="dashboard-content">
 
-        <div class="container-fluid px-3 px-lg-4 py-4">
+
+        <div
+          class="container-fluid px-3 px-lg-4 py-4">
 
 
-          <!-- ==================================
-               PAGE HEADING
-          ================================== -->
+          <!-- =================================================
+               SEARCH
+          ================================================= -->
 
           <div class="page-heading">
 
-            <!-- ==================================
-                 SEARCH + REGISTER ACTIONS
-            ================================== -->
 
-            <div class="heading-actions vehicle-top-actions">
+            <div
+              class="heading-actions vehicle-top-actions">
 
-              <div class="vehicle-top-search">
-                <i class="bi bi-search" aria-hidden="true"></i>
+
+              <div
+                class="vehicle-top-search">
+
+
+                <i class="bi bi-search"></i>
+
 
                 <input
                   class="vehicle-search-input"
                   type="search"
-                  placeholder="Search Bus / Vehicle"
+                  placeholder="Search Bus / Vehicle / Route"
                   data-table-search="usersTable"
                   aria-label="Search Bus / Vehicle">
+
+
               </div>
+
 
               <button
                 type="button"
@@ -1264,111 +1907,177 @@
                 data-bs-toggle="modal"
                 data-bs-target="#registerBusModal">
 
-                <i
-                  class="bi bi-plus-lg"
-                  aria-hidden="true">
-                </i>
+
+                <i class="bi bi-plus-lg"></i>
 
                 <span>
                   Register Bus
                 </span>
 
+
               </button>
+
 
             </div>
 
           </div>
 
-          <!-- ==================================
-               VEHICLE SUMMARY CARDS
-          ================================== -->
 
-          <section class="vehicle-summary-cards" aria-label="Vehicle summary">
+          <!-- =================================================
+               SUMMARY CARDS
+          ================================================= -->
 
-            <article class="vehicle-summary-card card-fleet">
+          <section
+            class="vehicle-summary-cards"
+            aria-label="Vehicle summary">
 
-              <div class="vehicle-summary-card-icon" aria-hidden="true">
+
+            <!-- TOTAL -->
+
+            <article
+              class="vehicle-summary-card card-fleet">
+
+
+              <div
+                class="vehicle-summary-card-icon">
+
                 <i class="bi bi-bus-front"></i>
+
               </div>
 
-              <h2 class="vehicle-summary-card-title">
+
+              <h2
+                class="vehicle-summary-card-title">
+
                 Total Registered Fleet
+
               </h2>
 
-              <div class="vehicle-summary-card-value" id="totalRegisteredFleet">
+
+              <div
+                class="vehicle-summary-card-value"
+                id="totalRegisteredFleet">
+
                 0
+
               </div>
 
-              <div class="vehicle-summary-card-subtitle">
+
+              <div
+                class="vehicle-summary-card-subtitle">
+
                 College Transit Fleet
+
               </div>
+
 
             </article>
 
 
-            <article class="vehicle-summary-card card-campus">
+            <!-- ENTERED -->
 
-              <div class="vehicle-summary-card-icon" aria-hidden="true">
+            <article
+              class="vehicle-summary-card card-campus">
+
+
+              <div
+                class="vehicle-summary-card-icon">
+
                 <i class="bi bi-arrow-down-left"></i>
+
               </div>
 
-              <h2 class="vehicle-summary-card-title">
-                Currently On Campus
+
+              <h2
+                class="vehicle-summary-card-title">
+
+                Entered Campus Today
+
               </h2>
 
-              <div class="vehicle-summary-card-value" id="currentlyOnCampus">
+
+              <div
+                class="vehicle-summary-card-value"
+                id="enteredCampusToday">
+
                 0
+
               </div>
 
-              <div class="vehicle-summary-card-subtitle">
-                Parked / Depot
+
+              <div
+                class="vehicle-summary-card-subtitle">
+
+                Buses Entered Today
+
               </div>
+
 
             </article>
 
 
-            <article class="vehicle-summary-card card-route">
+            <!-- EXITED -->
 
-              <div class="vehicle-summary-card-icon" aria-hidden="true">
-                <i class="bi bi-arrow-up-right"></i>
+            <article
+              class="vehicle-summary-card card-route">
+
+
+              <div
+                class="vehicle-summary-card-icon">
+
+                <i class="bi bi-box-arrow-up-right"></i>
+
               </div>
 
-              <h2 class="vehicle-summary-card-title">
-                On Active Route
+
+              <h2
+                class="vehicle-summary-card-title">
+
+                Exited Campus Today
+
               </h2>
 
-              <div class="vehicle-summary-card-value" id="onActiveRoute">
+
+              <div
+                class="vehicle-summary-card-value"
+                id="exitedCampusToday">
+
                 0
+
               </div>
 
-              <div class="vehicle-summary-card-subtitle">
-                In Transit
+
+              <div
+                class="vehicle-summary-card-subtitle">
+
+                Buses Exited Today
+
               </div>
+
 
             </article>
+
 
           </section>
 
 
-          <!-- ==================================
+          <!-- =================================================
                TABLE PANEL
-          ================================== -->
+          ================================================= -->
 
           <section class="panel mt-3">
 
 
-            <!-- PANEL HEADER -->
-
             <div class="panel-header">
+
 
               <div>
 
-                <h2 class="h5 mb-1 section-title">
 
-                  <i
-                    class="bi bi-table"
-                    aria-hidden="true">
-                  </i>
+                <h2
+                  class="h5 mb-1 section-title">
+
+                  <i class="bi bi-table"></i>
 
                   <span>
                     College Bus List
@@ -1376,9 +2085,62 @@
 
                 </h2>
 
+
                 <p class="text-muted mb-0">
+
                   Also Search With Bus Numbers.
+
                 </p>
+
+
+              </div>
+
+
+              <!-- DATE FILTER -->
+
+              <div
+                class="vehicle-date-filter">
+
+
+                <div
+                  class="vehicle-date-buttons">
+
+
+                  <button
+                    type="button"
+                    id="todayBtn"
+                    class="vehicle-date-btn active"
+                    onclick="setEntryDate('today')">
+
+                    Today
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    id="yesterdayBtn"
+                    class="vehicle-date-btn"
+                    onclick="setEntryDate('yesterday')">
+
+                    Yesterday
+
+                  </button>
+
+
+                </div>
+
+
+                <div
+                  class="vehicle-date-label">
+
+                  Showing:
+                  <span id="entryDateLabel">
+                    Today
+                  </span>
+
+                </div>
+
 
               </div>
 
@@ -1386,80 +2148,96 @@
             </div>
 
 
-            <!-- ==================================
+            <!-- =================================================
                  TABLE
-            ================================== -->
+            ================================================= -->
 
             <div class="table-responsive">
+
 
               <table
                 class="table align-middle mb-0"
                 id="usersTable"
                 data-searchable-table>
 
+
                 <thead>
 
+
                   <tr>
+
 
                     <th>
                       Bus No
                     </th>
 
+
                     <th>
                       Vehicle No
                     </th>
+
 
                     <th>
                       Bus Route
                     </th>
 
-                    <th class="text-center">
+
+                    <th>
                       Status
                     </th>
 
-                    <th class="text-center">
+
+                    <th>
                       Entry Time
                     </th>
 
-                    <th class="text-center">
+
+                    <th>
                       Exit Time
                     </th>
 
-                    <th class="text-center">
+
+                    <th>
                       Captured Image
                     </th>
 
+
                   </tr>
+
 
                 </thead>
 
 
-                <tbody id="vehicleTable">
+                <tbody
+                  id="vehicleTable">
+
+
                 </tbody>
+
 
               </table>
 
+
             </div>
 
-
-            <div
-              class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mt-3">
-            </div>
 
           </section>
 
+
         </div>
 
+
       </main>
+
 
     </div>
 
   </div>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        REGISTER BUS MODAL
-  ========================================== -->
+  ========================================================= -->
 
   <div
     class="modal fade register-modal"
@@ -1468,28 +2246,41 @@
     aria-labelledby="registerBusModalLabel"
     aria-hidden="true">
 
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+    <div
+      class="modal-dialog modal-lg modal-dialog-centered">
+
 
       <div class="modal-content">
 
-        <!-- MODAL HEADER -->
 
         <div class="modal-header">
 
+
           <div>
+
 
             <h5
               class="modal-title"
               id="registerBusModalLabel">
 
-              <i class="bi bi-bus-front me-2"></i>
+
+              <i
+                class="bi bi-bus-front me-2">
+              </i>
+
               Register College Bus
+
 
             </h5>
 
+
             <small class="text-muted">
+
               Add a new college bus to the system.
+
             </small>
+
 
           </div>
 
@@ -1501,16 +2292,15 @@
             aria-label="Close">
           </button>
 
+
         </div>
 
 
-        <!-- FORM -->
-
         <form id="registerBusForm">
+
 
           <div class="modal-body">
 
-            <!-- STATUS MESSAGE -->
 
             <div
               id="registerStatus"
@@ -1522,9 +2312,10 @@
             <div class="row g-3">
 
 
-              <!-- BUS NUMBER -->
+              <!-- BUS NO -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="busNo"
@@ -1534,6 +2325,7 @@
 
                 </label>
 
+
                 <input
                   type="text"
                   class="form-control register-input"
@@ -1542,12 +2334,14 @@
                   placeholder="Example: BUS-01"
                   required>
 
+
               </div>
 
 
-              <!-- VEHICLE / PLATE -->
+              <!-- PLATE -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="plate"
@@ -1557,6 +2351,7 @@
 
                 </label>
 
+
                 <input
                   type="text"
                   class="form-control register-input"
@@ -1565,12 +2360,14 @@
                   placeholder="Example: TN45AZ1001"
                   required>
 
+
               </div>
 
 
               <!-- ROUTE -->
 
               <div class="col-md-12">
+
 
                 <label
                   for="route"
@@ -1580,6 +2377,7 @@
 
                 </label>
 
+
                 <input
                   type="text"
                   class="form-control register-input"
@@ -1588,12 +2386,14 @@
                   placeholder="Example: Trichy - College"
                   required>
 
+
               </div>
 
 
               <!-- DRIVER -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="driver"
@@ -1603,6 +2403,7 @@
 
                 </label>
 
+
                 <input
                   type="text"
                   class="form-control register-input"
@@ -1611,12 +2412,14 @@
                   placeholder="Enter driver name"
                   required>
 
+
               </div>
 
 
-              <!-- DRIVER PHONE -->
+              <!-- PHONE -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="driverPhone"
@@ -1625,6 +2428,7 @@
                   Driver Phone
 
                 </label>
+
 
                 <input
                   type="tel"
@@ -1635,12 +2439,14 @@
                   maxlength="10"
                   required>
 
+
               </div>
 
 
-              <!-- SEATING CAPACITY -->
+              <!-- CAPACITY -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="seatingCapacity"
@@ -1649,6 +2455,7 @@
                   Seating Capacity
 
                 </label>
+
 
                 <input
                   type="number"
@@ -1659,12 +2466,14 @@
                   min="1"
                   required>
 
+
               </div>
 
 
-              <!-- CURRENT STATUS -->
+              <!-- STATUS -->
 
               <div class="col-md-6">
+
 
                 <label
                   for="currentStatus"
@@ -1674,11 +2483,13 @@
 
                 </label>
 
+
                 <select
                   class="form-select register-input"
                   id="currentStatus"
                   name="current_status"
                   required>
+
 
                   <option
                     value=""
@@ -1689,30 +2500,36 @@
 
                   </option>
 
+
                   <option value="ACTIVE">
                     ACTIVE
                   </option>
+
 
                   <option value="INACTIVE">
                     INACTIVE
                   </option>
 
+
                   <option value="REPAIR">
                     REPAIR
                   </option>
 
+
                 </select>
+
 
               </div>
 
+
             </div>
+
 
           </div>
 
 
-          <!-- MODAL FOOTER -->
-
           <div class="modal-footer">
+
 
             <button
               type="button"
@@ -1729,25 +2546,30 @@
               id="registerBusButton"
               class="btn btn-primary">
 
-              <span
-                id="registerBusButtonText">
+
+              <span id="registerBusButtonText">
 
                 Register Bus
 
               </span>
 
+
               <span
                 id="registerBusSpinner"
                 class="spinner-border spinner-border-sm ms-2"
-                style="display:none;"
-                aria-hidden="true">
+                style="display:none;">
+
               </span>
+
 
             </button>
 
+
           </div>
 
+
         </form>
+
 
       </div>
 
@@ -1756,9 +2578,9 @@
   </div>
 
 
-  <!-- ==========================================
-       IMAGE POPUP
-  ========================================== -->
+  <!-- =========================================================
+       IMAGE MODAL
+  ========================================================= -->
 
   <div
     id="imageModal"
@@ -1781,19 +2603,20 @@
       alt="Captured Image"
       onclick="event.stopPropagation();">
 
+
   </div>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        JAVASCRIPT
-  ========================================== -->
+  ========================================================= -->
 
   <script>
 
 
-    /* ==========================================
+    /* =========================================================
        API
-    ========================================== */
+    ========================================================= */
 
     const API =
       "http://127.0.0.1:5000";
@@ -1801,17 +2624,18 @@
 
     let allBuses = [];
 
+    let selectedEntryDate =
+      "today";
 
-    /* ==========================================
+
+    /* =========================================================
        LIVE CLOCK
-    ========================================== */
+    ========================================================= */
 
     function updateLiveTime() {
 
       const clock =
-        document.getElementById(
-          "live-time"
-        );
+        document.getElementById("live-time");
 
 
       if (!clock) {
@@ -1823,35 +2647,13 @@
         new Date();
 
 
-      const hours =
-        String(
-          now.getHours()
-        ).padStart(
-          2,
-          "0"
-        );
-
-
-      const minutes =
-        String(
-          now.getMinutes()
-        ).padStart(
-          2,
-          "0"
-        );
-
-
-      const seconds =
-        String(
-          now.getSeconds()
-        ).padStart(
-          2,
-          "0"
-        );
-
-
       clock.textContent =
-        `${hours}:${minutes}:${seconds}`;
+        now.toLocaleTimeString(
+          "en-IN",
+          {
+            hour12: false
+          }
+        );
 
     }
 
@@ -1865,9 +2667,124 @@
     );
 
 
-    /* ==========================================
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHtml(value) {
+
+      return String(value ?? "")
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+    }
+
+
+    /* =========================================================
+       FORMAT TIME
+    ========================================================= */
+
+    function formatTimeOnly(value) {
+
+      if (
+        !value ||
+        value === "-"
+      ) {
+
+        return "-";
+      }
+
+
+      const text =
+        String(value).trim();
+
+
+      /*
+       * Handles:
+       *
+       * 2026-09-18 14:09:54.521000
+       * 2026-09-18T14:09:54.521000
+       * 2026-09-18T14:09:54.521Z
+       */
+
+
+      const match =
+        text.match(
+          /(?:T|\s)(\d{1,2}):(\d{2}):(\d{2})/
+        );
+
+
+      if (!match) {
+
+        return text;
+      }
+
+
+      let hour =
+        Number(match[1]);
+
+
+      const minute =
+        match[2];
+
+
+      const second =
+        match[3];
+
+
+      const period =
+        hour >= 12
+          ? "PM"
+          : "AM";
+
+
+      hour =
+        hour % 12;
+
+
+      if (hour === 0) {
+
+        hour = 12;
+      }
+
+
+      return (
+
+        `${String(hour).padStart(2, "0")}:` +
+        `${minute}:` +
+        `${second} ` +
+        `${period}`
+
+      );
+
+    }
+
+
+    /* =========================================================
        NOTIFICATIONS
-    ========================================== */
+    ========================================================= */
 
     let notifications = [];
 
@@ -1899,11 +2816,8 @@
       ) {
 
         return;
-
       }
 
-
-      /* NO NOTIFICATIONS */
 
       if (
         notifications.length === 0
@@ -1919,14 +2833,9 @@
 
         list.innerHTML = `
 
-          <div
-            id="notification-empty"
-            class="notification-empty">
+          <div class="notification-empty">
 
-            <i
-              class="bi bi-check-circle"
-              aria-hidden="true">
-            </i>
+            <i class="bi bi-check-circle"></i>
 
             <div>
 
@@ -1946,11 +2855,8 @@
 
 
         return;
-
       }
 
-
-      /* SHOW BADGE */
 
       badge.textContent =
         notifications.length;
@@ -1961,53 +2867,48 @@
 
 
       count.textContent =
-        `${notifications.length} new notification${notifications.length > 1 ? "s" : ""}`;
+        `${notifications.length} new notification${
+          notifications.length > 1
+            ? "s"
+            : ""
+        }`;
 
-
-      /* RENDER */
 
       list.innerHTML =
-        notifications
-          .map(
-            notification => `
+        notifications.map(
+          notification => `
 
-              <div
-                class="notification-item p-3 border-bottom">
+            <div class="notification-item p-3 border-bottom">
 
-                <strong>
-                  ${escapeHtml(
-                    notification.title
-                  )}
-                </strong>
+              <strong>
+                ${escapeHtml(
+                  notification.title
+                )}
+              </strong>
 
-                <div class="small text-muted">
+              <div class="small text-muted">
 
-                  ${escapeHtml(
-                    notification.message
-                  )}
-
-                </div>
-
-                <div class="small text-muted mt-1">
-
-                  ${escapeHtml(
-                    notification.time
-                  )}
-
-                </div>
+                ${escapeHtml(
+                  notification.message
+                )}
 
               </div>
 
-            `
-          )
-          .join("");
+              <div class="small text-muted mt-1">
+
+                ${escapeHtml(
+                  notification.time
+                )}
+
+              </div>
+
+            </div>
+
+          `
+        ).join("");
 
     }
 
-
-    /* ==========================================
-       ADD NOTIFICATION
-    ========================================== */
 
     function addNotification(
       title,
@@ -2023,10 +2924,9 @@
           message,
 
         time:
-          new Date()
-            .toLocaleTimeString(
-              "en-IN"
-            )
+          new Date().toLocaleTimeString(
+            "en-IN"
+          )
 
       });
 
@@ -2039,13 +2939,8 @@
 
 
       updateNotificationUI();
-
     }
 
-
-    /* ==========================================
-       CLEAR NOTIFICATIONS
-    ========================================== */
 
     const clearNotifications =
       document.getElementById(
@@ -2053,49 +2948,44 @@
       );
 
 
-    if (
-      clearNotifications
-    ) {
+    if (clearNotifications) {
 
       clearNotifications.addEventListener(
         "click",
         function () {
 
-          notifications =
-            [];
+          notifications = [];
 
           updateNotificationUI();
 
         }
       );
-
     }
 
 
     updateNotificationUI();
 
 
-    /* ==========================================
+    /* =========================================================
        IMAGE URL
-    ========================================== */
+    ========================================================= */
 
     function getImageUrl(
       imagePath
     ) {
 
       if (!imagePath) {
+
         return "";
       }
 
 
       const normalizedPath =
-        String(
-          imagePath
-        )
-        .replace(
-          /\\/g,
-          "/"
-        );
+        String(imagePath)
+          .replace(
+            /\\/g,
+            "/"
+          );
 
 
       const filename =
@@ -2105,30 +2995,34 @@
 
 
       if (!filename) {
+
         return "";
       }
 
 
       return (
+
         API +
         "/captured-frames/" +
         encodeURIComponent(
           filename
         )
+
       );
 
     }
 
 
-    /* ==========================================
+    /* =========================================================
        OPEN IMAGE
-    ========================================== */
+    ========================================================= */
 
     function openImage(
       imageUrl
     ) {
 
       if (!imageUrl) {
+
         return;
       }
 
@@ -2145,6 +3039,15 @@
         );
 
 
+      if (
+        !modal ||
+        !largeImage
+      ) {
+
+        return;
+      }
+
+
       largeImage.src =
         imageUrl;
 
@@ -2156,9 +3059,9 @@
     }
 
 
-    /* ==========================================
+    /* =========================================================
        CLOSE IMAGE
-    ========================================== */
+    ========================================================= */
 
     function closeImage() {
 
@@ -2174,170 +3077,681 @@
         );
 
 
+      if (!modal) {
+
+        return;
+      }
+
+
       modal.classList.remove(
         "active"
       );
 
 
-      largeImage.src =
-        "";
+      if (largeImage) {
+
+        largeImage.src =
+          "";
+      }
 
     }
 
-
-    /* ==========================================
-       ESC KEY
-    ========================================== */
 
     document.addEventListener(
       "keydown",
       function (event) {
 
         if (
-          event.key === "Escape"
+          event.key ===
+          "Escape"
         ) {
 
           closeImage();
-
         }
 
       }
     );
 
 
-    /* ==========================================
-       VEHICLE SUMMARY CARDS
-    ========================================== */
+    /* =========================================================
+       VEHICLE SUMMARY
+    ========================================================= */
 
     async function updateVehicleSummary() {
 
       try {
 
-        const response = await fetch(
-          API + "/api/vehicle-summary",
-          { cache: "no-store" }
-        );
+
+        const response =
+          await fetch(
+
+            API +
+            "/api/vehicle-summary",
+
+            {
+              cache:
+                "no-store"
+            }
+
+          );
+
 
         if (!response.ok) {
-          throw new Error("Failed to load vehicle summary");
+
+          throw new Error(
+            "Failed to load vehicle summary"
+          );
+
         }
 
-        const summary = await response.json();
 
-        const totalFleet = document.getElementById("totalRegisteredFleet");
-        const campus = document.getElementById("currentlyOnCampus");
-        const activeRoute = document.getElementById("onActiveRoute");
+        const summary =
+          await response.json();
 
-        if (totalFleet) totalFleet.textContent = Number(summary.totalRegisteredFleet || 0);
-        if (campus) campus.textContent = Number(summary.currentlyOnCampus || 0);
-        if (activeRoute) activeRoute.textContent = Number(summary.onActiveRoute || 0);
 
-      } catch (error) {
-        console.error("Vehicle summary error:", error);
+        console.log(
+          "Vehicle Summary:",
+          summary
+        );
+
+
+        const totalFleet =
+          document.getElementById(
+            "totalRegisteredFleet"
+          );
+
+
+        const enteredToday =
+          document.getElementById(
+            "enteredCampusToday"
+          );
+
+
+        const exitedToday =
+          document.getElementById(
+            "exitedCampusToday"
+          );
+
+
+        if (totalFleet) {
+
+          totalFleet.textContent =
+            Number(
+              summary.totalRegisteredFleet ||
+              0
+            );
+
+        }
+
+
+        if (enteredToday) {
+
+          enteredToday.textContent =
+            Number(
+              summary.enteredCampusToday ||
+              0
+            );
+
+        }
+
+
+        if (exitedToday) {
+
+          exitedToday.textContent =
+            Number(
+              summary.exitedCampusToday ||
+              0
+            );
+
+        }
+
+
+      }
+      catch (error) {
+
+        console.error(
+          "Vehicle summary error:",
+          error
+        );
+
       }
 
     }
 
 
-    /* ==========================================
-       LOAD BUS DATA
-    ========================================== */
+    /* =========================================================
+       MOVEMENT TIMESTAMP
+    ========================================================= */
+
+    function movementTimestamp(
+      log
+    ) {
+
+      const dateText =
+        String(
+          log.date || ""
+        ).trim();
+
+
+      const timeText =
+        String(
+          log.time ||
+          log.entry_time ||
+          log.exit_time ||
+          ""
+        ).trim();
+
+
+      if (
+        dateText &&
+        timeText
+      ) {
+
+        const m =
+          dateText.match(
+            /^(\d{2})-(\d{2})-(\d{4})$/
+          );
+
+
+        const t =
+          timeText.match(
+            /^(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM)?$/i
+          );
+
+
+        if (
+          m &&
+          t
+        ) {
+
+          let h =
+            Number(t[1]);
+
+
+          if (
+            (t[4] || "")
+              .toUpperCase() ===
+            "PM" &&
+            h < 12
+          ) {
+
+            h += 12;
+          }
+
+
+          if (
+            (t[4] || "")
+              .toUpperCase() ===
+            "AM" &&
+            h === 12
+          ) {
+
+            h = 0;
+          }
+
+
+          return new Date(
+
+            Number(m[3]),
+
+            Number(m[2]) - 1,
+
+            Number(m[1]),
+
+            h,
+
+            Number(t[2]),
+
+            Number(t[3])
+
+          ).getTime();
+
+        }
+
+      }
+
+
+      const candidates = [
+
+        log.timestamp,
+
+        log.entry_time,
+
+        log.exit_time,
+
+        log.datetime,
+
+        log.created_at
+
+      ];
+
+
+      for (
+        const value of candidates
+      ) {
+
+        if (value) {
+
+          const parsed =
+            Date.parse(
+              String(value)
+            );
+
+
+          if (
+            !Number.isNaN(
+              parsed
+            )
+          ) {
+
+            return parsed;
+          }
+
+        }
+
+      }
+
+
+      return 0;
+
+    }
+
+
+    /* =========================================================
+       GET LOG TIME
+    ========================================================= */
+
+    function getLogTime(
+      log
+    ) {
+
+      return (
+
+        log.time ||
+
+        log.entry_time ||
+
+        log.exit_time ||
+
+        "-"
+
+      );
+
+    }
+
+
+    /* =========================================================
+       ENTRY / EXIT
+    ========================================================= */
+
+    function isEntryLog(
+      log
+    ) {
+
+      const status =
+        String(
+
+          log.status ||
+          log.direction ||
+          log.current_status ||
+          ""
+
+        )
+          .trim()
+          .toUpperCase();
+
+
+      return (
+
+        status === "ENTRY" ||
+
+        status === "ARRIVED" ||
+
+        status === "INSIDE CAMPUS"
+
+      );
+
+    }
+
+
+    function isExitLog(
+      log
+    ) {
+
+      const status =
+        String(
+
+          log.status ||
+          log.direction ||
+          log.current_status ||
+          ""
+
+        )
+          .trim()
+          .toUpperCase();
+
+
+      return (
+
+        status === "EXIT" ||
+
+        status === "EXITED" ||
+
+        status === "OUTSIDE / TRANSIT"
+
+      );
+
+    }
+
+
+    /* =========================================================
+       BUILD BUS CYCLES
+    ========================================================= */
+
+    function buildBusCycles(
+      logs
+    ) {
+
+      if (
+        !Array.isArray(logs)
+      ) {
+
+        return [];
+      }
+
+
+      const chronological =
+        [...logs].sort(
+
+          (a, b) =>
+            movementTimestamp(a) -
+            movementTimestamp(b)
+
+        );
+
+
+      const cycles = [];
+
+
+      const open =
+        new Map();
+
+
+      chronological.forEach(
+        log => {
+
+
+          const busNo =
+            String(
+
+              log.bus_no ??
+              log.bus_number ??
+              "-"
+
+            ).trim();
+
+
+          const vehicleNo =
+            String(
+
+              log.vehicle_no ||
+              log.plate ||
+              "-"
+
+            ).trim();
+
+
+          const key =
+            `${busNo}|${vehicleNo}`;
+
+
+          /* ================= ENTRY ================= */
+
+          if (
+            isEntryLog(log)
+          ) {
+
+
+            if (
+              open.has(key)
+            ) {
+
+              cycles.push(
+                open.get(key)
+              );
+
+            }
+
+
+            open.set(
+              key,
+              {
+
+                busNo,
+
+                vehicleNo,
+
+                route:
+                  log.route ||
+                  log.route_name ||
+                  "-",
+
+                status:
+                  String(
+                    log.status ||
+                    "ARRIVED"
+                  )
+                    .trim()
+                    .toUpperCase(),
+
+                entryTime:
+                  getLogTime(log),
+
+                exitTime:
+                  "-",
+
+                entryImage:
+                  log.image ||
+                  log.image_path ||
+                  "",
+
+                exitImage:
+                  "",
+
+                timestamp:
+                  movementTimestamp(
+                    log
+                  )
+
+              }
+            );
+
+
+            return;
+          }
+
+
+          /* ================= EXIT ================= */
+
+          if (
+            isExitLog(log)
+          ) {
+
+
+            const cycle =
+              open.get(key);
+
+
+            if (cycle) {
+
+
+              cycle.exitTime =
+                getLogTime(log);
+
+
+              cycle.exitImage =
+                log.image ||
+                log.image_path ||
+                "";
+
+
+              cycle.status =
+                String(
+                  log.status ||
+                  "EXITED"
+                )
+                  .trim()
+                  .toUpperCase();
+
+
+              cycles.push(
+                cycle
+              );
+
+
+              open.delete(key);
+
+
+            }
+            else {
+
+
+              cycles.push({
+
+                busNo,
+
+                vehicleNo,
+
+                route:
+                  log.route ||
+                  log.route_name ||
+                  "-",
+
+                status:
+                  String(
+                    log.status ||
+                    "EXITED"
+                  )
+                    .trim()
+                    .toUpperCase(),
+
+                entryTime:
+                  "-",
+
+                exitTime:
+                  getLogTime(log),
+
+                entryImage:
+                  "",
+
+                exitImage:
+                  log.image ||
+                  log.image_path ||
+                  "",
+
+                timestamp:
+                  movementTimestamp(
+                    log
+                  )
+
+              });
+
+            }
+
+          }
+
+        }
+      );
+
+
+      open.forEach(
+        cycle =>
+          cycles.push(cycle)
+      );
+
+
+      return cycles.sort(
+
+        (a, b) =>
+          b.timestamp -
+          a.timestamp
+
+      );
+
+    }
+
+
+    /* =========================================================
+       LOAD TABLE
+    ========================================================= */
 
     async function loadTable() {
 
       try {
 
+
         const res =
           await fetch(
+
             API +
-            "/api/today_entries",
+            "/api/today_entries?date=" +
+            encodeURIComponent(
+              selectedEntryDate
+            ),
+
             {
               cache:
                 "no-store"
             }
+
           );
 
 
         if (!res.ok) {
 
           throw new Error(
-            "Failed to load entries"
+            `Failed to load entries (${res.status})`
           );
 
         }
 
 
-        const buses =
+        const result =
           await res.json();
 
 
-        if (
-          !Array.isArray(buses)
-        ) {
+        const buses =
+          Array.isArray(result)
+
+            ? result
+
+            : (
+
+                result &&
+                result.success === true &&
+                Array.isArray(
+                  result.data
+                )
+
+              )
+
+              ? result.data
+
+              : null;
+
+
+        if (!buses) {
 
           throw new Error(
-            "Invalid data received"
+            "Invalid data received from /api/today_entries"
           );
 
         }
 
 
-        /*
-         * Remove repeated detection
-         *
-         * Backend latest records first.
-         * Therefore first occurrence
-         * is treated as latest record.
-         */
-
-        const uniqueBuses =
-          new Map();
-
-
-        buses.forEach(
-          bus => {
-
-            const busNo =
-              String(
-                bus.bus_no ||
-                ""
-              ).trim();
-
-
-            const vehicleNo =
-              String(
-                bus.vehicle_no ||
-                bus.plate ||
-                ""
-              ).trim();
-
-
-            const key =
-              busNo +
-              "|" +
-              vehicleNo;
-
-
-            if (
-              !uniqueBuses.has(
-                key
-              )
-            ) {
-
-              uniqueBuses.set(
-                key,
-                bus
-              );
-
-            }
-
-          }
-        );
-
-
         allBuses =
-          Array.from(
-            uniqueBuses.values()
+          buildBusCycles(
+            buses
           );
 
 
@@ -2345,9 +3759,8 @@
           allBuses
         );
 
+
       }
-
-
       catch (error) {
 
         console.error(
@@ -2356,36 +3769,162 @@
         );
 
 
-        document.getElementById(
-          "vehicleTable"
-        ).innerHTML = `
+        const tableBody =
+          document.getElementById(
+            "vehicleTable"
+          );
 
-          <tr>
 
-            <td
-              colspan="7"
-              class="text-center text-danger py-4">
+        if (tableBody) {
 
-              Unable to load bus entries
+          tableBody.innerHTML = `
 
-            </td>
+            <tr>
 
-          </tr>
+              <td
+                colspan="7"
+                class="text-center text-danger py-4">
 
-        `;
+                Unable to load bus entries
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
 
       }
 
     }
 
 
-    /* ==========================================
+    /* =========================================================
+       TODAY / YESTERDAY
+    ========================================================= */
+
+    function setEntryDate(
+      mode
+    ) {
+
+      selectedEntryDate =
+        mode === "yesterday"
+          ? "yesterday"
+          : "today";
+
+
+      const todayBtn =
+        document.getElementById(
+          "todayBtn"
+        );
+
+
+      const yesterdayBtn =
+        document.getElementById(
+          "yesterdayBtn"
+        );
+
+
+      const dateLabel =
+        document.getElementById(
+          "entryDateLabel"
+        );
+
+
+      if (todayBtn) {
+
+        todayBtn.classList.toggle(
+
+          "active",
+
+          selectedEntryDate ===
+          "today"
+
+        );
+
+      }
+
+
+      if (yesterdayBtn) {
+
+        yesterdayBtn.classList.toggle(
+
+          "active",
+
+          selectedEntryDate ===
+          "yesterday"
+
+        );
+
+      }
+
+
+      if (dateLabel) {
+
+
+        const now =
+          new Date();
+
+
+        const target =
+
+          selectedEntryDate ===
+          "yesterday"
+
+            ? new Date(
+                now.getTime() -
+                86400000
+              )
+
+            : now;
+
+
+        const day =
+          String(
+            target.getDate()
+          ).padStart(
+            2,
+            "0"
+          );
+
+
+        const month =
+          String(
+            target.getMonth() + 1
+          ).padStart(
+            2,
+            "0"
+          );
+
+
+        const year =
+          target.getFullYear();
+
+
+        dateLabel.textContent =
+
+          `${selectedEntryDate === "yesterday"
+            ? "Yesterday"
+            : "Today"
+          } (${day}-${month}-${year})`;
+
+      }
+
+
+      loadTable();
+
+    }
+
+
+    /* =========================================================
        RENDER TABLE
-    ========================================== */
+    ========================================================= */
 
     function renderTable(
       buses
     ) {
+
 
       const tableBody =
         document.getElementById(
@@ -2393,16 +3932,21 @@
         );
 
 
+      if (!tableBody) {
+
+        return;
+      }
+
+
       tableBody.innerHTML =
         "";
 
 
       if (
-        !Array.isArray(
-          buses
-        ) ||
+        !Array.isArray(buses) ||
         buses.length === 0
       ) {
+
 
         tableBody.innerHTML = `
 
@@ -2420,8 +3964,8 @@
 
         `;
 
-        return;
 
+        return;
       }
 
 
@@ -2429,26 +3973,62 @@
         bus => {
 
 
-          /* ==================================
-             STATUS
-          ================================== */
+          const busNo =
+            bus.busNo ||
+            "-";
 
-          let badge =
-            "secondary";
+
+          const vehicleNo =
+            bus.vehicleNo ||
+            "-";
+
+
+          const route =
+            bus.route ||
+            "-";
 
 
           const status =
             String(
               bus.status ||
-              bus.current_status ||
-              "UNKNOWN"
-            ).toLowerCase();
+              "ARRIVED"
+            )
+              .toUpperCase();
+
+
+          /*
+           * IMPORTANT:
+           * Format the time here.
+           */
+
+          const entryTime =
+            formatTimeOnly(
+              bus.entryTime
+            );
+
+
+          const exitTime =
+            formatTimeOnly(
+              bus.exitTime
+            );
+
+
+          /* =================================================
+             STATUS CLASS
+          ================================================= */
+
+          let badge =
+            "secondary";
 
 
           if (
-            status === "active" ||
-            status === "arrived" ||
-            status === "entry"
+
+            status === "ENTRY" ||
+
+            status === "ARRIVED" ||
+
+            status === "INSIDE CAMPUS"
+
           ) {
 
             badge =
@@ -2456,10 +4036,15 @@
 
           }
 
-
           else if (
-            status === "pending" ||
-            status === "onway"
+
+            status === "EXIT" ||
+
+            status === "EXITED" ||
+
+            status ===
+              "OUTSIDE / TRANSIT"
+
           ) {
 
             badge =
@@ -2467,10 +4052,12 @@
 
           }
 
-
           else if (
-            status === "repair" ||
-            status === "inactive"
+
+            status === "REPAIR" ||
+
+            status === "INACTIVE"
+
           ) {
 
             badge =
@@ -2479,9 +4066,15 @@
           }
 
 
-          /* ==================================
+          /* =================================================
              IMAGE
-          ================================== */
+          ================================================= */
+
+          const imagePath =
+            bus.exitImage ||
+            bus.entryImage ||
+            "";
+
 
           let imageHTML = `
 
@@ -2492,29 +4085,31 @@
           `;
 
 
-          if (
-            bus.image
-          ) {
+          if (imagePath) {
+
 
             const imageURL =
               getImageUrl(
-                bus.image
+                imagePath
               );
 
 
-            if (
-              imageURL
-            ) {
+            if (imageURL) {
+
 
               imageHTML = `
 
                 <img
-                  src="${imageURL}"
+                  src="${escapeHtml(imageURL)}"
                   alt="Captured Bus"
                   class="captured-bus-image"
                   loading="lazy"
-                  onclick="openImage('${imageURL}')"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                  onclick="openImage(this.src)"
+                  onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='inline';
+                  "
+                >
 
                 <span
                   class="no-image"
@@ -2531,90 +4126,89 @@
           }
 
 
-          /* ==================================
-             TABLE ROW
-          ================================== */
+          /* =================================================
+             ROW
+          ================================================= */
 
-          tableBody.innerHTML += `
-
-            <tr>
-
-              <td class="fw-semibold">
-
-                ${escapeHtml(
-                  bus.bus_no ||
-                  "-"
-                )}
-
-              </td>
+          const row =
+            document.createElement(
+              "tr"
+            );
 
 
-              <td>
+          row.innerHTML = `
 
-                ${escapeHtml(
-                  bus.vehicle_no ||
-                  bus.plate ||
-                  "-"
-                )}
+            <td class="fw-semibold">
 
-              </td>
+              ${escapeHtml(
+                busNo
+              )}
 
-
-              <td>
-
-                ${escapeHtml(
-                  bus.route ||
-                  "-"
-                )}
-
-              </td>
+            </td>
 
 
-              <td class="text-center">
+            <td>
 
-                <span
-                  class="status-badge bg-${badge}">
+              ${escapeHtml(
+                vehicleNo
+              )}
 
-                  ${escapeHtml(
-                    bus.status ||
-                    bus.current_status ||
-                    "-"
-                  )}
-
-                </span>
-
-              </td>
+            </td>
 
 
-              <td class="text-center">
+            <td>
+
+              ${escapeHtml(
+                route
+              )}
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="status-badge bg-${badge}">
 
                 ${escapeHtml(
-                  bus.time ||
-                  "-"
+                  status
                 )}
 
-              </td>
+              </span>
+
+            </td>
 
 
-              <td class="text-center">
+            <td>
 
-                ${escapeHtml(
-                  bus.exit_time ||
-                  "-"
-                )}
+              ${escapeHtml(
+                entryTime
+              )}
 
-              </td>
+            </td>
 
 
-              <td class="text-center">
+            <td>
 
-                ${imageHTML}
+              ${escapeHtml(
+                exitTime
+              )}
 
-              </td>
+            </td>
 
-            </tr>
+
+            <td>
+
+              ${imageHTML}
+
+            </td>
 
           `;
+
+
+          tableBody.appendChild(
+            row
+          );
 
         }
       );
@@ -2622,49 +4216,9 @@
     }
 
 
-    /* ==========================================
-       HTML ESCAPE
-    ========================================== */
-
-    function escapeHtml(
-      value
-    ) {
-
-      return String(
-        value
-      )
-
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-
-        .replace(
-          /</g,
-          "&lt;"
-        )
-
-        .replace(
-          />/g,
-          "&gt;"
-        )
-
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    /* ==========================================
-       SEARCH BUS
-    ========================================== */
+    /* =========================================================
+       SEARCH
+    ========================================================= */
 
     const searchInput =
       document.querySelector(
@@ -2672,9 +4226,8 @@
       );
 
 
-    if (
-      searchInput
-    ) {
+    if (searchInput) {
+
 
       searchInput.addEventListener(
         "input",
@@ -2687,75 +4240,51 @@
               .toLowerCase();
 
 
-          /* SHOW ALL */
-
-          if (
-            searchValue === ""
-          ) {
+          if (!searchValue) {
 
             renderTable(
               allBuses
             );
 
             return;
-
           }
 
 
-          /* FILTER */
-
-          const filteredBuses =
-            allBuses.filter(
-              bus => {
-
-                const busNo =
-                  String(
-                    bus.bus_no ||
-                    ""
-                  ).toLowerCase();
-
-
-                const vehicleNo =
-                  String(
-                    bus.vehicle_no ||
-                    bus.plate ||
-                    ""
-                  ).toLowerCase();
-
-
-                const route =
-                  String(
-                    bus.route ||
-                    ""
-                  ).toLowerCase();
-
-
-                return (
-
-                  busNo.includes(
-                    searchValue
-                  )
-
-                  ||
-
-                  vehicleNo.includes(
-                    searchValue
-                  )
-
-                  ||
-
-                  route.includes(
-                    searchValue
-                  )
-
-                );
-
-              }
-            );
-
-
           renderTable(
-            filteredBuses
+
+            allBuses.filter(
+              bus =>
+
+                String(
+                  bus.busNo || ""
+                )
+                  .toLowerCase()
+                  .includes(
+                    searchValue
+                  )
+
+                ||
+
+                String(
+                  bus.vehicleNo || ""
+                )
+                  .toLowerCase()
+                  .includes(
+                    searchValue
+                  )
+
+                ||
+
+                String(
+                  bus.route || ""
+                )
+                  .toLowerCase()
+                  .includes(
+                    searchValue
+                  )
+
+            )
+
           );
 
         }
@@ -2764,9 +4293,9 @@
     }
 
 
-    /* ==========================================
+    /* =========================================================
        REGISTER BUS
-    ========================================== */
+    ========================================================= */
 
     const registerBusForm =
       document.getElementById(
@@ -2803,12 +4332,22 @@
       type
     ) {
 
+
+      if (!registerStatus) {
+
+        return;
+      }
+
+
       registerStatus.textContent =
         message;
 
 
       registerStatus.className =
-        "alert register-status show alert-" +
+
+        "alert " +
+        "register-status show " +
+        "alert-" +
         type;
 
     }
@@ -2816,8 +4355,16 @@
 
     function resetRegisterStatus() {
 
+
+      if (!registerStatus) {
+
+        return;
+      }
+
+
       registerStatus.textContent =
         "";
+
 
       registerStatus.className =
         "alert register-status";
@@ -2829,26 +4376,42 @@
       loading
     ) {
 
-      registerBusButton.disabled =
-        loading;
+
+      if (registerBusButton) {
+
+        registerBusButton.disabled =
+          loading;
+      }
 
 
       if (
-        loading
+        loading &&
+        registerBusButtonText &&
+        registerBusSpinner
       ) {
+
 
         registerBusButtonText.textContent =
           "Registering";
 
+
         registerBusSpinner.style.display =
           "inline-block";
 
+
       }
 
-      else {
+      else if (
+
+        registerBusButtonText &&
+        registerBusSpinner
+
+      ) {
+
 
         registerBusButtonText.textContent =
           "Register Bus";
+
 
         registerBusSpinner.style.display =
           "none";
@@ -2858,13 +4421,13 @@
     }
 
 
-    if (
-      registerBusForm
-    ) {
+    if (registerBusForm) {
+
 
       registerBusForm.addEventListener(
         "submit",
         async function (event) {
+
 
           event.preventDefault();
 
@@ -2882,8 +4445,7 @@
             String(
               formData.get(
                 "bus_no"
-              ) ||
-              ""
+              ) || ""
             ).trim();
 
 
@@ -2891,18 +4453,17 @@
             String(
               formData.get(
                 "plate"
-              ) ||
-              ""
-            ).trim()
-            .toUpperCase();
+              ) || ""
+            )
+              .trim()
+              .toUpperCase();
 
 
           const route =
             String(
               formData.get(
                 "route"
-              ) ||
-              ""
+              ) || ""
             ).trim();
 
 
@@ -2910,8 +4471,7 @@
             String(
               formData.get(
                 "driver"
-              ) ||
-              ""
+              ) || ""
             ).trim();
 
 
@@ -2919,8 +4479,7 @@
             String(
               formData.get(
                 "driver_phone"
-              ) ||
-              ""
+              ) || ""
             ).trim();
 
 
@@ -2936,25 +4495,41 @@
             String(
               formData.get(
                 "current_status"
-              ) ||
-              ""
+              ) || ""
             ).trim();
 
 
+          /* =================================================
+             VALIDATION
+          ================================================= */
+
           if (
+
             !busNo ||
+
             !plate ||
+
             !route ||
+
             !driver ||
+
             !driverPhone ||
+
             !seatingCapacity ||
+
             !currentStatus
+
           ) {
 
+
             showRegisterStatus(
+
               "Please fill all required fields.",
+
               "danger"
+
             );
+
 
             return;
 
@@ -2962,16 +4537,24 @@
 
 
           if (
+
             driverPhone.length !== 10 ||
+
             !/^\d+$/.test(
               driverPhone
             )
+
           ) {
 
+
             showRegisterStatus(
+
               "Please enter a valid 10-digit driver phone number.",
+
               "danger"
+
             );
+
 
             return;
 
@@ -2982,35 +4565,51 @@
             seatingCapacity < 1
           ) {
 
+
             showRegisterStatus(
+
               "Seating capacity must be greater than 0.",
+
               "danger"
+
             );
+
 
             return;
 
           }
 
 
+          /* =================================================
+             PAYLOAD
+          ================================================= */
+
           const payload = {
+
 
             bus_no:
               busNo,
 
+
             plate:
               plate,
+
 
             route:
               route,
 
+
             driver:
               driver,
+
 
             driver_phone:
               driverPhone,
 
+
             seating_capacity:
               seatingCapacity,
+
 
             current_status:
               currentStatus
@@ -3018,7 +4617,12 @@
           };
 
 
+          /* =================================================
+             REGISTER
+          ================================================= */
+
           try {
+
 
             setRegisterLoading(
               true
@@ -3027,8 +4631,10 @@
 
             const response =
               await fetch(
+
                 API +
                 "/api/buses/register",
+
                 {
 
                   method:
@@ -3047,10 +4653,12 @@
                     )
 
                 }
+
               );
 
 
-            let result = null;
+            let result =
+              null;
 
 
             try {
@@ -3074,19 +4682,27 @@
               !response.ok
             ) {
 
+
               const errorMessage =
+
                 result &&
+
                 (
                   result.message ||
                   result.error
                 )
+
                   ?
-                  (
-                    result.message ||
-                    result.error
-                  )
+
+                    (
+                      result.message ||
+                      result.error
+                    )
+
                   :
-                  "Failed to register bus.";
+
+                    "Failed to register bus.";
+
 
               throw new Error(
                 errorMessage
@@ -3096,27 +4712,29 @@
 
 
             showRegisterStatus(
-              (
-                result &&
-                (
-                  result.message ||
-                  result.success
-                )
-              )
+
+              result &&
+              result.message
+
                 ?
-                (
-                  result.message ||
-                  "Bus registered successfully."
-                )
+
+                  result.message
+
                 :
-                "Bus registered successfully.",
+
+                  "Bus registered successfully.",
+
               "success"
+
             );
 
 
             addNotification(
+
               "Bus Registered",
+
               `${busNo} (${plate}) registered successfully.`
+
             );
 
 
@@ -3124,7 +4742,9 @@
 
 
             setTimeout(
+
               async function () {
+
 
                 const modalElement =
                   document.getElementById(
@@ -3132,17 +4752,27 @@
                   );
 
 
-                const modalInstance =
-                  bootstrap.Modal.getInstance(
-                    modalElement
-                  );
-
-
                 if (
-                  modalInstance
+
+                  modalElement &&
+
+                  typeof bootstrap !==
+                    "undefined"
+
                 ) {
 
-                  modalInstance.hide();
+
+                  const modalInstance =
+                    bootstrap.Modal.getInstance(
+                      modalElement
+                    );
+
+
+                  if (modalInstance) {
+
+                    modalInstance.hide();
+
+                  }
 
                 }
 
@@ -3152,33 +4782,46 @@
 
                 await loadTable();
 
+
+                await updateVehicleSummary();
+
+
               },
+
               1000
+
             );
+
 
           }
 
+          catch (error) {
 
-          catch (
-            error
-          ) {
 
             console.error(
+
               "Register bus error:",
+
               error
+
             );
 
 
             showRegisterStatus(
+
               error.message ||
+
               "Unable to register bus.",
+
               "danger"
+
             );
+
 
           }
 
-
           finally {
+
 
             setRegisterLoading(
               false
@@ -3186,15 +4829,16 @@
 
           }
 
+
         }
       );
 
     }
 
 
-    /* ==========================================
-       RESET MODAL ON CLOSE
-    ========================================== */
+    /* =========================================================
+       RESET REGISTER MODAL
+    ========================================================= */
 
     const registerBusModal =
       document.getElementById(
@@ -3202,17 +4846,17 @@
       );
 
 
-    if (
-      registerBusModal
-    ) {
+    if (registerBusModal) {
+
 
       registerBusModal.addEventListener(
+
         "hidden.bs.modal",
+
         function () {
 
-          if (
-            registerBusForm
-          ) {
+
+          if (registerBusForm) {
 
             registerBusForm.reset();
 
@@ -3227,49 +4871,85 @@
           );
 
         }
+
       );
 
     }
 
 
-    /* ==========================================
+    /* =========================================================
        INITIAL LOAD
-    ========================================== */
+    ========================================================= */
 
-    loadTable();
-    updateVehicleSummary();
+    document.addEventListener(
+
+      "DOMContentLoaded",
+
+      function () {
 
 
-    /* ==========================================
+        loadTable();
+
+
+        updateVehicleSummary();
+
+
+      }
+
+    );
+
+
+    /* =========================================================
        AUTO REFRESH
-    ========================================== */
+    ========================================================= */
 
     setInterval(
+
       loadTable,
+
       3000
+
     );
 
+
     setInterval(
+
       updateVehicleSummary,
+
       3000
+
     );
+
 
   </script>
 
 
-  <!-- ==========================================
-       BOOTSTRAP JS
-  ========================================== -->
+  <!-- =========================================================
+       BOOTSTRAP
+  ========================================================= -->
 
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
   <script src="../assets/js/main.js"></script>
 
 
-<footer class="auth-copyright">
-  2026 Designed by
-  <strong>Department Of CSE - KRCT</strong>.
-  All rights reserved.
-</footer>
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+
+  <footer class="auth-copyright">
+
+    2026 Designed by
+
+    <strong>
+      Department Of CSE - KRCT
+    </strong>.
+
+    All rights reserved.
+
+  </footer>
+
+
 </body>
 
-</html> 
+</html>
