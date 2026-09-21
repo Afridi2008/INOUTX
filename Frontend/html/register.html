@@ -332,35 +332,6 @@
     }
 
     /* =========================================================
-       VERIFICATION PANEL
-       ========================================================= */
-
-    #verificationPanel {
-
-      padding: 18px;
-
-      border: 1px solid #D5DCE5;
-
-      border-radius: 10px;
-
-      background: var(--inoutx-light-blue);
-    }
-
-    #verificationPanel h2 {
-
-      color: var(--inoutx-text);
-
-      font-weight: 800;
-    }
-
-    #verificationEmail {
-
-      color: var(--inoutx-primary);
-
-      word-break: break-word;
-    }
-
-    /* =========================================================
        REGISTER BUTTON
        ========================================================= */
 
@@ -409,39 +380,6 @@
       box-shadow:
         0 0 0 3px rgba(255, 255, 255, 0.85),
         0 0 0 6px rgba(0, 51, 119, 0.35);
-    }
-
-    /* =========================================================
-       VERIFY BUTTON
-       ========================================================= */
-
-    #verifyButton {
-
-      min-height: 44px;
-
-      border-radius: 8px;
-
-      font-weight: 700;
-    }
-
-    /* =========================================================
-       RESEND BUTTON
-       ========================================================= */
-
-    #resendButton {
-
-      color: var(--inoutx-primary);
-
-      font-size: 13px;
-
-      font-weight: 600;
-    }
-
-    #resendButton:disabled {
-
-      color: #8995A3;
-
-      opacity: 1;
     }
 
     /* =========================================================
@@ -693,15 +631,16 @@
               Select account type
             </option>
 
+            
+
+           
+
             <option value="executive_director">
               Executive Director
             </option>
-
-            <option value="principal">
+             <option value="principal">
               Principal
             </option>
-
-           
 
             <option value="hod">
               HOD
@@ -710,18 +649,18 @@
             <option value="hoc">
               HOC
             </option>
-             <option value="Staff">
+            <option value="Staff">
               Staff
             </option>
-<option value="bus_incharge">
+ <option value="bus_incharge">
               Bus Incharge
             </option>
             <option value="gate_watchman">
               Gate Watchman
             </option>
 
-            
-             <option value="student">
+           
+            <option value="student">
               Student
             </option>
 
@@ -870,70 +809,6 @@
 
 
         <!-- ===================================================
-             EMAIL VERIFICATION
-             ==================================================== -->
-
-        <div
-          id="verificationPanel"
-          class="mb-4 d-none">
-
-          <h2 class="h5 mb-2">
-            Verify Your Email
-          </h2>
-
-          <p class="text-muted mb-3">
-            We sent a 6-digit verification code to:
-          </p>
-
-          <p
-            id="verificationEmail"
-            class="fw-semibold mb-3">
-          </p>
-
-          <label
-            class="form-label"
-            for="verificationOtp">
-
-            Verification code
-
-          </label>
-
-          <input
-            class="form-control"
-            id="verificationOtp"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            maxlength="6"
-            autocomplete="one-time-code"
-            placeholder="Enter 6-digit code">
-
-          <button
-            id="verifyButton"
-            class="btn btn-success w-100 mt-3"
-            type="button">
-
-            Verify Email & Submit for Approval
-
-          </button>
-
-          <button
-            id="resendButton"
-            class="btn btn-link w-100 mt-2"
-            type="button"
-            disabled>
-
-            Resend Code
-
-            <span id="resendCountdown">
-              (60s)
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <!-- ===================================================
              CREATE ACCOUNT BUTTON
              ==================================================== -->
 
@@ -943,12 +818,12 @@
           type="submit">
 
           <i
-            class="bi bi-person-plus me-1"
+            class="bi bi-send me-1"
             aria-hidden="true">
           </i>
 
           <span id="registerButtonText">
-            Send Verification Code
+            Submit for Approval
           </span>
 
         </button>
@@ -999,26 +874,6 @@
 
     const registerMessage =
       document.getElementById("registerMessage");
-
-    const verificationPanel =
-      document.getElementById("verificationPanel");
-
-    const verificationOtp =
-      document.getElementById("verificationOtp");
-
-    const verificationEmail =
-      document.getElementById("verificationEmail");
-
-    const verifyButton =
-      document.getElementById("verifyButton");
-
-    const resendButton =
-      document.getElementById("resendButton");
-
-    const resendCountdown =
-      document.getElementById("resendCountdown");
-
-    let resendTimer = null;
 
 
     /* =========================================================
@@ -1173,436 +1028,76 @@
     registerForm.addEventListener(
       "submit",
       async function (event) {
-
         event.preventDefault();
-
         hideMessage();
 
-
-        /* Browser validation */
-
         if (!registerForm.checkValidity()) {
-
-          registerForm.classList.add(
-            "was-validated"
-          );
-
+          registerForm.classList.add("was-validated");
           return;
-
         }
 
-
-        /* Get form values */
-
-        const name =
-          document
-            .getElementById("registerName")
-            .value
-            .trim();
-
-
-        const email =
-          document
-            .getElementById("registerEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-
-        const password =
-          document
-            .getElementById("registerPassword")
-            .value;
-
-
-        const confirmPassword =
-          document
-            .getElementById("registerConfirmPassword")
-            .value;
-
-
-        const phone =
-          document
-            .getElementById("registerPhone")
-            .value
-            .trim();
-
-
-        const accountType =
-          document
-            .getElementById("registerAccountType")
-            .value;
-
-
-        /* Password confirmation */
+        const name = document.getElementById("registerName").value.trim();
+        const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+        const password = document.getElementById("registerPassword").value;
+        const confirmPassword = document.getElementById("registerConfirmPassword").value;
+        const phone = document.getElementById("registerPhone").value.trim();
+        const accountType = document.getElementById("registerAccountType").value;
 
         if (password !== confirmPassword) {
-
-          showMessage(
-            "Passwords do not match.",
-            "danger"
-          );
-
-          document
-            .getElementById(
-              "registerConfirmPassword"
-            )
-            .focus();
-
+          showMessage("Passwords do not match.", "danger");
+          document.getElementById("registerConfirmPassword").focus();
           return;
-
         }
 
-
-        /* Disable button */
-
         registerButton.disabled = true;
-
-        registerButtonText.textContent =
-          "Creating Account...";
-
+        registerButtonText.textContent = "Submitting Request...";
 
         try {
+          const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              name, email, password,
+              confirm_password: confirmPassword,
+              phone, account_type: accountType
+            })
+          });
 
-          /* Send registration request */
+          const data = await response.json();
 
-          const response =
-            await fetch(
-              "/api/register",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                credentials: "include",
-
-                body: JSON.stringify({
-
-                  name: name,
-
-                  email: email,
-
-                  password: password,
-
-                  confirm_password:
-                    confirmPassword,
-
-                  phone: phone,
-
-                  account_type:
-                    accountType
-
-                })
-              }
-            );
-
-
-          /* Read response */
-
-          const data =
-            await response.json();
-
-
-          /* Registration failed */
-
-          /*
-           * The backend creates the registration request before sending the
-           * OTP. Therefore a mail-delivery failure must NOT hide the request.
-           * If request_created is true, keep the verification panel open so
-           * the user can retry with Resend Code after mail configuration is
-           * fixed.
-           */
-          const requestCreated = data.request_created === true;
-          const verificationStarted =
-            data.verification_required === true ||
-            data.approval_required === true ||
-            response.status === 201;
-
-          if ((!response.ok && !requestCreated) ||
-              (!data.success && !requestCreated && !verificationStarted)) {
-
+          if (!response.ok || !data.success) {
             showMessage(
-              data.error ||
-              data.message ||
-              "Unable to create the registration request.",
+              data.error || data.message || "Unable to submit the registration request.",
               "danger"
             );
-
             return;
           }
 
-          /* Registration request created */
-          if (requestCreated && !data.success) {
-            showMessage(
-              data.error ||
-              "Registration request created. We could not send the verification code yet. Please try Resend Code.",
-              "warning"
-            );
-          } else {
-            showMessage(
-              "Registration request sent. A 6-digit verification code has been sent to your college email.",
-              "success"
-            );
-          }
-
-
-          /* Show verification */
-
-          verificationPanel
-            .classList
-            .remove("d-none");
-
-
-          registerButton
-            .classList
-            .add("d-none");
-
-
-          verificationEmail.textContent =
-            email;
-
-
-          verificationOtp.focus();
-
-
-          startResendCountdown(60);
-
-
-          /* ===================================================
-             VERIFY EMAIL
-             ==================================================== */
-
-          verifyButton.onclick =
-            async function () {
-
-              const otp =
-                verificationOtp
-                  .value
-                  .trim();
-
-
-              if (!/^\d{6}$/.test(otp)) {
-
-                showMessage(
-                  "Enter the 6-digit verification code.",
-                  "danger"
-                );
-
-                verificationOtp.focus();
-
-                return;
-
-              }
-
-
-              verifyButton.disabled = true;
-
-
-              try {
-
-                const verifyResponse =
-                  await fetch(
-                    "/api/verify-email",
-                    {
-                      method: "POST",
-
-                      headers: {
-                        "Content-Type":
-                          "application/json"
-                      },
-
-                      credentials: "include",
-
-                      body: JSON.stringify({
-                        email: email,
-                        otp: otp
-                      })
-                    }
-                  );
-
-
-                const verifyData =
-                  await verifyResponse.json();
-
-
-                if (
-                  !verifyResponse.ok ||
-                  !verifyData.success
-                ) {
-
-                  showMessage(
-                    verifyData.error ||
-                    "Verification failed.",
-                    "danger"
-                  );
-
-                  return;
-
-                }
-
-
-                showMessage(
-                  verifyData.message,
-                  "success"
-                );
-
-
-                setTimeout(
-                  function () {
-
-                    window.location.href =
-                      "login.html";
-
-                  },
-                  1000
-                );
-
-              } catch (error) {
-
-                console.error(
-                  "Email verification error:",
-                  error
-                );
-
-                showMessage(
-                  "Cannot connect to the INOUTX server.",
-                  "danger"
-                );
-
-              } finally {
-
-                verifyButton.disabled = false;
-
-              }
-
-            };
-
-
-          /* ===================================================
-             RESEND OTP
-             ==================================================== */
-
-          resendButton.onclick =
-            async function () {
-
-              resendButton.disabled = true;
-
-
-              try {
-
-                const resendResponse =
-                  await fetch(
-                    "/api/resend-otp",
-                    {
-                      method: "POST",
-
-                      headers: {
-                        "Content-Type":
-                          "application/json"
-                      },
-
-                      credentials: "include",
-
-                      body: JSON.stringify({
-                        email: email
-                      })
-                    }
-                  );
-
-
-                const resendData =
-                  await resendResponse.json();
-
-
-                if (
-                  !resendResponse.ok ||
-                  !resendData.success
-                ) {
-
-                  showMessage(
-                    resendData.error ||
-                    "We couldn't send the verification code. Please try again.",
-                    "danger"
-                  );
-
-                  resendButton.disabled = false;
-
-                  return;
-
-                }
-
-
-                showMessage(
-                  resendData.message,
-                  "success"
-                );
-
-
-                verificationOtp.value = "";
-
-
-                startResendCountdown(60);
-
-
-              } catch (error) {
-
-                console.error(
-                  "Resend OTP error:",
-                  error
-                );
-
-                showMessage(
-                  "We couldn't send the verification code. Please try again.",
-                  "danger"
-                );
-
-                resendButton.disabled = false;
-
-              }
-
-            };
-
-
-          /* Clear password fields */
-
-          document
-            .getElementById("registerPassword")
-            .value = "";
-
-          document
-            .getElementById("registerConfirmPassword")
-            .value = "";
-
-
-        } catch (error) {
-
-          console.error(
-            "Registration error:",
-            error
+          showMessage(
+            "Registration request submitted successfully. Please wait for administrator approval.",
+            "success"
           );
 
+          registerButtonText.textContent = "Request Submitted";
+          registerForm.querySelectorAll("input, select, button").forEach((element) => {
+            element.disabled = true;
+          });
 
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1800);
+        } catch (error) {
+          console.error("Registration error:", error);
           showMessage(
             "Cannot connect to the INOUTX server. Make sure Flask is running.",
             "danger"
           );
-
-
-        } finally {
-
           registerButton.disabled = false;
-
-          registerButtonText.textContent =
-            "Create Account";
-
+          registerButtonText.textContent = "Submit for Approval";
         }
-
       }
     );
-
   </script>
 
 
