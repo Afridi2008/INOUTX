@@ -1651,6 +1651,30 @@ def login():
                 "email_verification_required": True
             }), 403
 
+        approval_status = str(
+            user.get("approval_status", "")
+        ).strip().upper()
+
+        if approval_status == "PENDING":
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Your registration is pending administrator approval."
+                ),
+                "approval_required": True,
+                "approval_status": "PENDING"
+            }), 403
+
+        if approval_status == "REJECTED":
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Your registration was rejected by the administrator."
+                ),
+                "approval_required": True,
+                "approval_status": "REJECTED"
+            }), 403
+
         if not user.get(
             "active",
             False
@@ -1837,6 +1861,260 @@ def config_access():
             "authorized": False,
             "error": str(e)
         }), 500
+# =========================================================
+# USER APPROVAL HELPERS
+# =========================================================
+
+def is_config_admin_session():
+    user = session.get("user") or {}
+
+    email = str(
+        user.get("email", "")
+    ).strip().lower()
+
+    role = str(
+        user.get("role", "")
+    ).strip().lower()
+
+    return (
+        bool(CONFIG_ADMIN_EMAIL)
+        and email == CONFIG_ADMIN_EMAIL
+        and role == "config_admin"
+    )
+
+
+def serialize_pending_user(user):
+    return {
+        "id": str(user.get("_id")),
+        "name": str(user.get("name") or "").strip(),
+        "email": str(user.get("email") or "").strip(),
+        "phone": str(user.get("phone") or "").strip(),
+        "role": str(user.get("role") or "").strip(),
+        "approval_status": str(
+            user.get("approval_status", "PENDING")
+        ).strip().upper(),
+        "active": user.get("active") is True,
+        "created_at": serialize_value(
+            user.get("created_at")
+        ),
+    }
+
+
+# =========================================================
+# PENDING USER APPROVALS
+# =========================================================
+
+@app.route(
+    "/api/user-approvals",
+    methods=["GET"]
+)
+def get_user_approvals():
+
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
+
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can manage user approvals."
+            )
+        }), 403
+
+    try:
+        pending_users = users.find({
+            "approval_status": "PENDING"
+        }).sort(
+            "created_at",
+            ASCENDING
+        )
+
+        data = [
+            serialize_pending_user(user)
+            for user in pending_users
+        ]
+
+        return jsonify({
+            "success": True,
+            "count": len(data),
+            "users": data
+        }), 200
+
+    except Exception as e:
+        print("User approvals load error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to load pending user registrations."
+        }), 500
+
+
+@app.route(
+    "/api/user-approvals/<user_id>/approve",
+    methods=["POST"]
+)
+def approve_user(user_id):
+
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
+
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can approve users."
+            )
+        }), 403
+
+    try:
+        try:
+            object_id = ObjectId(user_id)
+        except Exception:
+            return jsonify({
+                "success": False,
+                "error": "Invalid user account identifier."
+            }), 400
+
+        now = datetime.now()
+
+        result = users.update_one(
+            {
+                "_id": object_id,
+                "approval_status": "PENDING"
+            },
+            {
+                "$set": {
+                    "active": True,
+                    "approval_status": "APPROVED",
+                    "approved_at": now,
+                    "approved_by": CONFIG_ADMIN_EMAIL,
+                    "updated_at": now
+                }
+            }
+        )
+
+        if result.matched_count != 1:
+            existing = users.find_one({"_id": object_id})
+
+            if not existing:
+                return jsonify({
+                    "success": False,
+                    "error": "User account was not found."
+                }), 404
+
+            return jsonify({
+                "success": False,
+                "error": "This registration is no longer pending."
+            }), 409
+
+        return jsonify({
+            "success": True,
+            "message": "User approved successfully.",
+            "approval_status": "APPROVED",
+            "active": True
+        }), 200
+
+    except Exception as e:
+        print("Approve user error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to approve the user registration."
+        }), 500
+
+
+@app.route(
+    "/api/user-approvals/<user_id>/reject",
+    methods=["POST"]
+)
+def reject_user(user_id):
+
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
+
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can reject users."
+            )
+        }), 403
+
+    try:
+        try:
+            object_id = ObjectId(user_id)
+        except Exception:
+            return jsonify({
+                "success": False,
+                "error": "Invalid user account identifier."
+            }), 400
+
+        now = datetime.now()
+
+        result = users.update_one(
+            {
+                "_id": object_id,
+                "approval_status": "PENDING"
+            },
+            {
+                "$set": {
+                    "active": False,
+                    "approval_status": "REJECTED",
+                    "rejected_at": now,
+                    "rejected_by": CONFIG_ADMIN_EMAIL,
+                    "updated_at": now
+                }
+            }
+        )
+
+        if result.matched_count != 1:
+            existing = users.find_one({"_id": object_id})
+
+            if not existing:
+                return jsonify({
+                    "success": False,
+                    "error": "User account was not found."
+                }), 404
+
+            return jsonify({
+                "success": False,
+                "error": "This registration is no longer pending."
+            }), 409
+
+        return jsonify({
+            "success": True,
+            "message": "User registration rejected.",
+            "approval_status": "REJECTED",
+            "active": False
+        }), 200
+
+    except Exception as e:
+        print("Reject user error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to reject the user registration."
+        }), 500
+
+
 # REGISTER USER
 # =========================================================
 
@@ -1998,22 +2276,31 @@ def register():
         now = datetime.now()
 
         # ---------------------------------------------------------
-        # CREATE ACCOUNT DIRECTLY
+        # CREATE ACCOUNT AS PENDING
         #
-        # Email is treated as verified because registration is
-        # restricted to the approved domains/admin email.
-        #
-        # No OTP is generated.
-        # No email_verifications document is created.
-        # No registration email is sent.
+        # Registration is restricted to approved college domains
+        # (or the dedicated INOUTX configuration-admin account).
+        # Email is considered verified by this registration flow,
+        # but normal users must be approved by the configuration
+        # administrator before they can log in.
         # ---------------------------------------------------------
+        is_config_admin_registration = (
+            email == CONFIG_ADMIN_EMAIL
+            and role == "config_admin"
+        )
+
         user_document = {
             "name": name,
             "email": email,
             "phone": phone,
             "password": hashed_password,
             "role": role,
-            "active": True,
+            "active": True if is_config_admin_registration else False,
+            "approval_status": (
+                "APPROVED"
+                if is_config_admin_registration
+                else "PENDING"
+            ),
             "email_verified": True,
             "email_verified_at": now,
             "created_at": now,
@@ -2021,11 +2308,26 @@ def register():
 
         users.insert_one(user_document)
 
+        if is_config_admin_registration:
+            return jsonify({
+                "success": True,
+                "message": "Registration successful. You can now log in.",
+                "email_verified": True,
+                "verification_required": False,
+                "approval_required": False,
+                "redirect": "/login.html"
+            }), 201
+
         return jsonify({
             "success": True,
-            "message": "Registration successful. You can now log in.",
+            "message": (
+                "Registration submitted successfully. "
+                "Your account is pending administrator approval."
+            ),
             "email_verified": True,
             "verification_required": False,
+            "approval_required": True,
+            "approval_status": "PENDING",
             "redirect": "/login.html"
         }), 201
 
@@ -2088,7 +2390,6 @@ def verify_email():
             }), 400
 
         role = normalize_role(pending.get("role"))
-        active = role not in PRIVILEGED_ROLES
 
         user_document = {
             "name": pending["name"],
@@ -2096,7 +2397,8 @@ def verify_email():
             "phone": pending["phone"],
             "password": pending["password"],
             "role": role,
-            "active": active,
+            "active": False,
+            "approval_status": "PENDING",
             "email_verified": True,
             "email_verified_at": datetime.now(),
             "created_at": pending.get("created_at", datetime.now()),
@@ -2108,10 +2410,10 @@ def verify_email():
         return jsonify({
             "success": True,
             "message": (
-                "Email verified. Your account is ready to use."
-                if active else
-                "Email verified. Your account is awaiting role approval."
-            )
+                "Email verified. Your account is awaiting administrator approval."
+            ),
+            "approval_required": True,
+            "approval_status": "PENDING"
         })
 
     except Exception as e:
