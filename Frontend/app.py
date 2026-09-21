@@ -328,12 +328,16 @@ def is_college_email(email):
 
 
 def send_verification_otp(email, otp):
+    """
+    Send registration verification OTP through Gmail SMTP over SSL.
+    Uses the existing Gmail App Password credentials from environment variables.
+    """
 
-    smtp_host = os.getenv("MAIL_SERVER")
-    smtp_port = int(os.getenv("MAIL_PORT", "587"))
+    smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    smtp_port = int(os.getenv("MAIL_PORT", "465"))
     smtp_username = os.getenv("MAIL_USERNAME")
     smtp_password = os.getenv("MAIL_PASSWORD")
-    sender = os.getenv("MAIL_FROM")
+    sender = os.getenv("MAIL_FROM", smtp_username)
 
     if not all((smtp_host, smtp_username, smtp_password, sender)):
         raise RuntimeError(
@@ -342,115 +346,72 @@ def send_verification_otp(email, otp):
         )
 
     message = EmailMessage()
-    message["Subject"] = "INOUTX college email verification"
+    message["Subject"] = "INOUTX College Email Verification"
     message["From"] = sender
     message["To"] = email
     message.set_content(
-        "Your INOUTX verification code is "
-        f"{otp}. It expires in {OTP_EXPIRY_MINUTES} minutes."
+        f"Your INOUTX verification code is {otp}.\n\n"
+        f"It expires in {OTP_EXPIRY_MINUTES} minutes.\n\n"
+        "If you did not create an INOUTX account, please ignore this email."
     )
 
-    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-        
-        server.login(smtp_username, smtp_password)
-        server.send_message(message)
-# =========================================================
-# PASSWORD RESET EMAIL
-# =========================================================
-
-def send_password_reset_email(
-    email,
-    reset_link
-):
-    """
-    Send password reset link using
-    the existing INOUTX SMTP configuration.
-    """
-
-    smtp_host = os.getenv(
-        "MAIL_SERVER"
-    )
-
-    smtp_port = int(
-        os.getenv(
-            "MAIL_PORT",
-            "587"
-        )
-    )
-
-    smtp_username = os.getenv(
-        "MAIL_USERNAME"
-    )
-
-    smtp_password = os.getenv(
-        "MAIL_PASSWORD"
-    )
-
-    sender = os.getenv(
-        "MAIL_FROM"
-    )
-
-    if not all((
-        smtp_host,
-        smtp_username,
-        smtp_password,
-        sender
-    )):
-        raise RuntimeError(
-            "Email delivery is not configured. "
-            "Set MAIL_SERVER, MAIL_PORT, "
-            "MAIL_USERNAME, MAIL_PASSWORD, "
-            "and MAIL_FROM."
-        )
-
-    message = EmailMessage()
-
-    message["Subject"] = (
-        "INOUTX Password Reset"
-    )
-
-    message["From"] = sender
-
-    message["To"] = email
-
-    message.set_content(
-        "INOUTX Password Reset\n\n"
-
-        "We received a request to reset "
-        "the password for your INOUTX account.\n\n"
-
-        "Click the link below to create "
-        "a new password:\n\n"
-
-        f"{reset_link}\n\n"
-
-        f"This link expires in "
-        f"{RESET_TOKEN_EXPIRY_MINUTES} minutes "
-        "and can only be used once.\n\n"
-
-        "If you did not request a password reset, "
-        "you can safely ignore this email.\n\n"
-
-        "INOUTX\n"
-        "Department Of CSE - KRCT"
-    )
-
-    with smtplib.SMTP(
+    with smtplib.SMTP_SSL(
         smtp_host,
         smtp_port,
         timeout=15
     ) as server:
+        server.login(smtp_username, smtp_password)
+        server.send_message(message)
 
-        server.starttls()
 
-        server.login(
-            smtp_username,
-            smtp_password
+# =========================================================
+# PASSWORD RESET EMAIL
+# =========================================================
+
+def send_password_reset_email(email, reset_link):
+    """
+    Send password reset link through Gmail SMTP over SSL.
+    Uses the same SMTP configuration as verification OTP delivery.
+    """
+
+    smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    smtp_port = int(os.getenv("MAIL_PORT", "465"))
+    smtp_username = os.getenv("MAIL_USERNAME")
+    smtp_password = os.getenv("MAIL_PASSWORD")
+    sender = os.getenv("MAIL_FROM", smtp_username)
+
+    if not all((smtp_host, smtp_username, smtp_password, sender)):
+        raise RuntimeError(
+            "Email delivery is not configured. Set MAIL_SERVER, MAIL_PORT, "
+            "MAIL_USERNAME, MAIL_PASSWORD, and MAIL_FROM."
         )
 
-        server.send_message(
-            message
-        )
+    message = EmailMessage()
+    message["Subject"] = "INOUTX Password Reset"
+    message["From"] = sender
+    message["To"] = email
+
+    message.set_content(
+        "INOUTX Password Reset\n\n"
+        "We received a request to reset the password for your INOUTX account.\n\n"
+        "Click the link below to create a new password:\n\n"
+        f"{reset_link}\n\n"
+        f"This link expires in {RESET_TOKEN_EXPIRY_MINUTES} minutes "
+        "and can only be used once.\n\n"
+        "If you did not request a password reset, you can safely ignore this email.\n\n"
+        "INOUTX\n"
+        "Department Of CSE - KRCT"
+    )
+
+    with smtplib.SMTP_SSL(
+        smtp_host,
+        smtp_port,
+        timeout=15
+    ) as server:
+        server.login(smtp_username, smtp_password)
+        server.send_message(message)
+
+
 # =========================================================
 # FORGOT PASSWORD
 # =========================================================
@@ -6707,8 +6668,7 @@ def home():
     )
 # =========================================================
 # SMTP CONNECTIVITY TEST
-# Temporary diagnostic endpoint for Render + Gmail SMTP.
-# Remove this route after testing.
+# Gmail SMTP over SSL (port 465)
 # =========================================================
 
 @app.route(
@@ -6716,52 +6676,26 @@ def home():
     methods=["GET"]
 )
 def test_smtp():
-
     try:
-
-        smtp_host = os.getenv(
-            "MAIL_SERVER",
-            "smtp.gmail.com"
-        )
-
-        smtp_port = int(
-            os.getenv(
-                "MAIL_PORT",
-                "587"
-            )
-        )
-
-        smtp_username = os.getenv(
-            "MAIL_USERNAME"
-        )
-
-        smtp_password = os.getenv(
-            "MAIL_PASSWORD"
-        )
-
-        print("SMTP HOST:", smtp_host)
-        print("SMTP PORT:", smtp_port)
-        print("SMTP USER:", smtp_username)
+        smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+        smtp_port = int(os.getenv("MAIL_PORT", "465"))
+        smtp_username = os.getenv("MAIL_USERNAME")
+        smtp_password = os.getenv("MAIL_PASSWORD")
 
         if not smtp_username or not smtp_password:
             return jsonify({
                 "success": False,
                 "error": (
                     "MAIL_USERNAME or MAIL_PASSWORD is missing "
-                    "from Render environment variables."
+                    "from environment variables."
                 )
             }), 500
 
-        with smtplib.SMTP(
+        with smtplib.SMTP_SSL(
             smtp_host,
             smtp_port,
             timeout=15
         ) as server:
-
-            server.set_debuglevel(1)
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
             server.login(
                 smtp_username,
                 smtp_password
@@ -6769,13 +6703,10 @@ def test_smtp():
 
         return jsonify({
             "success": True,
-            "message": (
-                "Gmail SMTP connection and login successful."
-            )
+            "message": "Gmail SMTP SSL connection and login successful."
         }), 200
 
     except Exception as e:
-
         print(
             "SMTP TEST ERROR:",
             repr(e)
@@ -6786,186 +6717,7 @@ def test_smtp():
             "error": str(e)
         }), 500
 
-# =========================================================
-# STARTUP
-# =========================================================
 
-def startup():
-
-    print()
-    print("=" * 60)
-    print("IN/OUT X FRONTEND")
-    print("=" * 60)
-
-    print(
-        "Database      : MongoDB Atlas"
-    )
-
-    print(
-        "Database Name : IN_OUTX"
-    )
-
-    print(
-        "Frontend      : "
-        + HTML_DIR
-    )
-
-    print(
-        "Captured      : "
-        + CAPTURED_FRAMES_DIR
-    )
-
-    print(
-        "KRCE Logo     : "
-        + KRCE_LOGO
-    )
-
-    print(
-        "KRCT Logo     : "
-        + KRCT_LOGO
-    )
-
-    print(
-        "Server        : "
-        "http://127.0.0.1:5000"
-    )
-
-    print(
-        "Realtime      : "
-        "MongoDB Change Streams + Socket.IO"
-    )
-
-    print("=" * 60)
-    print()
-
-    # -----------------------------------------------------
-    # Create captured frames directory
-    # -----------------------------------------------------
-
-    if not os.path.isdir(
-        CAPTURED_FRAMES_DIR
-    ):
-
-        print(
-            "WARNING: captured_frames directory "
-            "does not exist."
-        )
-
-        try:
-
-            os.makedirs(
-                CAPTURED_FRAMES_DIR,
-                exist_ok=True
-            )
-
-            print(
-                "Created captured_frames directory."
-            )
-
-        except Exception as e:
-
-            print(
-                "Could not create captured_frames:",
-                e
-            )
-
-    # -----------------------------------------------------
-    # Check logos
-    # -----------------------------------------------------
-
-    print(
-        "KRCE logo exists:",
-        os.path.isfile(
-            KRCE_LOGO
-        )
-    )
-
-    print(
-        "KRCT logo exists:",
-        os.path.isfile(
-            KRCT_LOGO
-        )
-    )
-
-    if not os.path.isfile(
-        KRCE_LOGO
-    ):
-
-        print(
-            "WARNING: KRCE logo not found."
-        )
-
-        print(
-            "Expected:"
-        )
-
-        print(
-            KRCE_LOGO
-        )
-
-    if not os.path.isfile(
-        KRCT_LOGO
-    ):
-
-        print(
-            "WARNING: KRCT logo not found."
-        )
-
-        print(
-            "Expected:"
-        )
-
-        print(
-            KRCT_LOGO
-        )
-
-    # -----------------------------------------------------
-    # MongoDB
-    # -----------------------------------------------------
-
-    if not check_mongodb():
-
-        print(
-            "WARNING: MongoDB connection failed."
-        )
-
-        print(
-            "The server will still start, "
-            "but database operations will fail."
-        )
-
-    # -----------------------------------------------------
-    # Indexes
-    # -----------------------------------------------------
-
-    ensure_indexes()
-
-    # -----------------------------------------------------
-    # Change streams
-    # -----------------------------------------------------
-
-    try:
-
-        start_change_streams()
-
-    except Exception as e:
-
-        print(
-            "Change stream startup warning:",
-            e
-        )
-
-print("MAIL_SERVER:", os.getenv("MAIL_SERVER"))
-print("MAIL_PORT:", os.getenv("MAIL_PORT"))
-print("MAIL_USERNAME:", os.getenv("MAIL_USERNAME"))
-print("MAIL_FROM:", os.getenv("MAIL_FROM"))
-print("MAIL_PASSWORD configured:", bool(os.getenv("MAIL_PASSWORD")))
-
-
-
-
-
-#---------------
 # =========================================================
 # TODAY BUS ENTRIES
 # =========================================================
