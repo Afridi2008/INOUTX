@@ -1098,7 +1098,113 @@
             color: #6b7280;
         }
 
-    </style>
+    
+        /* =========================================================
+           APPROVED USERS + LOGIN ACTIVITY
+        ========================================================== */
+
+        .user-monitor-summary {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .monitor-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .monitor-count.online {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .monitor-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+
+        .monitor-table {
+            width: 100%;
+            min-width: 760px;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        .monitor-table th {
+            padding: 11px 13px;
+            text-align: left;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .35px;
+            white-space: nowrap;
+        }
+
+        .monitor-table td {
+            padding: 12px 13px;
+            border-bottom: 1px solid #eef0f3;
+            color: #1f2937;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .monitor-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .presence-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .presence-badge.online {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .presence-badge.offline {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .activity-login {
+            color: #047857;
+            font-weight: 800;
+        }
+
+        .activity-logout {
+            color: #6b7280;
+            font-weight: 700;
+        }
+
+        .monitor-empty {
+            padding: 22px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+</style>
 
 </head>
 
@@ -2110,6 +2216,115 @@
 
                     </div>
 
+                </section>
+
+
+                <!-- =================================================
+                     APPROVED USERS
+                ================================================== -->
+
+                <section class="config-panel" id="approved-users-panel">
+
+                    <div class="config-panel-header">
+                        <div class="config-panel-title">
+                            <div class="config-panel-title-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="config-panel-title-text">
+                                <h2>Approved Users</h2>
+                                <p>
+                                    All users approved by the INOUTX configuration administrator,
+                                    including who is currently using the system.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="user-monitor-summary">
+                            <span id="approved-users-count" class="monitor-count">
+                                <i class="bi bi-people"></i> 0 approved
+                            </span>
+                            <span id="online-users-count" class="monitor-count online">
+                                <i class="bi bi-circle-fill"></i> 0 online
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="config-panel-body">
+
+                        <div class="monitor-table-wrap">
+                            <table class="monitor-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Last Login</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approved-users-body">
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="monitor-empty">
+                                                Loading approved users...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- =================================================
+                     LOGIN ACTIVITY
+                ================================================== -->
+
+                <section class="config-panel" id="login-activity-panel">
+
+                    <div class="config-panel-header">
+                        <div class="config-panel-title">
+                            <div class="config-panel-title-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="config-panel-title-text">
+                                <h2>Login Activity</h2>
+                                <p>
+                                    Recent login and logout records for approved system users.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-panel-body">
+
+                        <div class="monitor-table-wrap">
+                            <table class="monitor-table">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Activity</th>
+                                        <th>Time</th>
+                                        <th>IP Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="login-activity-body">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="monitor-empty">
+                                                Loading login activity...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 </section>
 
 
@@ -3860,6 +4075,195 @@
     }
 
 
+
+    function formatActivityTime(value) {
+        if (!value) return "—";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "—";
+        return date.toLocaleString([], {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    function formatMonitorRole(role) {
+        return String(role || "")
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, char => char.toUpperCase()) || "User";
+    }
+
+    function renderApprovedUsers(users) {
+        const body = getElement("approved-users-body");
+        const approvedCount = getElement("approved-users-count");
+        const onlineCount = getElement("online-users-count");
+
+        const rows = Array.isArray(users) ? users : [];
+        const online = rows.filter(user => user.online === true).length;
+
+        if (approvedCount) {
+            approvedCount.innerHTML =
+                `<i class="bi bi-people"></i> ${rows.length} approved`;
+        }
+
+        if (onlineCount) {
+            onlineCount.innerHTML =
+                `<i class="bi bi-circle-fill"></i> ${online} online`;
+        }
+
+        if (!body) return;
+
+        if (!rows.length) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="monitor-empty">
+                            <i class="bi bi-people"></i>
+                            No approved users found.
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        body.innerHTML = rows.map(user => {
+            const name = escapeHtml(user.name || "—");
+            const email = escapeHtml(user.email || "—");
+            const role = escapeHtml(formatMonitorRole(user.role));
+            const lastLogin = escapeHtml(formatActivityTime(user.last_login_at));
+            const online = user.online === true;
+
+            return `
+                <tr>
+                    <td><strong>${name}</strong></td>
+                    <td>${email}</td>
+                    <td>${role}</td>
+                    <td>
+                        <span class="presence-badge ${online ? "online" : "offline"}">
+                            <i class="bi bi-circle-fill"></i>
+                            ${online ? "Online" : "Offline"}
+                        </span>
+                    </td>
+                    <td>${lastLogin}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    async function loadApprovedUsers() {
+        try {
+            const response = await fetch("/api/approved-users", {
+                method: "GET",
+                credentials: "include",
+                cache: "no-store"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+                throw new Error(result.error || "Unable to load approved users.");
+            }
+
+            renderApprovedUsers(result.users || []);
+        } catch (error) {
+            console.error("Approved users load error:", error);
+
+            const body = getElement("approved-users-body");
+            if (body) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="monitor-empty">
+                                Unable to load approved users.
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
+    function renderLoginActivity(logs) {
+        const body = getElement("login-activity-body");
+        const rows = Array.isArray(logs) ? logs : [];
+
+        if (!body) return;
+
+        if (!rows.length) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="monitor-empty">
+                            No login activity recorded yet.
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        body.innerHTML = rows.map(log => {
+            const name = escapeHtml(log.name || "—");
+            const email = escapeHtml(log.email || "—");
+            const role = escapeHtml(formatMonitorRole(log.role));
+            const activity = String(log.status || "").toUpperCase() === "LOGIN";
+            const time = escapeHtml(
+                formatActivityTime(log.login_at || log.logout_at)
+            );
+            const ip = escapeHtml(log.ip_address || "—");
+
+            return `
+                <tr>
+                    <td><strong>${name}</strong></td>
+                    <td>${email}</td>
+                    <td>${role}</td>
+                    <td class="${activity ? "activity-login" : "activity-logout"}">
+                        <i class="bi ${activity ? "bi-box-arrow-in-right" : "bi-box-arrow-right"}"></i>
+                        ${activity ? "Login" : "Logout"}
+                    </td>
+                    <td>${time}</td>
+                    <td>${ip}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    async function loadLoginActivity() {
+        try {
+            const response = await fetch("/api/login-activity", {
+                method: "GET",
+                credentials: "include",
+                cache: "no-store"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+                throw new Error(result.error || "Unable to load login activity.");
+            }
+
+            renderLoginActivity(result.logs || []);
+        } catch (error) {
+            console.error("Login activity load error:", error);
+
+            const body = getElement("login-activity-body");
+            if (body) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="monitor-empty">
+                                Unable to load login activity.
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
     function setupUserApprovals() {
 
         const body =
@@ -4122,10 +4526,14 @@
         loadNotifications();
 
         loadPendingUsers(true);
+        loadApprovedUsers();
+        loadLoginActivity();
 
         window.setInterval(
             function () {
                 loadPendingUsers(false);
+                loadApprovedUsers();
+                loadLoginActivity();
             },
             10000
         );
