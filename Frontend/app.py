@@ -6,11 +6,13 @@ import hashlib
 import bcrypt
 import jwt
 import re
-import requests
 from bson import ObjectId
 from datetime import datetime
 import secrets
+import smtplib
 from flask import redirect
+
+from email.message import EmailMessage
 
 from functools import wraps
 from flask import session
@@ -327,155 +329,128 @@ def is_college_email(email):
 
 def send_verification_otp(email, otp):
 
-    api_key = os.getenv("RESEND_API_KEY")
+    smtp_host = os.getenv("MAIL_SERVER")
+    smtp_port = int(os.getenv("MAIL_PORT", "587"))
+    smtp_username = os.getenv("MAIL_USERNAME")
+    smtp_password = os.getenv("MAIL_PASSWORD")
+    sender = os.getenv("MAIL_FROM")
 
-    if not api_key:
+    if not all((smtp_host, smtp_username, smtp_password, sender)):
         raise RuntimeError(
-            "RESEND_API_KEY is not configured."
+            "Email delivery is not configured. Set MAIL_SERVER, MAIL_PORT, "
+            "MAIL_USERNAME, MAIL_PASSWORD, and MAIL_FROM."
         )
 
-    sender = os.getenv(
-        "MAIL_FROM",
-        "INOUTX <onboarding@resend.dev>"
+    message = EmailMessage()
+    message["Subject"] = "INOUTX college email verification"
+    message["From"] = sender
+    message["To"] = email
+    message.set_content(
+        "Your INOUTX verification code is "
+        f"{otp}. It expires in {OTP_EXPIRY_MINUTES} minutes."
     )
 
-    message = {
-        "from": sender,
-        "to": [email],
-        "subject": "INOUTX college email verification",
-        "text": (
-            "Your INOUTX verification code is "
-            f"{otp}.\\n\\n"
-            f"It expires in {OTP_EXPIRY_MINUTES} minutes.\\n\\n"
-            "If you did not create an INOUTX account, "
-            "please ignore this email."
-        ),
-    }
-
-    response = requests.post(
-        "https://api.resend.com/emails",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        json=message,
-        timeout=15,
-    )
-
-    if response.status_code >= 400:
-        raise RuntimeError(
-            f"Resend API error {response.status_code}: "
-            f"{response.text}"
-        )
-
-    print(
-        "Verification email sent successfully:",
-        response.json()
-    )
-
-
+    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+        server.send_message(message)
 # =========================================================
 # PASSWORD RESET EMAIL
 # =========================================================
 
-def send_password_reset_email(email, reset_link):
+def send_password_reset_email(
+    email,
+    reset_link
+):
+    """
+    Send password reset link using
+    the existing INOUTX SMTP configuration.
+    """
 
-    api_key = os.getenv("RESEND_API_KEY")
+    smtp_host = os.getenv(
+        "MAIL_SERVER"
+    )
 
-    if not api_key:
-        raise RuntimeError(
-            "RESEND_API_KEY is not configured."
+    smtp_port = int(
+        os.getenv(
+            "MAIL_PORT",
+            "587"
         )
+    )
+
+    smtp_username = os.getenv(
+        "MAIL_USERNAME"
+    )
+
+    smtp_password = os.getenv(
+        "MAIL_PASSWORD"
+    )
 
     sender = os.getenv(
-        "MAIL_FROM",
-        "INOUTX <onboarding@resend.dev>"
+        "MAIL_FROM"
     )
 
-    message = {
-        "from": sender,
-        "to": [email],
-        "subject": "INOUTX password reset",
-        "text": (
-            "We received a request to reset your INOUTX password.\\n\\n"
-            f"Reset your password using this link:\\n{reset_link}\\n\\n"
-            "This link will expire according to the reset-token "
-            "expiry configured in INOUTX.\\n\\n"
-            "If you did not request a password reset, "
-            "please ignore this email."
-        ),
-        "html": f"""
-        <html>
-        <body>
-            <h2>INOUTX Password Reset</h2>
-
-            <p>
-                We received a request to reset your INOUTX password.
-            </p>
-
-            <p>
-                Click the button below to reset your password:
-            </p>
-
-            <p>
-                <a
-                    href="{reset_link}"
-                    style="
-                        display:inline-block;
-                        padding:12px 20px;
-                        background:#003377;
-                        color:#ffffff;
-                        text-decoration:none;
-                        border-radius:6px;
-                        font-family:Arial,sans-serif;
-                    "
-                >
-                    Reset Password
-                </a>
-            </p>
-
-            <p>
-                Or copy and paste this link into your browser:
-            </p>
-
-            <p>{reset_link}</p>
-
-            <p>
-                If you did not request a password reset,
-                please ignore this email.
-            </p>
-
-            <p>
-                Regards,<br>
-                INOUTX
-            </p>
-        </body>
-        </html>
-        """,
-    }
-
-    response = requests.post(
-        "https://api.resend.com/emails",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        json=message,
-        timeout=15,
-    )
-
-    if response.status_code >= 400:
+    if not all((
+        smtp_host,
+        smtp_username,
+        smtp_password,
+        sender
+    )):
         raise RuntimeError(
-            f"Resend API error {response.status_code}: "
-            f"{response.text}"
+            "Email delivery is not configured. "
+            "Set MAIL_SERVER, MAIL_PORT, "
+            "MAIL_USERNAME, MAIL_PASSWORD, "
+            "and MAIL_FROM."
         )
 
-    print(
-        "Password reset email sent successfully:",
-        response.json()
+    message = EmailMessage()
+
+    message["Subject"] = (
+        "INOUTX Password Reset"
     )
 
+    message["From"] = sender
 
+    message["To"] = email
+
+    message.set_content(
+        "INOUTX Password Reset\n\n"
+
+        "We received a request to reset "
+        "the password for your INOUTX account.\n\n"
+
+        "Click the link below to create "
+        "a new password:\n\n"
+
+        f"{reset_link}\n\n"
+
+        f"This link expires in "
+        f"{RESET_TOKEN_EXPIRY_MINUTES} minutes "
+        "and can only be used once.\n\n"
+
+        "If you did not request a password reset, "
+        "you can safely ignore this email.\n\n"
+
+        "INOUTX\n"
+        "Department Of CSE - KRCT"
+    )
+
+    with smtplib.SMTP(
+        smtp_host,
+        smtp_port,
+        timeout=15
+    ) as server:
+
+        server.starttls()
+
+        server.login(
+            smtp_username,
+            smtp_password
+        )
+
+        server.send_message(
+            message
+        )
 # =========================================================
 # FORGOT PASSWORD
 # =========================================================
@@ -6730,6 +6705,87 @@ def home():
         HTML_DIR,
         "login.html"
     )
+# =========================================================
+# SMTP CONNECTIVITY TEST
+# Temporary diagnostic endpoint for Render + Gmail SMTP.
+# Remove this route after testing.
+# =========================================================
+
+@app.route(
+    "/api/test-smtp",
+    methods=["GET"]
+)
+def test_smtp():
+
+    try:
+
+        smtp_host = os.getenv(
+            "MAIL_SERVER",
+            "smtp.gmail.com"
+        )
+
+        smtp_port = int(
+            os.getenv(
+                "MAIL_PORT",
+                "587"
+            )
+        )
+
+        smtp_username = os.getenv(
+            "MAIL_USERNAME"
+        )
+
+        smtp_password = os.getenv(
+            "MAIL_PASSWORD"
+        )
+
+        print("SMTP HOST:", smtp_host)
+        print("SMTP PORT:", smtp_port)
+        print("SMTP USER:", smtp_username)
+
+        if not smtp_username or not smtp_password:
+            return jsonify({
+                "success": False,
+                "error": (
+                    "MAIL_USERNAME or MAIL_PASSWORD is missing "
+                    "from Render environment variables."
+                )
+            }), 500
+
+        with smtplib.SMTP(
+            smtp_host,
+            smtp_port,
+            timeout=15
+        ) as server:
+
+            server.set_debuglevel(1)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(
+                smtp_username,
+                smtp_password
+            )
+
+        return jsonify({
+            "success": True,
+            "message": (
+                "Gmail SMTP connection and login successful."
+            )
+        }), 200
+
+    except Exception as e:
+
+        print(
+            "SMTP TEST ERROR:",
+            repr(e)
+        )
+
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
 # =========================================================
 # STARTUP
 # =========================================================
