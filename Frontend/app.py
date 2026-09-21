@@ -6696,7 +6696,8 @@ def socket_disconnect():
 
 @app.route(
     "/",
-    methods=["GET"]
+    methods=["GET"],
+    endpoint="home_page"
 )
 def home():
 
