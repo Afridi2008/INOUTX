@@ -351,7 +351,7 @@ def send_verification_otp(email, otp):
     )
 
     with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-        server.starttls()
+        
         server.login(smtp_username, smtp_password)
         server.send_message(message)
 # =========================================================
