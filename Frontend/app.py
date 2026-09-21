@@ -1801,14 +1801,6 @@ def login():
                 )
             }), 401
 
-        if user.get("email_verified") is not True:
-
-            return jsonify({
-                "success": False,
-                "error": "Verify your college email before logging in.",
-                "email_verification_required": True
-            }), 403
-
         approval_status = str(
             user.get("approval_status", "")
         ).strip().upper()
@@ -2316,7 +2308,7 @@ def approve_user(user_id):
             if existing and existing.get("email_verified") is not True:
                 return jsonify({
                     "success": False,
-                    "error": "This user must verify the college email before approval."
+                    "error": "This registration is not eligible for approval."
                 }), 409
 
             return jsonify({
@@ -2507,32 +2499,9 @@ def register():
             bcrypt.gensalt()
         ).decode("utf-8")
 
-        # The verification record is created BEFORE the user account.
-        # The account is inserted into users only after the OTP is correct.
-        otp = str(secrets.randbelow(900000) + 100000)
-
-        email_verifications.delete_many({"email": email})
-        email_verifications.insert_one({
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "password": hashed_password,
-            "role": role,
-            "otp_hash": bcrypt.hashpw(
-                otp.encode("utf-8"),
-                bcrypt.gensalt()
-            ).decode("utf-8"),
-            "otp_expires_at": now + timedelta(minutes=OTP_EXPIRY_MINUTES),
-            "attempts": 0,
-            "resend_count": 0,
-            "last_sent_at": now,
-            "created_at": now,
-        })
-
-        # Create the registration request immediately. This makes the request
-        # visible to the configuration administrator even while the email is
-        # waiting for verification. The account remains unusable until both
-        # email verification and administrator approval are complete.
+        # Create the account request immediately.
+        # There is NO email verification step. Every new registration
+        # goes directly to administrator approval.
         user_result = users.insert_one({
             "name": name,
             "email": email,
@@ -2541,33 +2510,17 @@ def register():
             "role": role,
             "active": False,
             "approval_status": "PENDING",
-            "email_verified": False,
+            "email_verified": True,
             "created_at": now,
             "updated_at": now,
         })
 
-        try:
-            send_verification_otp(email, otp)
-        except Exception as email_error:
-            print("Registration OTP delivery error:", repr(email_error))
-            # Keep the registration request. The administrator can see that
-            # email verification is still pending, and the user can retry via
-            # Resend Code after the mail configuration is fixed.
-            return jsonify({
-                "success": False,
-                "error": "Your registration request was created, but the verification email could not be sent. Please check the mail configuration and use Resend Code.",
-                "verification_required": True,
-                "request_created": True,
-                "email": email
-            }), 502
-
         return jsonify({
             "success": True,
-            "message": "Verification code sent to your college email.",
-            "email_verified": False,
-            "verification_required": True,
+            "message": "Registration request submitted successfully. Please wait for administrator approval.",
             "approval_required": True,
             "approval_status": "PENDING",
+            "email_verified": True,
             "email": email
         }), 201
 
@@ -2578,164 +2531,6 @@ def register():
             "error": "Unable to start the account registration."
         }), 500
 
-
-@app.route(
-    "/api/verify-email",
-    methods=["POST"]
-)
-def verify_email():
-
-    try:
-        data = request.get_json(silent=True) or {}
-        email = str(data.get("email", "")).strip().lower()
-        otp = str(data.get("otp", "")).strip()
-
-        pending = email_verifications.find_one({"email": email})
-
-        if not pending:
-            return jsonify({
-                "success": False,
-                "error": "Invalid verification request."
-            }), 400
-
-        if pending.get("attempts", 0) >= OTP_MAX_ATTEMPTS:
-            return jsonify({
-                "success": False,
-                "error": "Too many verification attempts. Please wait before requesting another code."
-            }), 429
-
-        email_verifications.update_one(
-            {"_id": pending["_id"]},
-            {"$inc": {"attempts": 1}}
-        )
-
-        if pending.get("otp_expires_at") and pending["otp_expires_at"] < datetime.now():
-            return jsonify({
-                "success": False,
-                "error": "Verification code expired. Please request a new code."
-            }), 400
-
-        stored_otp_hash = str(pending.get("otp_hash") or "").encode("utf-8")
-        if (
-            not otp.isdigit()
-            or len(otp) != 6
-            or not stored_otp_hash
-            or not bcrypt.checkpw(otp.encode("utf-8"), stored_otp_hash)
-        ):
-            return jsonify({
-                "success": False,
-                "error": "Invalid verification code."
-            }), 400
-
-        role = normalize_role(pending.get("role"))
-
-        user_result = users.update_one(
-            {"email": email},
-            {
-                "$set": {
-                    "email_verified": True,
-                    "email_verified_at": datetime.now(),
-                    "approval_status": "PENDING",
-                    "active": False,
-                    "updated_at": datetime.now(),
-                }
-            }
-        )
-
-        if user_result.matched_count != 1:
-            return jsonify({
-                "success": False,
-                "error": "Registration request was not found. Please register again."
-            }), 404
-
-        email_verifications.delete_one({"_id": pending["_id"]})
-
-        return jsonify({
-            "success": True,
-            "message": (
-                "Email verified. Your account is awaiting administrator approval."
-            ),
-            "approval_required": True,
-            "approval_status": "PENDING"
-        })
-
-    except Exception as e:
-        print("Email verification error:", e)
-        return jsonify({
-            "success": False,
-            "error": "Unable to verify the email address."
-        }), 500
-
-
-@app.route(
-    "/api/resend-otp",
-    methods=["POST"]
-)
-def resend_otp():
-
-    try:
-        data = request.get_json(silent=True) or {}
-        email = str(data.get("email", "")).strip().lower()
-        pending = email_verifications.find_one({"email": email})
-
-        if not pending:
-            return jsonify({
-                "success": False,
-                "error": "Invalid verification request."
-            }), 400
-
-        now = datetime.now()
-        last_sent_at = pending.get("last_sent_at")
-
-        if (
-            last_sent_at
-            and (now - last_sent_at).total_seconds() < OTP_RESEND_COOLDOWN_SECONDS
-        ) or pending.get("resend_count", 0) >= OTP_MAX_RESENDS:
-            return jsonify({
-                "success": False,
-                "error": "Too many verification attempts. Please wait before requesting another code."
-            }), 429
-
-        otp = str(secrets.randbelow(900000) + 100000)
-        email_verifications.update_one(
-            {"_id": pending["_id"]},
-            {
-                "$set": {
-                    "otp_hash": bcrypt.hashpw(
-                        otp.encode("utf-8"),
-                        bcrypt.gensalt()
-                    ).decode("utf-8"),
-                    "otp_expires_at": now + timedelta(minutes=OTP_EXPIRY_MINUTES),
-                    "attempts": 0,
-                    "last_sent_at": now,
-                },
-                "$inc": {"resend_count": 1}
-            }
-        )
-
-        try:
-            send_verification_otp(email, otp)
-        except Exception as email_error:
-            print("Resend email delivery error:", repr(email_error))
-            return jsonify({
-                "success": False,
-                "error": "We couldn't send the verification code. Please try again."
-            }), 502
-
-        return jsonify({
-            "success": True,
-            "message": "Verification code sent to your email."
-        })
-
-    except Exception as e:
-        print("Resend OTP error:", repr(e))
-        return jsonify({
-            "success": False,
-            "error": "We couldn't send the verification code. Please try again."
-        }), 500
-
-
-    #==============================================================================================tempory============================
 
 @app.route("/api/test-smtp-network", methods=["GET"])
 def test_smtp_network():
