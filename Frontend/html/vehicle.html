@@ -3120,38 +3120,88 @@
 
       try {
 
+        /*
+         * The summary must match the SAME grouped bus data shown
+         * in vehicle.html. Do not use /api/vehicle-summary here,
+         * because that endpoint counts raw MongoDB log documents
+         * and can therefore count repeated crossings separately.
+         */
 
-        const response =
-          await fetch(
+        const [
+          busesResponse,
+          logsResponse
+        ] = await Promise.all([
 
-            API +
-            "/api/vehicle-summary",
+          fetch(
+            API + "/api/buses",
+            { cache: "no-store" }
+          ),
 
-            {
-              cache:
-                "no-store"
-            }
+          fetch(
+            API + "/api/today_entries?date=today",
+            { cache: "no-store" }
+          )
 
-          );
+        ]);
 
 
-        if (!response.ok) {
-
+        if (
+          !busesResponse.ok ||
+          !logsResponse.ok
+        ) {
           throw new Error(
-            "Failed to load vehicle summary"
+            "Failed to load vehicle summary data"
           );
-
         }
 
 
-        const summary =
-          await response.json();
+        const registeredBuses =
+          await busesResponse.json();
+
+        const todayLogs =
+          await logsResponse.json();
 
 
-        console.log(
-          "Vehicle Summary:",
-          summary
-        );
+        const activeFleet =
+          Array.isArray(registeredBuses)
+            ? registeredBuses.filter(
+                bus =>
+                  String(
+                    bus.status || ""
+                  ).trim().toUpperCase() ===
+                  "ACTIVE"
+              )
+            : [];
+
+
+        const groupedToday =
+          buildBusCycles(
+            Array.isArray(todayLogs)
+              ? todayLogs
+              : []
+          );
+
+
+        /*
+         * Because buildBusCycles() returns ONE ROW PER BUS:
+         *   - Entry count = rows with an entry time
+         *   - Exit count  = rows with an exit time
+         */
+
+        const enteredCount =
+          groupedToday.filter(
+            bus =>
+              bus.entryTime &&
+              bus.entryTime !== "-"
+          ).length;
+
+
+        const exitedCount =
+          groupedToday.filter(
+            bus =>
+              bus.exitTime &&
+              bus.exitTime !== "-"
+          ).length;
 
 
         const totalFleet =
@@ -3159,12 +3209,10 @@
             "totalRegisteredFleet"
           );
 
-
         const enteredToday =
           document.getElementById(
             "enteredCampusToday"
           );
-
 
         const exitedToday =
           document.getElementById(
@@ -3173,37 +3221,36 @@
 
 
         if (totalFleet) {
-
           totalFleet.textContent =
-            Number(
-              summary.totalRegisteredFleet ||
-              0
+            String(
+              activeFleet.length
             );
-
         }
 
 
         if (enteredToday) {
-
           enteredToday.textContent =
-            Number(
-              summary.enteredCampusToday ||
-              0
-            );
-
+            String(enteredCount);
         }
 
 
         if (exitedToday) {
-
           exitedToday.textContent =
-            Number(
-              summary.exitedCampusToday ||
-              0
-            );
-
+            String(exitedCount);
         }
 
+
+        console.log(
+          "Vehicle Summary:",
+          {
+            totalRegisteredFleet:
+              activeFleet.length,
+            enteredCampusToday:
+              enteredCount,
+            exitedCampusToday:
+              exitedCount
+          }
+        );
 
       }
       catch (error) {
@@ -3451,211 +3498,216 @@
       logs
     ) {
 
-      if (
-        !Array.isArray(logs)
-      ) {
-
+      if (!Array.isArray(logs)) {
         return [];
       }
 
 
+      /*
+       * ONE ROW PER BUS FOR THE SELECTED DATE.
+       *
+       * A bus can cross the gate many times during the day.
+       * Do not create a new table row for every crossing.
+       * Instead, keep the latest ENTRY and latest EXIT time
+       * for that bus and update only that side when a new
+       * movement of the same direction is received.
+       */
+
       const chronological =
         [...logs].sort(
-
           (a, b) =>
             movementTimestamp(a) -
             movementTimestamp(b)
-
         );
 
 
-      const cycles = [];
-
-
-      const open =
-        new Map();
+      const buses = new Map();
 
 
       chronological.forEach(
         log => {
 
-
           const busNo =
             String(
-
               log.bus_no ??
               log.bus_number ??
               "-"
-
             ).trim();
 
 
           const vehicleNo =
             String(
-
               log.vehicle_no ||
               log.plate ||
               "-"
-
             ).trim();
 
 
+          /*
+           * Prefer vehicle/plate number as the identity because
+           * the same registered bus number should never create
+           * multiple rows when its movement is logged again.
+           */
+          const identity =
+            vehicleNo !== "-"
+              ? vehicleNo
+              : busNo;
+
           const key =
-            `${busNo}|${vehicleNo}`;
+            String(identity)
+              .trim()
+              .toUpperCase();
+
+
+          const timestamp =
+            movementTimestamp(log);
+
+
+          let bus =
+            buses.get(key);
+
+
+          if (!bus) {
+
+            bus = {
+
+              busNo,
+
+              vehicleNo,
+
+              route:
+                log.route ||
+                log.route_name ||
+                "-",
+
+              status: "ARRIVED",
+
+              entryTime: "-",
+
+              exitTime: "-",
+
+              entryImage: "",
+
+              exitImage: "",
+
+              entryTimestamp: 0,
+
+              exitTimestamp: 0,
+
+              timestamp: 0,
+
+              lastMovement: ""
+
+            };
+
+
+            buses.set(key, bus);
+
+          }
+
+
+          /* Keep the most complete current vehicle details. */
+
+          if (
+            bus.busNo === "-" &&
+            busNo !== "-"
+          ) {
+            bus.busNo = busNo;
+          }
+
+
+          if (
+            bus.vehicleNo === "-" &&
+            vehicleNo !== "-"
+          ) {
+            bus.vehicleNo = vehicleNo;
+          }
+
+
+          if (
+            log.route ||
+            log.route_name
+          ) {
+            bus.route =
+              log.route ||
+              log.route_name ||
+              bus.route;
+          }
 
 
           /* ================= ENTRY ================= */
 
-          if (
-            isEntryLog(log)
-          ) {
-
+          if (isEntryLog(log)) {
 
             if (
-              open.has(key)
+              timestamp >=
+              bus.entryTimestamp
             ) {
 
-              cycles.push(
-                open.get(key)
-              );
+              bus.entryTime =
+                getLogTime(log);
+
+              bus.entryImage =
+                log.image ||
+                log.image_path ||
+                "";
+
+              bus.entryTimestamp =
+                timestamp;
 
             }
 
-
-            open.set(
-              key,
-              {
-
-                busNo,
-
-                vehicleNo,
-
-                route:
-                  log.route ||
-                  log.route_name ||
-                  "-",
-
-                status:
-                  String(
-                    log.status ||
-                    "ARRIVED"
-                  )
-                    .trim()
-                    .toUpperCase(),
-
-                entryTime:
-                  getLogTime(log),
-
-                exitTime:
-                  "-",
-
-                entryImage:
-                  log.image ||
-                  log.image_path ||
-                  "",
-
-                exitImage:
-                  "",
-
-                timestamp:
-                  movementTimestamp(
-                    log
-                  )
-
-              }
-            );
-
-
-            return;
           }
 
 
           /* ================= EXIT ================= */
 
-          if (
-            isExitLog(log)
-          ) {
+          else if (isExitLog(log)) {
 
+            if (
+              timestamp >=
+              bus.exitTimestamp
+            ) {
 
-            const cycle =
-              open.get(key);
-
-
-            if (cycle) {
-
-
-              cycle.exitTime =
+              bus.exitTime =
                 getLogTime(log);
 
-
-              cycle.exitImage =
+              bus.exitImage =
                 log.image ||
                 log.image_path ||
                 "";
 
-
-              cycle.status =
-                String(
-                  log.status ||
-                  "EXITED"
-                )
-                  .trim()
-                  .toUpperCase();
-
-
-              cycles.push(
-                cycle
-              );
-
-
-              open.delete(key);
-
+              bus.exitTimestamp =
+                timestamp;
 
             }
-            else {
+
+          }
 
 
-              cycles.push({
+          /* Latest movement controls the current status. */
 
-                busNo,
+          if (
+            timestamp >=
+            bus.timestamp
+          ) {
 
-                vehicleNo,
+            bus.timestamp =
+              timestamp;
 
-                route:
-                  log.route ||
-                  log.route_name ||
-                  "-",
+            bus.lastMovement =
+              isEntryLog(log)
+                ? "ENTRY"
+                : isExitLog(log)
+                  ? "EXIT"
+                  : bus.lastMovement;
 
-                status:
-                  String(
-                    log.status ||
-                    "EXITED"
-                  )
-                    .trim()
-                    .toUpperCase(),
-
-                entryTime:
-                  "-",
-
-                exitTime:
-                  getLogTime(log),
-
-                entryImage:
-                  "",
-
-                exitImage:
-                  log.image ||
-                  log.image_path ||
-                  "",
-
-                timestamp:
-                  movementTimestamp(
-                    log
-                  )
-
-              });
-
-            }
+            bus.status =
+              isEntryLog(log)
+                ? "ARRIVED"
+                : isExitLog(log)
+                  ? "EXITED"
+                  : bus.status;
 
           }
 
@@ -3663,18 +3715,12 @@
       );
 
 
-      open.forEach(
-        cycle =>
-          cycles.push(cycle)
-      );
-
-
-      return cycles.sort(
-
+      return Array.from(
+        buses.values()
+      ).sort(
         (a, b) =>
           b.timestamp -
           a.timestamp
-
       );
 
     }
@@ -4088,9 +4134,15 @@
 
 
             const imageURL =
-              getImageUrl(
-                imagePath
-              );
+              bus.image_url
+                ? (
+                    String(bus.image_url).startsWith("http")
+                      ? bus.image_url
+                      : API + bus.image_url
+                  )
+                : getImageUrl(
+                    imagePath
+                  );
 
 
             if (imageURL) {
