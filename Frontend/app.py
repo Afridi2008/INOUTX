@@ -3,6 +3,7 @@ import os
 import threading
 import time
 import hashlib
+import subprocess
 import bcrypt
 import jwt
 import re
@@ -7251,24 +7252,93 @@ def today_entries():
             "success": False,
             "error": str(e)
         }), 500
+
+
+# =========================================================
+# CAMERA PROCESS
+# =========================================================
+
+camera_process = None
+
+
+def start_camera_process():
+
+    global camera_process
+
+    # Prevent duplicate camera.py process
+    if camera_process is not None:
+
+        if camera_process.poll() is None:
+
+            print("Camera.py is already running.")
+
+            return
+
+    camera_path = os.path.join(
+        PROJECT_ROOT,
+        "camera.py"
+    )
+
+    if not os.path.isfile(camera_path):
+
+        print("ERROR: camera.py not found:")
+        print(camera_path)
+
+        return
+
+    try:
+
+        camera_process = subprocess.Popen(
+            [
+                sys.executable,
+                camera_path
+            ],
+            cwd=PROJECT_ROOT
+        )
+
+        print(
+            "INOUTX camera.py started successfully."
+        )
+
+        print(
+            "Camera Process ID:",
+            camera_process.pid
+        )
+
+    except Exception as e:
+
+        print(
+            "ERROR: Failed to start camera.py:",
+            repr(e)
+        )
+
+
+# =========================================================
+# RUN
+# =========================================================
 # =========================================================
 # RUN
 # =========================================================
 
 if __name__ == "__main__":
 
+    print("=" * 60)
+    print("INOUTX SYSTEM STARTING")
+    print("=" * 60)
+
     startup()
 
+    # Automatically start camera.py
+    start_camera_process()
+
+    print("Flask server starting...")
+    print("Dashboard: http://127.0.0.1:5000")
+    print("=" * 60)
+
     socketio.run(
-
         app,
-
         host="0.0.0.0",
-
         port=5000,
-
         debug=True,
-
         use_reloader=False
-
     )
