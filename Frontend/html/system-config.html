@@ -471,6 +471,181 @@
 
 
         /* =========================================================
+           USER APPROVALS
+        ========================================================== */
+
+        .approval-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .approval-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 26px;
+            padding: 0 9px;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .approval-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .approval-table {
+            width: 100%;
+            min-width: 720px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        .approval-table th {
+            padding: 12px 14px;
+            text-align: left;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .35px;
+            white-space: nowrap;
+        }
+
+        .approval-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid #eef0f3;
+            color: #1f2937;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .approval-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .approval-user-name {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .approval-user-email {
+            color: #4b5563;
+            overflow-wrap: anywhere;
+        }
+
+        .approval-role {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .approval-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #fffbeb;
+            color: #92400e;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .approval-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 7px;
+            white-space: nowrap;
+        }
+
+        .approval-action {
+            min-height: 34px;
+            padding: 7px 11px;
+            border-radius: 7px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+
+        .approval-action:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .approval-approve {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
+        }
+
+        .approval-approve:hover:not(:disabled) {
+            background: #d1fae5;
+        }
+
+        .approval-reject {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        .approval-reject:hover:not(:disabled) {
+            background: #fee2e2;
+        }
+
+        .approval-empty {
+            padding: 28px 16px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .approval-empty i {
+            display: block;
+            margin-bottom: 7px;
+            color: #9ca3af;
+            font-size: 25px;
+        }
+
+        @media (max-width: 576px) {
+            .approval-table-wrap {
+                border: 0;
+            }
+
+            .approval-table {
+                min-width: 650px;
+            }
+
+            .approval-actions {
+                justify-content: flex-start;
+            }
+        }
+
+
+        /* =========================================================
            NAVBAR / SIDEBAR MOBILE FIX
         ========================================================== */
 
@@ -1858,6 +2033,84 @@
 
                 </section>
 
+
+
+                <!-- =================================================
+                     USER APPROVALS
+                ================================================== -->
+
+                <section class="config-panel" id="user-approvals-panel">
+
+                    <div class="config-panel-header">
+
+                        <div class="config-panel-title">
+
+                            <div class="config-panel-title-icon">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+
+                            <div class="config-panel-title-text">
+                                <h2>User Approvals</h2>
+                                <p>
+                                    Review and approve or reject pending
+                                    INOUTX user registrations.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="approval-summary">
+                            <span
+                                id="pending-users-count"
+                                class="approval-count">
+                                0
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="config-panel-body">
+
+                        <div
+                            id="approval-message"
+                            class="config-message"
+                            style="margin-bottom: 14px;">
+                        </div>
+
+                        <div class="approval-table-wrap">
+
+                            <table class="approval-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th style="text-align:right;">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="pending-users-body">
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="approval-empty">
+                                                <i class="bi bi-hourglass-split"></i>
+                                                Loading pending registrations...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
 
 
                 <!-- =================================================
@@ -3268,6 +3521,387 @@
 
 
     /* =====================================================
+       USER APPROVALS
+    ====================================================== */
+
+    function showApprovalMessage(message, type = "success") {
+
+        const element =
+            getElement("approval-message");
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent = message;
+
+        element.className =
+            "config-message show " + type;
+
+        window.clearTimeout(
+            showApprovalMessage.timeout
+        );
+
+        showApprovalMessage.timeout =
+            window.setTimeout(
+                function () {
+                    element.classList.remove("show");
+                },
+                4000
+            );
+    }
+
+
+    function formatApprovalRole(role) {
+
+        const value =
+            String(role || "").trim();
+
+        if (!value) {
+            return "User";
+        }
+
+        return value
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, function (letter) {
+                return letter.toUpperCase();
+            });
+    }
+
+
+    function renderPendingUsers(users) {
+
+        const body =
+            getElement("pending-users-body");
+
+        const count =
+            getElement("pending-users-count");
+
+        if (!body) {
+            return;
+        }
+
+        const pendingUsers =
+            Array.isArray(users)
+                ? users
+                : [];
+
+        if (count) {
+            count.textContent =
+                String(pendingUsers.length);
+        }
+
+        if (pendingUsers.length === 0) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="approval-empty">
+                            <i class="bi bi-check2-circle"></i>
+                            No pending user registrations.
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        body.innerHTML =
+            pendingUsers.map(function (user) {
+
+                const id =
+                    escapeHtml(user.id || "");
+
+                const name =
+                    escapeHtml(user.name || "Unnamed user");
+
+                const email =
+                    escapeHtml(user.email || "");
+
+                const role =
+                    escapeHtml(
+                        formatApprovalRole(user.role)
+                    );
+
+                return `
+                    <tr>
+                        <td>
+                            <span class="approval-user-name">
+                                ${name}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="approval-user-email">
+                                ${email}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="approval-role">
+                                ${role}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="approval-status">
+                                <i class="bi bi-clock"></i>
+                                Pending
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="approval-actions">
+
+                                <button
+                                    type="button"
+                                    class="approval-action approval-approve"
+                                    data-approval-action="approve"
+                                    data-user-id="${id}">
+                                    <i class="bi bi-check-lg"></i>
+                                    Approve
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="approval-action approval-reject"
+                                    data-approval-action="reject"
+                                    data-user-id="${id}">
+                                    <i class="bi bi-x-lg"></i>
+                                    Reject
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+            }).join("");
+    }
+
+
+    async function loadPendingUsers(showLoading = false) {
+
+        const body =
+            getElement("pending-users-body");
+
+        if (showLoading && body) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="approval-empty">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Loading pending registrations...
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/user-approvals",
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        cache: "no-store"
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (
+                !response.ok ||
+                result.success !== true
+            ) {
+
+                if (response.status === 401 ||
+                    response.status === 403) {
+
+                    showApprovalMessage(
+                        result.error ||
+                        "You are not authorized to manage user approvals.",
+                        "error"
+                    );
+
+                }
+
+                throw new Error(
+                    result.error ||
+                    "Unable to load pending registrations."
+                );
+            }
+
+            renderPendingUsers(
+                result.users || []
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Pending user load error:",
+                error
+            );
+
+            if (body) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="approval-empty">
+                                <i class="bi bi-exclamation-circle"></i>
+                                Unable to load pending registrations.
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+        }
+    }
+
+
+    async function handleUserApproval(userId, action) {
+
+        if (!userId || !["approve", "reject"].includes(action)) {
+            return;
+        }
+
+        const actionText =
+            action === "approve"
+                ? "approve"
+                : "reject";
+
+        const confirmation =
+            window.confirm(
+                "Are you sure you want to " +
+                actionText +
+                " this user registration?"
+            );
+
+        if (!confirmation) {
+            return;
+        }
+
+        const buttons =
+            document.querySelectorAll(
+                `[data-user-id="${CSS.escape(userId)}"]`
+            );
+
+        buttons.forEach(function (button) {
+            button.disabled = true;
+        });
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/user-approvals/" +
+                    encodeURIComponent(userId) +
+                    "/" +
+                    action,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({})
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (
+                !response.ok ||
+                result.success !== true
+            ) {
+
+                throw new Error(
+                    result.error ||
+                    "Unable to update the registration."
+                );
+            }
+
+            showApprovalMessage(
+                result.message ||
+                (
+                    action === "approve"
+                        ? "User approved successfully."
+                        : "User registration rejected."
+                ),
+                "success"
+            );
+
+            await loadPendingUsers(false);
+
+        }
+        catch (error) {
+
+            console.error(
+                "User approval action error:",
+                error
+            );
+
+            showApprovalMessage(
+                error.message ||
+                "Unable to update the registration.",
+                "error"
+            );
+
+            await loadPendingUsers(false);
+        }
+    }
+
+
+    function setupUserApprovals() {
+
+        const body =
+            getElement("pending-users-body");
+
+        if (!body) {
+            return;
+        }
+
+        body.addEventListener(
+            "click",
+            function (event) {
+
+                const button =
+                    event.target.closest(
+                        "[data-approval-action]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                const userId =
+                    button.getAttribute(
+                        "data-user-id"
+                    );
+
+                const action =
+                    button.getAttribute(
+                        "data-approval-action"
+                    );
+
+                handleUserApproval(
+                    userId,
+                    action
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
        ACCESS CONTROL
     ====================================================== */
 
@@ -3420,6 +4054,9 @@
         }
 
 
+        setupUserApprovals();
+
+
         const formInputs =
             document.querySelectorAll(
                 ".config-input, .config-select"
@@ -3483,6 +4120,15 @@
 
 
         loadNotifications();
+
+        loadPendingUsers(true);
+
+        window.setInterval(
+            function () {
+                loadPendingUsers(false);
+            },
+            10000
+        );
 
     }
 
