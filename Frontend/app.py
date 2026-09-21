@@ -14,6 +14,13 @@ from flask import redirect
 
 from email.message import EmailMessage
 
+# Load the project .env before reading mail/database configuration.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"), override=True)
+except Exception as dotenv_error:
+    print("dotenv load warning:", repr(dotenv_error))
+
 from functools import wraps
 from flask import session
 
@@ -333,16 +340,40 @@ def send_verification_otp(email, otp):
     Uses the existing Gmail App Password credentials from environment variables.
     """
 
-    smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
-    smtp_port = int(os.getenv("MAIL_PORT", "465"))
-    smtp_username = os.getenv("MAIL_USERNAME")
-    smtp_password = os.getenv("MAIL_PASSWORD")
-    sender = os.getenv("MAIL_FROM", smtp_username)
+    # Support the project's MAIL_* names plus common SMTP aliases so an
+    # existing .env does not silently stop working.
+    smtp_host = (
+        os.getenv("MAIL_SERVER")
+        or os.getenv("SMTP_HOST")
+        or os.getenv("EMAIL_HOST")
+        or "smtp.gmail.com"
+    ).strip()
+    smtp_port = int(
+        os.getenv("MAIL_PORT")
+        or os.getenv("SMTP_PORT")
+        or os.getenv("EMAIL_PORT")
+        or "465"
+    )
+    smtp_username = (
+        os.getenv("MAIL_USERNAME")
+        or os.getenv("SMTP_USERNAME")
+        or os.getenv("EMAIL_USERNAME")
+        or os.getenv("GMAIL_USERNAME")
+        or ""
+    ).strip()
+    smtp_password = (
+        os.getenv("MAIL_PASSWORD")
+        or os.getenv("SMTP_PASSWORD")
+        or os.getenv("EMAIL_PASSWORD")
+        or os.getenv("GMAIL_APP_PASSWORD")
+        or ""
+    ).strip()
+    sender = (os.getenv("MAIL_FROM") or os.getenv("EMAIL_FROM") or smtp_username).strip()
 
-    if not all((smtp_host, smtp_username, smtp_password, sender)):
+    if not smtp_username or not smtp_password or not sender:
         raise RuntimeError(
-            "Email delivery is not configured. Set MAIL_SERVER, MAIL_PORT, "
-            "MAIL_USERNAME, MAIL_PASSWORD, and MAIL_FROM."
+            "Email delivery is not configured. Add the Gmail SMTP username "
+            "and Gmail App Password to the project's .env file."
         )
 
     message = EmailMessage()
@@ -2032,6 +2063,7 @@ def get_approved_users():
                 "approval_status": str(user.get("approval_status") or "").upper(),
                 "online": str(user.get("_id")) in active_presence,
                 "last_login_at": serialize_value(user.get("last_login_at")),
+                "approved_at": serialize_value(user.get("approved_at")),
             })
 
         return jsonify({
@@ -2159,6 +2191,7 @@ def serialize_pending_user(user):
             user.get("approval_status", "PENDING")
         ).strip().upper(),
         "active": user.get("active") is True,
+        "email_verified": user.get("email_verified") is True,
         "created_at": serialize_value(
             user.get("created_at")
         ),
@@ -2257,7 +2290,8 @@ def approve_user(user_id):
         result = users.update_one(
             {
                 "_id": object_id,
-                "approval_status": "PENDING"
+                "approval_status": "PENDING",
+                "email_verified": True
             },
             {
                 "$set": {
@@ -2278,6 +2312,12 @@ def approve_user(user_id):
                     "success": False,
                     "error": "User account was not found."
                 }), 404
+
+            if existing and existing.get("email_verified") is not True:
+                return jsonify({
+                    "success": False,
+                    "error": "This user must verify the college email before approval."
+                }), 409
 
             return jsonify({
                 "success": False,
@@ -2489,14 +2529,36 @@ def register():
             "created_at": now,
         })
 
+        # Create the registration request immediately. This makes the request
+        # visible to the configuration administrator even while the email is
+        # waiting for verification. The account remains unusable until both
+        # email verification and administrator approval are complete.
+        user_result = users.insert_one({
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password": hashed_password,
+            "role": role,
+            "active": False,
+            "approval_status": "PENDING",
+            "email_verified": False,
+            "created_at": now,
+            "updated_at": now,
+        })
+
         try:
             send_verification_otp(email, otp)
         except Exception as email_error:
             print("Registration OTP delivery error:", repr(email_error))
-            email_verifications.delete_many({"email": email})
+            # Keep the registration request. The administrator can see that
+            # email verification is still pending, and the user can retry via
+            # Resend Code after the mail configuration is fixed.
             return jsonify({
                 "success": False,
-                "error": "We couldn't send the verification code. Please check your email configuration and try again."
+                "error": "Your registration request was created, but the verification email could not be sent. Please check the mail configuration and use Resend Code.",
+                "verification_required": True,
+                "request_created": True,
+                "email": email
             }), 502
 
         return jsonify({
@@ -2567,20 +2629,25 @@ def verify_email():
 
         role = normalize_role(pending.get("role"))
 
-        user_document = {
-            "name": pending["name"],
-            "email": pending["email"],
-            "phone": pending["phone"],
-            "password": pending["password"],
-            "role": role,
-            "active": False,
-            "approval_status": "PENDING",
-            "email_verified": True,
-            "email_verified_at": datetime.now(),
-            "created_at": pending.get("created_at", datetime.now()),
-        }
+        user_result = users.update_one(
+            {"email": email},
+            {
+                "$set": {
+                    "email_verified": True,
+                    "email_verified_at": datetime.now(),
+                    "approval_status": "PENDING",
+                    "active": False,
+                    "updated_at": datetime.now(),
+                }
+            }
+        )
 
-        users.insert_one(user_document)
+        if user_result.matched_count != 1:
+            return jsonify({
+                "success": False,
+                "error": "Registration request was not found. Please register again."
+            }), 404
+
         email_verifications.delete_one({"_id": pending["_id"]})
 
         return jsonify({
