@@ -2138,6 +2138,38 @@ def resend_otp():
         }), 500
 
 
+    #==============================================================================================tempory============================
+
+@app.route("/api/test-smtp-network", methods=["GET"])
+def test_smtp_network():
+    import socket
+
+    try:
+        host = "smtp.gmail.com"
+        port = 465
+
+        print(f"Testing TCP connection to {host}:{port}")
+
+        sock = socket.create_connection(
+            (host, port),
+            timeout=15
+        )
+
+        sock.close()
+
+        return jsonify({
+            "success": True,
+            "message": "TCP connection to Gmail SMTP succeeded."
+        })
+
+    except Exception as e:
+        print("SMTP NETWORK TEST ERROR:", repr(e))
+
+        return jsonify({
+            "success": False,
+            "error": repr(e)
+        }), 500
+        
 # =========================================================
 # CURRENT USER
 # =========================================================
