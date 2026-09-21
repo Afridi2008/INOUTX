@@ -1595,6 +1595,133 @@ def login_required(function):
 # LOGIN
 # =========================================================
 
+
+def _session_presence_collection():
+    return db["user_presence"]
+
+
+def _login_logs_collection():
+    return db["login_logs"]
+
+
+def _record_login_presence(user):
+    session_id = secrets.token_hex(24)
+    now = datetime.now()
+
+    session["presence_id"] = session_id
+
+    users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"last_login_at": now, "last_seen_at": now}}
+    )
+
+    _session_presence_collection().update_one(
+        {"session_id": session_id},
+        {
+            "$set": {
+                "session_id": session_id,
+                "user_id": str(user["_id"]),
+                "email": str(user.get("email", "")).strip().lower(),
+                "name": str(user.get("name", "")).strip(),
+                "role": str(user.get("role", "")).strip(),
+                "last_seen_at": now,
+                "logged_in": True,
+                "login_at": now,
+                "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+                "user_agent": request.headers.get("User-Agent", ""),
+            }
+        },
+        upsert=True
+    )
+
+    _login_logs_collection().insert_one({
+        "user_id": str(user["_id"]),
+        "email": str(user.get("email", "")).strip().lower(),
+        "name": str(user.get("name", "")).strip(),
+        "role": str(user.get("role", "")).strip(),
+        "login_at": now,
+        "logout_at": None,
+        "status": "LOGIN",
+        "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+        "user_agent": request.headers.get("User-Agent", ""),
+    })
+
+
+def _mark_current_presence_offline():
+    presence_id = session.get("presence_id")
+    if presence_id:
+        _session_presence_collection().update_one(
+            {"session_id": presence_id},
+            {
+                "$set": {
+                    "logged_in": False,
+                    "last_seen_at": datetime.now(),
+                    "logout_at": datetime.now(),
+                }
+            }
+        )
+
+    user = session.get("user") or {}
+    if user.get("email"):
+        now = datetime.now()
+        _login_logs_collection().update_one(
+            {
+                "email": str(user.get("email")).strip().lower(),
+                "status": "LOGIN",
+                "logout_at": None,
+            },
+            {"$set": {"logout_at": now}},
+            sort=[("login_at", DESCENDING)]
+        )
+
+        _login_logs_collection().insert_one({
+            "user_id": str(user.get("id", "")),
+            "email": str(user.get("email", "")).strip().lower(),
+            "name": str(user.get("name", "")).strip(),
+            "role": str(user.get("role", "")).strip(),
+            "login_at": now,
+            "logout_at": now,
+            "status": "LOGOUT",
+            "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+            "user_agent": request.headers.get("User-Agent", ""),
+        })
+
+
+
+
+@app.before_request
+def update_logged_in_presence():
+    # Keep the current user's presence fresh whenever the authenticated
+    # browser communicates with the backend. This avoids requiring every
+    # existing frontend page to be rewritten just to report activity.
+    presence_id = session.get("presence_id")
+    user = session.get("user") or {}
+
+    if not presence_id or not user.get("id"):
+        return None
+
+    if request.path in {"/api/login", "/api/logout", "/api/session-heartbeat"}:
+        return None
+
+    try:
+        _session_presence_collection().update_one(
+            {
+                "session_id": presence_id,
+                "user_id": str(user.get("id"))
+            },
+            {
+                "$set": {
+                    "last_seen_at": datetime.now(),
+                    "logged_in": True
+                }
+            }
+        )
+    except Exception as error:
+        print("Presence update warning:", repr(error))
+
+    return None
+
+
 @app.route(
     "/api/login",
     methods=["POST"]
@@ -1757,6 +1884,8 @@ def login():
         }
 
         session.permanent = True
+        _record_login_presence(user)
+
         print("LOGIN SESSION CREATED:")
         print(session.get("user"))
 
@@ -1861,6 +1990,142 @@ def config_access():
             "authorized": False,
             "error": str(e)
         }), 500
+# =========================================================
+# APPROVED USERS / LOGIN ACTIVITY / LIVE PRESENCE
+# =========================================================
+
+@app.route("/api/approved-users", methods=["GET"])
+def get_approved_users():
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Only the INOUTX configuration administrator can view approved users."
+        }), 403
+
+    try:
+        now = datetime.now()
+        online_cutoff = now - timedelta(seconds=90)
+
+        presence = _session_presence_collection()
+        active_presence = {
+            row.get("user_id")
+            for row in presence.find({
+                "logged_in": True,
+                "last_seen_at": {"$gte": online_cutoff}
+            }, {"user_id": 1})
+        }
+
+        approved = users.find({
+            "approval_status": "APPROVED",
+            "active": True
+        }).sort("name", ASCENDING)
+
+        data = []
+        for user in approved:
+            data.append({
+                "id": str(user.get("_id")),
+                "name": str(user.get("name") or "").strip(),
+                "email": str(user.get("email") or "").strip(),
+                "role": str(user.get("role") or "").strip(),
+                "active": user.get("active") is True,
+                "approval_status": str(user.get("approval_status") or "").upper(),
+                "online": str(user.get("_id")) in active_presence,
+                "last_login_at": serialize_value(user.get("last_login_at")),
+            })
+
+        return jsonify({
+            "success": True,
+            "count": len(data),
+            "users": data,
+            "online_count": sum(1 for item in data if item["online"])
+        }), 200
+
+    except Exception as e:
+        print("Approved users load error:", repr(e))
+        return jsonify({
+            "success": False,
+            "error": "Unable to load approved users."
+        }), 500
+
+
+@app.route("/api/login-activity", methods=["GET"])
+def get_login_activity():
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Only the INOUTX configuration administrator can view login activity."
+        }), 403
+
+    try:
+        logs = _login_logs_collection().find(
+            {},
+            {
+                "name": 1,
+                "email": 1,
+                "role": 1,
+                "login_at": 1,
+                "logout_at": 1,
+                "status": 1,
+                "ip_address": 1,
+            }
+        ).sort("login_at", DESCENDING).limit(100)
+
+        data = [serialize_document(row) for row in logs]
+
+        return jsonify({
+            "success": True,
+            "count": len(data),
+            "logs": data
+        }), 200
+
+    except Exception as e:
+        print("Login activity load error:", repr(e))
+        return jsonify({
+            "success": False,
+            "error": "Unable to load login activity."
+        }), 500
+
+
+@app.route("/api/session-heartbeat", methods=["POST"])
+def session_heartbeat():
+    user = session.get("user") or {}
+    presence_id = session.get("presence_id")
+
+    if not user or not presence_id:
+        return jsonify({
+            "success": False,
+            "authenticated": False
+        }), 401
+
+    now = datetime.now()
+    result = _session_presence_collection().update_one(
+        {
+            "session_id": presence_id,
+            "user_id": str(user.get("id"))
+        },
+        {
+            "$set": {
+                "last_seen_at": now,
+                "logged_in": True
+            }
+        }
+    )
+
+    if result.matched_count != 1:
+        return jsonify({
+            "success": False,
+            "authenticated": False
+        }), 401
+
+    return jsonify({
+        "success": True,
+        "authenticated": True,
+        "last_seen_at": serialize_value(now)
+    }), 200
+
+
 # =========================================================
 # USER APPROVAL HELPERS
 # =========================================================
@@ -2125,30 +2390,15 @@ def reject_user(user_id):
 def register():
 
     try:
-
         data = request.get_json(silent=True) or {}
 
-        name = str(
-            data.get("name", data.get("full_name", ""))
-        ).strip()
-
-        # Normalize the email once and use this exact value everywhere.
-        email = str(
-            data.get("email", "")
-        ).strip().lower()
-
-        phone = str(
-            data.get("phone", "")
-        ).strip()
-
-        password = str(
-            data.get("password", "")
-        )
-
+        name = str(data.get("name", data.get("full_name", ""))).strip()
+        email = str(data.get("email", "")).strip().lower()
+        phone = str(data.get("phone", "")).strip()
+        password = str(data.get("password", ""))
         confirm_password = str(
             data.get("confirm_password", data.get("confirmPassword", ""))
         )
-
         role = normalize_role(
             data.get(
                 "account_type",
@@ -2157,53 +2407,28 @@ def register():
         )
 
         if not name:
-            return jsonify({
-                "success": False,
-                "error": "Name is required."
-            }), 400
+            return jsonify({"success": False, "error": "Name is required."}), 400
 
         if len(name) > 100:
-            return jsonify({
-                "success": False,
-                "error": "Name must not exceed 100 characters."
-            }), 400
+            return jsonify({"success": False, "error": "Name must not exceed 100 characters."}), 400
 
         if len(email) > 254:
-            return jsonify({
-                "success": False,
-                "error": "Email address is too long."
-            }), 400
+            return jsonify({"success": False, "error": "Email address is too long."}), 400
 
-        # ---------------------------------------------------------
-        # REGISTRATION EMAIL RULE
-        #
-        # Allowed:
-        #   anything@krct.ac.in
-        #   anything@krce.ac.in
-        #   inoutx.testing@gmail.com
-        #
-        # No OTP or registration email is required.
-        # ---------------------------------------------------------
         allowed_registration_email = (
             email.endswith("@krct.ac.in")
             or email.endswith("@krce.ac.in")
-            or email == "inoutx.testing@gmail.com"
+            or email == CONFIG_ADMIN_EMAIL
         )
 
         if not allowed_registration_email:
             return jsonify({
                 "success": False,
-                "error": (
-                    "Registration is allowed only with a KRCT or KRCE "
-                    "college email address."
-                )
+                "error": "Registration is allowed only with a KRCT or KRCE college email address."
             }), 403
 
         if not re.fullmatch(r"[0-9+() .-]{7,20}", phone):
-            return jsonify({
-                "success": False,
-                "error": "Please enter a valid phone number."
-            }), 400
+            return jsonify({"success": False, "error": "Please enter a valid phone number."}), 400
 
         if len(password) < 6:
             return jsonify({
@@ -2211,133 +2436,84 @@ def register():
                 "error": "Password must contain at least 6 characters."
             }), 400
 
-        if not confirm_password:
-            return jsonify({
-                "success": False,
-                "error": "Please confirm your password."
-            }), 400
-
         if password != confirm_password:
-            return jsonify({
-                "success": False,
-                "error": "Passwords do not match."
-            }), 400
+            return jsonify({"success": False, "error": "Passwords do not match."}), 400
 
         if not role:
-            return jsonify({
-                "success": False,
-                "error": "Account type is required."
-            }), 400
+            return jsonify({"success": False, "error": "Account type is required."}), 400
 
-        # ---------------------------------------------------------
-        # PROTECT THE CONFIGURATION ADMIN ROLE
-        #
-        # A normal user cannot request config_admin simply by
-        # choosing that role during registration.
-        # The configured admin email is the only email allowed
-        # to register with the config_admin role.
-        # ---------------------------------------------------------
-        # The dedicated INOUTX admin email is reserved for the
-        # configuration-admin account.
         if email == CONFIG_ADMIN_EMAIL and role != "config_admin":
             return jsonify({
                 "success": False,
                 "error": "The INOUTX admin email must use the Configuration Admin role."
             }), 403
 
-        if role == "config_admin":
-            if (
-                not CONFIG_ADMIN_EMAIL
-                or email != CONFIG_ADMIN_EMAIL
-            ):
-                return jsonify({
-                    "success": False,
-                    "error": (
-                        "The Configuration Admin role is restricted "
-                        "to the configured admin account."
-                    )
-                }), 403
+        if role == "config_admin" and email != CONFIG_ADMIN_EMAIL:
+            return jsonify({
+                "success": False,
+                "error": "The Configuration Admin role is restricted to the configured admin account."
+            }), 403
 
-        existing_user = users.find_one({
-            "email": email
-        })
-
+        existing_user = users.find_one({"email": email})
         if existing_user:
             return jsonify({
                 "success": False,
                 "error": "An account with this email already exists."
             }), 409
 
+        now = datetime.now()
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt()
         ).decode("utf-8")
 
-        now = datetime.now()
+        # The verification record is created BEFORE the user account.
+        # The account is inserted into users only after the OTP is correct.
+        otp = str(secrets.randbelow(900000) + 100000)
 
-        # ---------------------------------------------------------
-        # CREATE ACCOUNT AS PENDING
-        #
-        # Registration is restricted to approved college domains
-        # (or the dedicated INOUTX configuration-admin account).
-        # Email is considered verified by this registration flow,
-        # but normal users must be approved by the configuration
-        # administrator before they can log in.
-        # ---------------------------------------------------------
-        is_config_admin_registration = (
-            email == CONFIG_ADMIN_EMAIL
-            and role == "config_admin"
-        )
-
-        user_document = {
+        email_verifications.delete_many({"email": email})
+        email_verifications.insert_one({
             "name": name,
             "email": email,
             "phone": phone,
             "password": hashed_password,
             "role": role,
-            "active": True if is_config_admin_registration else False,
-            "approval_status": (
-                "APPROVED"
-                if is_config_admin_registration
-                else "PENDING"
-            ),
-            "email_verified": True,
-            "email_verified_at": now,
+            "otp_hash": bcrypt.hashpw(
+                otp.encode("utf-8"),
+                bcrypt.gensalt()
+            ).decode("utf-8"),
+            "otp_expires_at": now + timedelta(minutes=OTP_EXPIRY_MINUTES),
+            "attempts": 0,
+            "resend_count": 0,
+            "last_sent_at": now,
             "created_at": now,
-        }
+        })
 
-        users.insert_one(user_document)
-
-        if is_config_admin_registration:
+        try:
+            send_verification_otp(email, otp)
+        except Exception as email_error:
+            print("Registration OTP delivery error:", repr(email_error))
+            email_verifications.delete_many({"email": email})
             return jsonify({
-                "success": True,
-                "message": "Registration successful. You can now log in.",
-                "email_verified": True,
-                "verification_required": False,
-                "approval_required": False,
-                "redirect": "/login.html"
-            }), 201
+                "success": False,
+                "error": "We couldn't send the verification code. Please check your email configuration and try again."
+            }), 502
 
         return jsonify({
             "success": True,
-            "message": (
-                "Registration submitted successfully. "
-                "Your account is pending administrator approval."
-            ),
-            "email_verified": True,
-            "verification_required": False,
+            "message": "Verification code sent to your college email.",
+            "email_verified": False,
+            "verification_required": True,
             "approval_required": True,
             "approval_status": "PENDING",
-            "redirect": "/login.html"
+            "email": email
         }), 201
 
     except Exception as e:
-
-        print("Register error:", e)
-
+        print("Register error:", repr(e))
         return jsonify({
             "success": False,
-            "error": "Unable to create the account."
+            "error": "Unable to start the account registration."
         }), 500
 
 
@@ -2770,6 +2946,7 @@ def update_profile():
 )
 def logout():
 
+    _mark_current_presence_offline()
     session.clear()
 
     return jsonify({
@@ -2790,6 +2967,32 @@ def logout():
 def ensure_indexes():
 
     try:
+
+        # =====================================================
+        # USER PRESENCE / LOGIN ACTIVITY INDEXES
+        # =====================================================
+
+        try:
+            _session_presence_collection().create_index(
+                [("session_id", ASCENDING)],
+                name="user_presence_session_idx",
+                unique=True
+            )
+            _session_presence_collection().create_index(
+                [("last_seen_at", DESCENDING)],
+                name="user_presence_last_seen_idx"
+            )
+            _login_logs_collection().create_index(
+                [("login_at", DESCENDING)],
+                name="login_logs_login_at_idx"
+            )
+            _login_logs_collection().create_index(
+                [("email", ASCENDING), ("login_at", DESCENDING)],
+                name="login_logs_email_idx"
+            )
+        except Exception as index_error:
+            print("User presence/login log index warning:", index_error)
+
 
         # =====================================================
         # USERS INDEX
