@@ -693,16 +693,15 @@
               Select account type
             </option>
 
-            <option value="student">
-              Student
-            </option>
+           
 
-            <option value="principal">
-              Principal
-            </option>
+         
 
             <option value="executive_director">
               Executive Director
+            </option>
+               <option value="principal">
+              Principal
             </option>
 
             <option value="hod">
@@ -712,6 +711,9 @@
             <option value="hoc">
               HOC
             </option>
+             <option value="Staff">
+              Staff
+            </option>
 
             <option value="gate_watchman">
               Gate Watchman
@@ -719,6 +721,9 @@
 
             <option value="bus_incharge">
               Bus Incharge
+            </option>
+            <option value="student">
+              Student
             </option>
 
           </select>
@@ -878,7 +883,8 @@
           </h2>
 
           <p class="text-muted mb-3">
-            We sent a 6-digit verification code to:
+            We sent a 6-digit verification code to your college email.
+            Verify the code below before your registration is submitted for administrator approval.
           </p>
 
           <p
@@ -908,7 +914,7 @@
             class="btn btn-success w-100 mt-3"
             type="button">
 
-            Verify college email
+            Verify Email & Continue
 
           </button>
 
@@ -1329,8 +1335,22 @@
           );
 
 
-          /* Show verification */
+          /* Lock registration fields while the OTP is being verified. */
+          [
+            "registerName",
+            "registerPhone",
+            "registerAccountType",
+            "registerEmail",
+            "registerPassword",
+            "registerConfirmPassword"
+          ].forEach(function (id) {
+            const field = document.getElementById(id);
+            if (field) {
+              field.disabled = true;
+            }
+          });
 
+          /* Show verification */
           verificationPanel
             .classList
             .remove("d-none");
@@ -1425,7 +1445,8 @@
 
 
                 showMessage(
-                  verifyData.message,
+                  verifyData.message ||
+                  "Email verified successfully. Your registration is now waiting for administrator approval.",
                   "success"
                 );
 
@@ -1437,7 +1458,7 @@
                       "login.html";
 
                   },
-                  1000
+                  1800
                 );
 
               } catch (error) {
