@@ -2008,7 +2008,7 @@ def register():
             print("Registration email delivery error:", repr(email_error))
             return jsonify({
                 "success": False,
-                "error": "We couldn't send the verification code. Please try again."
+                "error": f"Email error: {str(email_error)}"
             }), 502
 
         return jsonify({
