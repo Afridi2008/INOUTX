@@ -693,16 +693,15 @@
               Select account type
             </option>
 
-           
-
-         
-
             <option value="executive_director">
               Executive Director
             </option>
-               <option value="principal">
+
+            <option value="principal">
               Principal
             </option>
+
+           
 
             <option value="hod">
               HOD
@@ -714,15 +713,15 @@
              <option value="Staff">
               Staff
             </option>
-
+<option value="bus_incharge">
+              Bus Incharge
+            </option>
             <option value="gate_watchman">
               Gate Watchman
             </option>
 
-            <option value="bus_incharge">
-              Bus Incharge
-            </option>
-            <option value="student">
+            
+             <option value="student">
               Student
             </option>
 
@@ -883,8 +882,7 @@
           </h2>
 
           <p class="text-muted mb-3">
-            We sent a 6-digit verification code to your college email.
-            Verify the code below before your registration is submitted for administrator approval.
+            We sent a 6-digit verification code to:
           </p>
 
           <p
@@ -914,7 +912,7 @@
             class="btn btn-success w-100 mt-3"
             type="button">
 
-            Verify Email & Continue
+            Verify Email & Submit for Approval
 
           </button>
 
@@ -950,7 +948,7 @@
           </i>
 
           <span id="registerButtonText">
-            Create Account
+            Send Verification Code
           </span>
 
         </button>
@@ -1310,47 +1308,49 @@
 
           /* Registration failed */
 
-          if (
-            !response.ok ||
-            !data.success
-          ) {
+          /*
+           * The backend creates the registration request before sending the
+           * OTP. Therefore a mail-delivery failure must NOT hide the request.
+           * If request_created is true, keep the verification panel open so
+           * the user can retry with Resend Code after mail configuration is
+           * fixed.
+           */
+          const requestCreated = data.request_created === true;
+          const verificationStarted =
+            data.verification_required === true ||
+            data.approval_required === true ||
+            response.status === 201;
+
+          if ((!response.ok && !requestCreated) ||
+              (!data.success && !requestCreated && !verificationStarted)) {
 
             showMessage(
               data.error ||
               data.message ||
-              "Unable to create the account.",
+              "Unable to create the registration request.",
               "danger"
             );
 
             return;
+          }
 
+          /* Registration request created */
+          if (requestCreated && !data.success) {
+            showMessage(
+              data.error ||
+              "Registration request created. We could not send the verification code yet. Please try Resend Code.",
+              "warning"
+            );
+          } else {
+            showMessage(
+              "Registration request sent. A 6-digit verification code has been sent to your college email.",
+              "success"
+            );
           }
 
 
-          /* Registration successful */
-
-          showMessage(
-            "Verification code sent. Verify your college email to activate your account.",
-            "success"
-          );
-
-
-          /* Lock registration fields while the OTP is being verified. */
-          [
-            "registerName",
-            "registerPhone",
-            "registerAccountType",
-            "registerEmail",
-            "registerPassword",
-            "registerConfirmPassword"
-          ].forEach(function (id) {
-            const field = document.getElementById(id);
-            if (field) {
-              field.disabled = true;
-            }
-          });
-
           /* Show verification */
+
           verificationPanel
             .classList
             .remove("d-none");
@@ -1445,8 +1445,7 @@
 
 
                 showMessage(
-                  verifyData.message ||
-                  "Email verified successfully. Your registration is now waiting for administrator approval.",
+                  verifyData.message,
                   "success"
                 );
 
@@ -1458,7 +1457,7 @@
                       "login.html";
 
                   },
-                  1800
+                  1000
                 );
 
               } catch (error) {
