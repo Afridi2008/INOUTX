@@ -3615,6 +3615,14 @@
 
               loginSuccess.textContent = "";
 
+              loginError.classList.remove(
+                "alert-warning"
+              );
+
+              loginError.classList.add(
+                "alert-danger"
+              );
+
 
 
               /* VALUES */
@@ -3718,6 +3726,19 @@
                     data.error ||
                     "Invalid email or password.";
 
+                  const isApprovalNotice =
+                    data.approval_status === "PENDING" ||
+                    data.approval_status === "REJECTED";
+
+                  loginError.classList.toggle(
+                    "alert-warning",
+                    isApprovalNotice
+                  );
+
+                  loginError.classList.toggle(
+                    "alert-danger",
+                    !isApprovalNotice
+                  );
 
                   loginError.classList.remove(
                     "d-none"
