@@ -2158,8 +2158,8 @@
                             <div class="config-panel-title-text">
                                 <h2>User Approvals</h2>
                                 <p>
-                                    Review and approve or reject pending
-                                    INOUTX user registrations.
+                                    Review registrations. Users must verify their college email before
+                                    the administrator can approve the account.
                                 </p>
                             </div>
 
@@ -3839,6 +3839,11 @@
                         formatApprovalRole(user.role)
                     );
 
+                const verified = user.email_verified === true;
+                const statusHtml = verified
+                    ? `<span class="approval-status approval-status-verified"><i class="bi bi-patch-check-fill"></i> Email verified · Awaiting approval</span>`
+                    : `<span class="approval-status approval-status-unverified"><i class="bi bi-envelope-exclamation"></i> Email verification pending</span>`;
+
                 return `
                     <tr>
                         <td>
@@ -3860,10 +3865,7 @@
                         </td>
 
                         <td>
-                            <span class="approval-status">
-                                <i class="bi bi-clock"></i>
-                                Pending
-                            </span>
+                            ${statusHtml}
                         </td>
 
                         <td>
@@ -3873,9 +3875,10 @@
                                     type="button"
                                     class="approval-action approval-approve"
                                     data-approval-action="approve"
-                                    data-user-id="${id}">
+                                    data-user-id="${id}"
+                                    ${verified ? "" : "disabled title=\"Email verification required before approval\""}>
                                     <i class="bi bi-check-lg"></i>
-                                    Approve
+                                    ${verified ? "Approve" : "Verify Email First"}
                                 </button>
 
                                 <button
