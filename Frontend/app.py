@@ -1844,6 +1844,7 @@ def register():
             data.get("name", data.get("full_name", ""))
         ).strip()
 
+        # Normalize the email once and use this exact value everywhere.
         email = str(
             data.get("email", "")
         ).strip().lower()
@@ -1861,7 +1862,10 @@ def register():
         )
 
         role = normalize_role(
-            data.get("account_type", data.get("accountType", data.get("role")))
+            data.get(
+                "account_type",
+                data.get("accountType", data.get("role"))
+            )
         )
 
         if not name:
@@ -1876,17 +1880,36 @@ def register():
                 "error": "Name must not exceed 100 characters."
             }), 400
 
-        if not is_college_email(email):
-            return jsonify({
-                "success": False,
-                "error": "Use an official college email address."
-            }), 400
-
         if len(email) > 254:
             return jsonify({
                 "success": False,
                 "error": "Email address is too long."
             }), 400
+
+        # ---------------------------------------------------------
+        # REGISTRATION EMAIL RULE
+        #
+        # Allowed:
+        #   anything@krct.ac.in
+        #   anything@krce.ac.in
+        #   inoutx.testing@gmail.com
+        #
+        # No OTP or registration email is required.
+        # ---------------------------------------------------------
+        allowed_registration_email = (
+            email.endswith("@krct.ac.in")
+            or email.endswith("@krce.ac.in")
+            or email == "inoutx.testing@gmail.com"
+        )
+
+        if not allowed_registration_email:
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Registration is allowed only with a KRCT or KRCE "
+                    "college email address."
+                )
+            }), 403
 
         if not re.fullmatch(r"[0-9+() .-]{7,20}", phone):
             return jsonify({
@@ -1902,9 +1925,9 @@ def register():
 
         if not confirm_password:
             return jsonify({
-        "success": False,
-        "error": "Please confirm your password."
-    }), 400
+                "success": False,
+                "error": "Please confirm your password."
+            }), 400
 
         if password != confirm_password:
             return jsonify({
@@ -1918,63 +1941,71 @@ def register():
                 "error": "Account type is required."
             }), 400
 
-        existing_user = users.find_one({"email": email})
+        # ---------------------------------------------------------
+        # PROTECT THE CONFIGURATION ADMIN ROLE
+        #
+        # A normal user cannot request config_admin simply by
+        # choosing that role during registration.
+        # The configured admin email is the only email allowed
+        # to register with the config_admin role.
+        # ---------------------------------------------------------
+        if role == "config_admin":
+            if (
+                not CONFIG_ADMIN_EMAIL
+                or email != CONFIG_ADMIN_EMAIL
+            ):
+                return jsonify({
+                    "success": False,
+                    "error": (
+                        "The Configuration Admin role is restricted "
+                        "to the configured admin account."
+                    )
+                }), 403
 
-        if existing_user and (
-            existing_user.get("email_verified") is True
-            or existing_user.get("active") is True
-        ):
+        existing_user = users.find_one({
+            "email": email
+        })
+
+        if existing_user:
             return jsonify({
                 "success": False,
                 "error": "An account with this email already exists."
             }), 409
-
-        if existing_user:
-            users.delete_one({"_id": existing_user["_id"]})
 
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt()
         ).decode("utf-8")
 
-        otp = str(secrets.randbelow(900000) + 100000)
         now = datetime.now()
-        pending_registration = {
+
+        # ---------------------------------------------------------
+        # CREATE ACCOUNT DIRECTLY
+        #
+        # Email is treated as verified because registration is
+        # restricted to the approved domains/admin email.
+        #
+        # No OTP is generated.
+        # No email_verifications document is created.
+        # No registration email is sent.
+        # ---------------------------------------------------------
+        user_document = {
             "name": name,
             "email": email,
             "phone": phone,
             "password": hashed_password,
             "role": role,
-            "otp_hash": bcrypt.hashpw(
-                otp.encode("utf-8"),
-                bcrypt.gensalt()
-            ).decode("utf-8"),
-            "otp_expires_at": now + timedelta(minutes=OTP_EXPIRY_MINUTES),
-            "attempts": 0,
-            "resend_count": 0,
-            "last_sent_at": now,
+            "active": True,
+            "email_verified": True,
+            "email_verified_at": now,
             "created_at": now,
         }
 
-        email_verifications.replace_one(
-            {"email": email},
-            pending_registration,
-            upsert=True
-        )
-
-        try:
-            send_verification_otp(email, otp)
-        except Exception as email_error:
-            email_verifications.delete_one({"email": email})
-            print("Registration email delivery error:", repr(email_error))
-            return jsonify({
-                "success": False,
-                "error": f"Email error: {str(email_error)}"
-            }), 502
+        users.insert_one(user_document)
 
         return jsonify({
             "success": True,
-            "message": "Verification code sent to your email."
+            "message": "Registration successful. You can now log in."
         }), 201
 
     except Exception as e:
