@@ -232,7 +232,7 @@ PRIVILEGED_ROLES = {
 
 CONFIG_ADMIN_EMAIL = os.getenv(
     "CONFIG_ADMIN_EMAIL",
-    ""
+    "inoutx.testing@gmail.com"
 ).strip().lower()
 
 CONFIG_ADMIN_PASSWORD = os.getenv(
@@ -442,11 +442,21 @@ def forgot_password():
                 "error": "Email is required."
             }), 400
 
-        if not is_college_email(email):
+        # Password reset is allowed for official college accounts
+        # and the INOUTX admin account.
+        allowed_reset_email = (
+            is_college_email(email)
+            or email == "inoutx.testing@gmail.com"
+        )
+
+        if not allowed_reset_email:
 
             return jsonify({
                 "success": False,
-                "error": "Use your official college email address."
+                "error": (
+                    "Use your official college email address "
+                    "or the INOUTX admin email address."
+                )
             }), 400
 
         # -------------------------------------------------
@@ -1949,6 +1959,14 @@ def register():
         # The configured admin email is the only email allowed
         # to register with the config_admin role.
         # ---------------------------------------------------------
+        # The dedicated INOUTX admin email is reserved for the
+        # configuration-admin account.
+        if email == CONFIG_ADMIN_EMAIL and role != "config_admin":
+            return jsonify({
+                "success": False,
+                "error": "The INOUTX admin email must use the Configuration Admin role."
+            }), 403
+
         if role == "config_admin":
             if (
                 not CONFIG_ADMIN_EMAIL
@@ -2005,7 +2023,10 @@ def register():
 
         return jsonify({
             "success": True,
-            "message": "Registration successful. You can now log in."
+            "message": "Registration successful. You can now log in.",
+            "email_verified": True,
+            "verification_required": False,
+            "redirect": "/login.html"
         }), 201
 
     except Exception as e:
