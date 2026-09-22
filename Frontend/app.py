@@ -1,13 +1,11 @@
 import sys
 import os
-import subprocess
 import threading
 import time
 import hashlib
 import bcrypt
 import jwt
 import re
-from urllib.parse import quote
 from bson import ObjectId
 from datetime import datetime
 import secrets
@@ -15,6 +13,13 @@ import smtplib
 from flask import redirect
 
 from email.message import EmailMessage
+
+# Load the project .env before reading mail/database configuration.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"), override=True)
+except Exception as dotenv_error:
+    print("dotenv load warning:", repr(dotenv_error))
 
 from functools import wraps
 from flask import session
@@ -234,7 +239,7 @@ PRIVILEGED_ROLES = {
 
 CONFIG_ADMIN_EMAIL = os.getenv(
     "CONFIG_ADMIN_EMAIL",
-    ""
+    "inoutx.testing@gmail.com"
 ).strip().lower()
 
 CONFIG_ADMIN_PASSWORD = os.getenv(
@@ -247,8 +252,6 @@ if not CONFIG_ADMIN_EMAIL or not CONFIG_ADMIN_PASSWORD:
         "WARNING: System Configuration admin credentials "
         "are not configured in .env"
     )
-
-SYSTEM_CONFIG_ID = "runtime"
 
 
 # =========================================================
@@ -332,12 +335,81 @@ def is_college_email(email):
 
 
 def send_verification_otp(email, otp):
+    """
+    Send registration verification OTP through Gmail SMTP over SSL.
+    Uses the existing Gmail App Password credentials from environment variables.
+    """
 
-    smtp_host = os.getenv("MAIL_SERVER")
-    smtp_port = int(os.getenv("MAIL_PORT", "587"))
+    # Support the project's MAIL_* names plus common SMTP aliases so an
+    # existing .env does not silently stop working.
+    smtp_host = (
+        os.getenv("MAIL_SERVER")
+        or os.getenv("SMTP_HOST")
+        or os.getenv("EMAIL_HOST")
+        or "smtp.gmail.com"
+    ).strip()
+    smtp_port = int(
+        os.getenv("MAIL_PORT")
+        or os.getenv("SMTP_PORT")
+        or os.getenv("EMAIL_PORT")
+        or "465"
+    )
+    smtp_username = (
+        os.getenv("MAIL_USERNAME")
+        or os.getenv("SMTP_USERNAME")
+        or os.getenv("EMAIL_USERNAME")
+        or os.getenv("GMAIL_USERNAME")
+        or ""
+    ).strip()
+    smtp_password = (
+        os.getenv("MAIL_PASSWORD")
+        or os.getenv("SMTP_PASSWORD")
+        or os.getenv("EMAIL_PASSWORD")
+        or os.getenv("GMAIL_APP_PASSWORD")
+        or ""
+    ).strip()
+    sender = (os.getenv("MAIL_FROM") or os.getenv("EMAIL_FROM") or smtp_username).strip()
+
+    if not smtp_username or not smtp_password or not sender:
+        raise RuntimeError(
+            "Email delivery is not configured. Add the Gmail SMTP username "
+            "and Gmail App Password to the project's .env file."
+        )
+
+    message = EmailMessage()
+    message["Subject"] = "INOUTX College Email Verification"
+    message["From"] = sender
+    message["To"] = email
+    message.set_content(
+        f"Your INOUTX verification code is {otp}.\n\n"
+        f"It expires in {OTP_EXPIRY_MINUTES} minutes.\n\n"
+        "If you did not create an INOUTX account, please ignore this email."
+    )
+
+    with smtplib.SMTP_SSL(
+        smtp_host,
+        smtp_port,
+        timeout=15
+    ) as server:
+        server.login(smtp_username, smtp_password)
+        server.send_message(message)
+
+
+# =========================================================
+# PASSWORD RESET EMAIL
+# =========================================================
+
+def send_password_reset_email(email, reset_link):
+    """
+    Send password reset link through Gmail SMTP over SSL.
+    Uses the same SMTP configuration as verification OTP delivery.
+    """
+
+    smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    smtp_port = int(os.getenv("MAIL_PORT", "465"))
     smtp_username = os.getenv("MAIL_USERNAME")
     smtp_password = os.getenv("MAIL_PASSWORD")
-    sender = os.getenv("MAIL_FROM")
+    sender = os.getenv("MAIL_FROM", smtp_username)
 
     if not all((smtp_host, smtp_username, smtp_password, sender)):
         raise RuntimeError(
@@ -346,115 +418,31 @@ def send_verification_otp(email, otp):
         )
 
     message = EmailMessage()
-    message["Subject"] = "INOUTX college email verification"
+    message["Subject"] = "INOUTX Password Reset"
     message["From"] = sender
-    message["To"] = email
-    message.set_content(
-        "Your INOUTX verification code is "
-        f"{otp}. It expires in {OTP_EXPIRY_MINUTES} minutes."
-    )
-
-    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.send_message(message)
-# =========================================================
-# PASSWORD RESET EMAIL
-# =========================================================
-
-def send_password_reset_email(
-    email,
-    reset_link
-):
-    """
-    Send password reset link using
-    the existing INOUTX SMTP configuration.
-    """
-
-    smtp_host = os.getenv(
-        "MAIL_SERVER"
-    )
-
-    smtp_port = int(
-        os.getenv(
-            "MAIL_PORT",
-            "587"
-        )
-    )
-
-    smtp_username = os.getenv(
-        "MAIL_USERNAME"
-    )
-
-    smtp_password = os.getenv(
-        "MAIL_PASSWORD"
-    )
-
-    sender = os.getenv(
-        "MAIL_FROM"
-    )
-
-    if not all((
-        smtp_host,
-        smtp_username,
-        smtp_password,
-        sender
-    )):
-        raise RuntimeError(
-            "Email delivery is not configured. "
-            "Set MAIL_SERVER, MAIL_PORT, "
-            "MAIL_USERNAME, MAIL_PASSWORD, "
-            "and MAIL_FROM."
-        )
-
-    message = EmailMessage()
-
-    message["Subject"] = (
-        "INOUTX Password Reset"
-    )
-
-    message["From"] = sender
-
     message["To"] = email
 
     message.set_content(
         "INOUTX Password Reset\n\n"
-
-        "We received a request to reset "
-        "the password for your INOUTX account.\n\n"
-
-        "Click the link below to create "
-        "a new password:\n\n"
-
+        "We received a request to reset the password for your INOUTX account.\n\n"
+        "Click the link below to create a new password:\n\n"
         f"{reset_link}\n\n"
-
-        f"This link expires in "
-        f"{RESET_TOKEN_EXPIRY_MINUTES} minutes "
+        f"This link expires in {RESET_TOKEN_EXPIRY_MINUTES} minutes "
         "and can only be used once.\n\n"
-
-        "If you did not request a password reset, "
-        "you can safely ignore this email.\n\n"
-
+        "If you did not request a password reset, you can safely ignore this email.\n\n"
         "INOUTX\n"
         "Department Of CSE - KRCT"
     )
 
-    with smtplib.SMTP(
+    with smtplib.SMTP_SSL(
         smtp_host,
         smtp_port,
         timeout=15
     ) as server:
+        server.login(smtp_username, smtp_password)
+        server.send_message(message)
 
-        server.starttls()
 
-        server.login(
-            smtp_username,
-            smtp_password
-        )
-
-        server.send_message(
-            message
-        )
 # =========================================================
 # FORGOT PASSWORD
 # =========================================================
@@ -485,11 +473,21 @@ def forgot_password():
                 "error": "Email is required."
             }), 400
 
-        if not is_college_email(email):
+        # Password reset is allowed for official college accounts
+        # and the INOUTX admin account.
+        allowed_reset_email = (
+            is_college_email(email)
+            or email == "inoutx.testing@gmail.com"
+        )
+
+        if not allowed_reset_email:
 
             return jsonify({
                 "success": False,
-                "error": "Use your official college email address."
+                "error": (
+                    "Use your official college email address "
+                    "or the INOUTX admin email address."
+                )
             }), 400
 
         # -------------------------------------------------
@@ -1628,6 +1626,133 @@ def login_required(function):
 # LOGIN
 # =========================================================
 
+
+def _session_presence_collection():
+    return db["user_presence"]
+
+
+def _login_logs_collection():
+    return db["login_logs"]
+
+
+def _record_login_presence(user):
+    session_id = secrets.token_hex(24)
+    now = datetime.now()
+
+    session["presence_id"] = session_id
+
+    users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"last_login_at": now, "last_seen_at": now}}
+    )
+
+    _session_presence_collection().update_one(
+        {"session_id": session_id},
+        {
+            "$set": {
+                "session_id": session_id,
+                "user_id": str(user["_id"]),
+                "email": str(user.get("email", "")).strip().lower(),
+                "name": str(user.get("name", "")).strip(),
+                "role": str(user.get("role", "")).strip(),
+                "last_seen_at": now,
+                "logged_in": True,
+                "login_at": now,
+                "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+                "user_agent": request.headers.get("User-Agent", ""),
+            }
+        },
+        upsert=True
+    )
+
+    _login_logs_collection().insert_one({
+        "user_id": str(user["_id"]),
+        "email": str(user.get("email", "")).strip().lower(),
+        "name": str(user.get("name", "")).strip(),
+        "role": str(user.get("role", "")).strip(),
+        "login_at": now,
+        "logout_at": None,
+        "status": "LOGIN",
+        "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+        "user_agent": request.headers.get("User-Agent", ""),
+    })
+
+
+def _mark_current_presence_offline():
+    presence_id = session.get("presence_id")
+    if presence_id:
+        _session_presence_collection().update_one(
+            {"session_id": presence_id},
+            {
+                "$set": {
+                    "logged_in": False,
+                    "last_seen_at": datetime.now(),
+                    "logout_at": datetime.now(),
+                }
+            }
+        )
+
+    user = session.get("user") or {}
+    if user.get("email"):
+        now = datetime.now()
+        _login_logs_collection().update_one(
+            {
+                "email": str(user.get("email")).strip().lower(),
+                "status": "LOGIN",
+                "logout_at": None,
+            },
+            {"$set": {"logout_at": now}},
+            sort=[("login_at", DESCENDING)]
+        )
+
+        _login_logs_collection().insert_one({
+            "user_id": str(user.get("id", "")),
+            "email": str(user.get("email", "")).strip().lower(),
+            "name": str(user.get("name", "")).strip(),
+            "role": str(user.get("role", "")).strip(),
+            "login_at": now,
+            "logout_at": now,
+            "status": "LOGOUT",
+            "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr),
+            "user_agent": request.headers.get("User-Agent", ""),
+        })
+
+
+
+
+@app.before_request
+def update_logged_in_presence():
+    # Keep the current user's presence fresh whenever the authenticated
+    # browser communicates with the backend. This avoids requiring every
+    # existing frontend page to be rewritten just to report activity.
+    presence_id = session.get("presence_id")
+    user = session.get("user") or {}
+
+    if not presence_id or not user.get("id"):
+        return None
+
+    if request.path in {"/api/login", "/api/logout", "/api/session-heartbeat"}:
+        return None
+
+    try:
+        _session_presence_collection().update_one(
+            {
+                "session_id": presence_id,
+                "user_id": str(user.get("id"))
+            },
+            {
+                "$set": {
+                    "last_seen_at": datetime.now(),
+                    "logged_in": True
+                }
+            }
+        )
+    except Exception as error:
+        print("Presence update warning:", repr(error))
+
+    return None
+
+
 @app.route(
     "/api/login",
     methods=["POST"]
@@ -1682,6 +1807,30 @@ def login():
                 "success": False,
                 "error": "Verify your college email before logging in.",
                 "email_verification_required": True
+            }), 403
+
+        approval_status = str(
+            user.get("approval_status", "")
+        ).strip().upper()
+
+        if approval_status == "PENDING":
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Your registration is pending administrator approval."
+                ),
+                "approval_required": True,
+                "approval_status": "PENDING"
+            }), 403
+
+        if approval_status == "REJECTED":
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Your registration was rejected by the administrator."
+                ),
+                "approval_required": True,
+                "approval_status": "REJECTED"
             }), 403
 
         if not user.get(
@@ -1766,6 +1915,8 @@ def login():
         }
 
         session.permanent = True
+        _record_login_presence(user)
+
         print("LOGIN SESSION CREATED:")
         print(session.get("user"))
 
@@ -1871,164 +2022,402 @@ def config_access():
             "error": str(e)
         }), 500
 # =========================================================
-# SYSTEM CONFIGURATION API
+# APPROVED USERS / LOGIN ACTIVITY / LIVE PRESENCE
+# =========================================================
+
+@app.route("/api/approved-users", methods=["GET"])
+def get_approved_users():
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Only the INOUTX configuration administrator can view approved users."
+        }), 403
+
+    try:
+        now = datetime.now()
+        online_cutoff = now - timedelta(seconds=90)
+
+        presence = _session_presence_collection()
+        active_presence = {
+            row.get("user_id")
+            for row in presence.find({
+                "logged_in": True,
+                "last_seen_at": {"$gte": online_cutoff}
+            }, {"user_id": 1})
+        }
+
+        approved = users.find({
+            "approval_status": "APPROVED",
+            "active": True
+        }).sort("name", ASCENDING)
+
+        data = []
+        for user in approved:
+            data.append({
+                "id": str(user.get("_id")),
+                "name": str(user.get("name") or "").strip(),
+                "email": str(user.get("email") or "").strip(),
+                "role": str(user.get("role") or "").strip(),
+                "active": user.get("active") is True,
+                "approval_status": str(user.get("approval_status") or "").upper(),
+                "online": str(user.get("_id")) in active_presence,
+                "last_login_at": serialize_value(user.get("last_login_at")),
+                "approved_at": serialize_value(user.get("approved_at")),
+            })
+
+        return jsonify({
+            "success": True,
+            "count": len(data),
+            "users": data,
+            "online_count": sum(1 for item in data if item["online"])
+        }), 200
+
+    except Exception as e:
+        print("Approved users load error:", repr(e))
+        return jsonify({
+            "success": False,
+            "error": "Unable to load approved users."
+        }), 500
+
+
+@app.route("/api/login-activity", methods=["GET"])
+def get_login_activity():
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Only the INOUTX configuration administrator can view login activity."
+        }), 403
+
+    try:
+        logs = _login_logs_collection().find(
+            {},
+            {
+                "name": 1,
+                "email": 1,
+                "role": 1,
+                "login_at": 1,
+                "logout_at": 1,
+                "status": 1,
+                "ip_address": 1,
+            }
+        ).sort("login_at", DESCENDING).limit(100)
+
+        data = [serialize_document(row) for row in logs]
+
+        return jsonify({
+            "success": True,
+            "count": len(data),
+            "logs": data
+        }), 200
+
+    except Exception as e:
+        print("Login activity load error:", repr(e))
+        return jsonify({
+            "success": False,
+            "error": "Unable to load login activity."
+        }), 500
+
+
+@app.route("/api/session-heartbeat", methods=["POST"])
+def session_heartbeat():
+    user = session.get("user") or {}
+    presence_id = session.get("presence_id")
+
+    if not user or not presence_id:
+        return jsonify({
+            "success": False,
+            "authenticated": False
+        }), 401
+
+    now = datetime.now()
+    result = _session_presence_collection().update_one(
+        {
+            "session_id": presence_id,
+            "user_id": str(user.get("id"))
+        },
+        {
+            "$set": {
+                "last_seen_at": now,
+                "logged_in": True
+            }
+        }
+    )
+
+    if result.matched_count != 1:
+        return jsonify({
+            "success": False,
+            "authenticated": False
+        }), 401
+
+    return jsonify({
+        "success": True,
+        "authenticated": True,
+        "last_seen_at": serialize_value(now)
+    }), 200
+
+
+# =========================================================
+# USER APPROVAL HELPERS
 # =========================================================
 
 def is_config_admin_session():
-    user = session.get("user")
-    if not user:
-        return False
-    email = str(user.get("email", "")).strip().lower()
-    role = str(user.get("role", "")).strip().lower()
-    return bool(CONFIG_ADMIN_EMAIL) and email == CONFIG_ADMIN_EMAIL and role == "config_admin"
+    user = session.get("user") or {}
+
+    email = str(
+        user.get("email", "")
+    ).strip().lower()
+
+    role = str(
+        user.get("role", "")
+    ).strip().lower()
+
+    return (
+        bool(CONFIG_ADMIN_EMAIL)
+        and email == CONFIG_ADMIN_EMAIL
+        and role == "config_admin"
+    )
 
 
-def default_system_configuration():
-    default_camera_source = os.getenv("CAMERA_SOURCE", "0")
+def serialize_pending_user(user):
     return {
-        "camera1": {
-            "name": "Camera 1",
-            "type": "USB" if str(default_camera_source).strip().isdigit() else "DroidCam",
-            "source": str(default_camera_source).strip(),
-        },
-        "camera2": {
-            "name": "Camera 2",
-            "type": "USB",
-            "source": "1",
-        },
-        "gate": {
-            "name": "Main Gate",
-            "camera": "Camera 1",
-            "direction": "ENTRY",
-        },
-        "mongodb": {
-            "uri": "",
-            "database": "IN_OUT_X",
-            "collection": "bus_logs",
-        },
+        "id": str(user.get("_id")),
+        "name": str(user.get("name") or "").strip(),
+        "email": str(user.get("email") or "").strip(),
+        "phone": str(user.get("phone") or "").strip(),
+        "role": str(user.get("role") or "").strip(),
+        "approval_status": str(
+            user.get("approval_status", "PENDING")
+        ).strip().upper(),
+        "active": user.get("active") is True,
+        "email_verified": user.get("email_verified") is True,
+        "created_at": serialize_value(
+            user.get("created_at")
+        ),
     }
 
 
-def normalize_system_configuration(payload):
-    payload = payload if isinstance(payload, dict) else {}
-    defaults = default_system_configuration()
+# =========================================================
+# PENDING USER APPROVALS
+# =========================================================
 
-    def clean_text(value, fallback=""):
-        value = "" if value is None else str(value).strip()
-        return value if value else fallback
+@app.route(
+    "/api/user-approvals",
+    methods=["GET"]
+)
+def get_user_approvals():
 
-    camera1 = payload.get("camera1") if isinstance(payload.get("camera1"), dict) else {}
-    camera2 = payload.get("camera2") if isinstance(payload.get("camera2"), dict) else {}
-    gate = payload.get("gate") if isinstance(payload.get("gate"), dict) else {}
-    mongodb = payload.get("mongodb") if isinstance(payload.get("mongodb"), dict) else {}
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
 
-    allowed_types = {"USB", "DroidCam", "WiFi-IP"}
-    allowed_cameras = {"Camera 1", "Camera 2"}
-    allowed_directions = {"ENTRY", "EXIT", "BOTH"}
-
-    c1_type = clean_text(camera1.get("type"), defaults["camera1"]["type"])
-    c2_type = clean_text(camera2.get("type"), defaults["camera2"]["type"])
-    gate_camera = clean_text(gate.get("camera"), "Camera 1")
-    gate_direction = clean_text(gate.get("direction"), "ENTRY").upper()
-
-    if c1_type not in allowed_types:
-        c1_type = defaults["camera1"]["type"]
-    if c2_type not in allowed_types:
-        c2_type = defaults["camera2"]["type"]
-    if gate_camera not in allowed_cameras:
-        gate_camera = "Camera 1"
-    if gate_direction not in allowed_directions:
-        gate_direction = "ENTRY"
-
-    return {
-        "camera1": {
-            "name": clean_text(camera1.get("name"), "Camera 1"),
-            "type": c1_type,
-            "source": clean_text(camera1.get("source"), defaults["camera1"]["source"]),
-        },
-        "camera2": {
-            "name": clean_text(camera2.get("name"), "Camera 2"),
-            "type": c2_type,
-            "source": clean_text(camera2.get("source"), defaults["camera2"]["source"]),
-        },
-        "gate": {
-            "name": clean_text(gate.get("name"), "Main Gate"),
-            "camera": gate_camera,
-            "direction": gate_direction,
-        },
-        "mongodb": {
-            "uri": clean_text(mongodb.get("uri"), ""),
-            "database": clean_text(mongodb.get("database"), "IN_OUT_X"),
-            "collection": clean_text(mongodb.get("collection"), "bus_logs"),
-        },
-    }
-
-
-@app.route("/api/system-config", methods=["GET"])
-def get_system_config():
     if not is_config_admin_session():
-        return jsonify({"success": False, "error": "Config Admin access required."}), 403
-    try:
-        document = db["system_config"].find_one({"_id": SYSTEM_CONFIG_ID})
-        if not document:
-            configuration = default_system_configuration()
-        else:
-            document.pop("_id", None)
-            document.pop("updated_at", None)
-            document.pop("updated_by", None)
-            configuration = normalize_system_configuration(document)
-        return jsonify({"success": True, "configuration": configuration})
-    except Exception as e:
-        print("Get system configuration error:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can manage user approvals."
+            )
+        }), 403
 
-
-@app.route("/api/system-config", methods=["PUT"])
-def save_system_config():
-    if not is_config_admin_session():
-        return jsonify({"success": False, "error": "Config Admin access required."}), 403
     try:
-        configuration = normalize_system_configuration(request.get_json(silent=True) or {})
-        now = datetime.now()
-        document = {
-            "_id": SYSTEM_CONFIG_ID,
-            **configuration,
-            "updated_at": now,
-            "updated_by": str(session.get("user", {}).get("email", "")).strip().lower(),
-        }
-        db["system_config"].replace_one({"_id": SYSTEM_CONFIG_ID}, document, upsert=True)
+        pending_users = users.find({
+            "approval_status": "PENDING"
+        }).sort(
+            "created_at",
+            ASCENDING
+        )
+
+        data = [
+            serialize_pending_user(user)
+            for user in pending_users
+        ]
+
         return jsonify({
             "success": True,
-            "message": "System configuration saved successfully. Camera process will pick up source changes automatically.",
-            "configuration": configuration,
-            "updated_at": now.isoformat(),
-        })
+            "count": len(data),
+            "users": data
+        }), 200
+
     except Exception as e:
-        print("Save system configuration error:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
+        print("User approvals load error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to load pending user registrations."
+        }), 500
 
 
-@app.route("/api/system-config/reset", methods=["POST"])
-def reset_system_config():
+@app.route(
+    "/api/user-approvals/<user_id>/approve",
+    methods=["POST"]
+)
+def approve_user(user_id):
+
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
+
     if not is_config_admin_session():
-        return jsonify({"success": False, "error": "Config Admin access required."}), 403
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can approve users."
+            )
+        }), 403
+
     try:
-        configuration = default_system_configuration()
+        try:
+            object_id = ObjectId(user_id)
+        except Exception:
+            return jsonify({
+                "success": False,
+                "error": "Invalid user account identifier."
+            }), 400
+
         now = datetime.now()
-        db["system_config"].replace_one(
-            {"_id": SYSTEM_CONFIG_ID},
+
+        result = users.update_one(
             {
-                "_id": SYSTEM_CONFIG_ID,
-                **configuration,
-                "updated_at": now,
-                "updated_by": str(session.get("user", {}).get("email", "")).strip().lower(),
+                "_id": object_id,
+                "approval_status": "PENDING",
+                "email_verified": True
             },
-            upsert=True,
+            {
+                "$set": {
+                    "active": True,
+                    "approval_status": "APPROVED",
+                    "approved_at": now,
+                    "approved_by": CONFIG_ADMIN_EMAIL,
+                    "updated_at": now
+                }
+            }
         )
-        return jsonify({"success": True, "configuration": configuration, "updated_at": now.isoformat()})
+
+        if result.matched_count != 1:
+            existing = users.find_one({"_id": object_id})
+
+            if not existing:
+                return jsonify({
+                    "success": False,
+                    "error": "User account was not found."
+                }), 404
+
+            if existing and existing.get("email_verified") is not True:
+                return jsonify({
+                    "success": False,
+                    "error": "This user must verify the college email before approval."
+                }), 409
+
+            return jsonify({
+                "success": False,
+                "error": "This registration is no longer pending."
+            }), 409
+
+        return jsonify({
+            "success": True,
+            "message": "User approved successfully.",
+            "approval_status": "APPROVED",
+            "active": True
+        }), 200
+
     except Exception as e:
-        print("Reset system configuration error:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
+        print("Approve user error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to approve the user registration."
+        }), 500
+
+
+@app.route(
+    "/api/user-approvals/<user_id>/reject",
+    methods=["POST"]
+)
+def reject_user(user_id):
+
+    if not session.get("user"):
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": "Login required."
+        }), 401
+
+    if not is_config_admin_session():
+        return jsonify({
+            "success": False,
+            "authorized": False,
+            "error": (
+                "Only the INOUTX configuration administrator "
+                "can reject users."
+            )
+        }), 403
+
+    try:
+        try:
+            object_id = ObjectId(user_id)
+        except Exception:
+            return jsonify({
+                "success": False,
+                "error": "Invalid user account identifier."
+            }), 400
+
+        now = datetime.now()
+
+        result = users.update_one(
+            {
+                "_id": object_id,
+                "approval_status": "PENDING"
+            },
+            {
+                "$set": {
+                    "active": False,
+                    "approval_status": "REJECTED",
+                    "rejected_at": now,
+                    "rejected_by": CONFIG_ADMIN_EMAIL,
+                    "updated_at": now
+                }
+            }
+        )
+
+        if result.matched_count != 1:
+            existing = users.find_one({"_id": object_id})
+
+            if not existing:
+                return jsonify({
+                    "success": False,
+                    "error": "User account was not found."
+                }), 404
+
+            return jsonify({
+                "success": False,
+                "error": "This registration is no longer pending."
+            }), 409
+
+        return jsonify({
+            "success": True,
+            "message": "User registration rejected.",
+            "approval_status": "REJECTED",
+            "active": False
+        }), 200
+
+    except Exception as e:
+        print("Reject user error:", e)
+
+        return jsonify({
+            "success": False,
+            "error": "Unable to reject the user registration."
+        }), 500
 
 
 # REGISTER USER
@@ -2041,62 +2430,45 @@ def reset_system_config():
 def register():
 
     try:
-
         data = request.get_json(silent=True) or {}
 
-        name = str(
-            data.get("name", data.get("full_name", ""))
-        ).strip()
-
-        email = str(
-            data.get("email", "")
-        ).strip().lower()
-
-        phone = str(
-            data.get("phone", "")
-        ).strip()
-
-        password = str(
-            data.get("password", "")
-        )
-
+        name = str(data.get("name", data.get("full_name", ""))).strip()
+        email = str(data.get("email", "")).strip().lower()
+        phone = str(data.get("phone", "")).strip()
+        password = str(data.get("password", ""))
         confirm_password = str(
             data.get("confirm_password", data.get("confirmPassword", ""))
         )
-
         role = normalize_role(
-            data.get("account_type", data.get("accountType", data.get("role")))
+            data.get(
+                "account_type",
+                data.get("accountType", data.get("role"))
+            )
         )
 
         if not name:
-            return jsonify({
-                "success": False,
-                "error": "Name is required."
-            }), 400
+            return jsonify({"success": False, "error": "Name is required."}), 400
 
         if len(name) > 100:
-            return jsonify({
-                "success": False,
-                "error": "Name must not exceed 100 characters."
-            }), 400
-
-        if not is_college_email(email):
-            return jsonify({
-                "success": False,
-                "error": "Use an official college email address."
-            }), 400
+            return jsonify({"success": False, "error": "Name must not exceed 100 characters."}), 400
 
         if len(email) > 254:
+            return jsonify({"success": False, "error": "Email address is too long."}), 400
+
+        allowed_registration_email = (
+            email.endswith("@krct.ac.in")
+            or email.endswith("@krce.ac.in")
+            or email == CONFIG_ADMIN_EMAIL
+        )
+
+        if not allowed_registration_email:
             return jsonify({
                 "success": False,
-                "error": "Email address is too long."
-            }), 400
+                "error": "Registration is allowed only with a KRCT or KRCE college email address."
+            }), 403
 
         if not re.fullmatch(r"[0-9+() .-]{7,20}", phone):
-            return jsonify({
-                "success": False,
-                "error": "Please enter a valid phone number."
-            }), 400
+            return jsonify({"success": False, "error": "Please enter a valid phone number."}), 400
 
         if len(password) < 6:
             return jsonify({
@@ -2104,46 +2476,43 @@ def register():
                 "error": "Password must contain at least 6 characters."
             }), 400
 
-        if not confirm_password:
-            return jsonify({
-        "success": False,
-        "error": "Please confirm your password."
-    }), 400
-
         if password != confirm_password:
-            return jsonify({
-                "success": False,
-                "error": "Passwords do not match."
-            }), 400
+            return jsonify({"success": False, "error": "Passwords do not match."}), 400
 
         if not role:
+            return jsonify({"success": False, "error": "Account type is required."}), 400
+
+        if email == CONFIG_ADMIN_EMAIL and role != "config_admin":
             return jsonify({
                 "success": False,
-                "error": "Account type is required."
-            }), 400
+                "error": "The INOUTX admin email must use the Configuration Admin role."
+            }), 403
+
+        if role == "config_admin" and email != CONFIG_ADMIN_EMAIL:
+            return jsonify({
+                "success": False,
+                "error": "The Configuration Admin role is restricted to the configured admin account."
+            }), 403
 
         existing_user = users.find_one({"email": email})
-
-        if existing_user and (
-            existing_user.get("email_verified") is True
-            or existing_user.get("active") is True
-        ):
+        if existing_user:
             return jsonify({
                 "success": False,
                 "error": "An account with this email already exists."
             }), 409
 
-        if existing_user:
-            users.delete_one({"_id": existing_user["_id"]})
-
+        now = datetime.now()
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt()
         ).decode("utf-8")
 
+        # The verification record is created BEFORE the user account.
+        # The account is inserted into users only after the OTP is correct.
         otp = str(secrets.randbelow(900000) + 100000)
-        now = datetime.now()
-        pending_registration = {
+
+        email_verifications.delete_many({"email": email})
+        email_verifications.insert_one({
             "name": name,
             "email": email,
             "phone": phone,
@@ -2158,36 +2527,55 @@ def register():
             "resend_count": 0,
             "last_sent_at": now,
             "created_at": now,
-        }
+        })
 
-        email_verifications.replace_one(
-            {"email": email},
-            pending_registration,
-            upsert=True
-        )
+        # Create the registration request immediately. This makes the request
+        # visible to the configuration administrator even while the email is
+        # waiting for verification. The account remains unusable until both
+        # email verification and administrator approval are complete.
+        user_result = users.insert_one({
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password": hashed_password,
+            "role": role,
+            "active": False,
+            "approval_status": "PENDING",
+            "email_verified": False,
+            "created_at": now,
+            "updated_at": now,
+        })
 
         try:
             send_verification_otp(email, otp)
         except Exception as email_error:
-            email_verifications.delete_one({"email": email})
-            print("Registration email delivery error:", repr(email_error))
+            print("Registration OTP delivery error:", repr(email_error))
+            # Keep the registration request. The administrator can see that
+            # email verification is still pending, and the user can retry via
+            # Resend Code after the mail configuration is fixed.
             return jsonify({
                 "success": False,
-                "error": "We couldn't send the verification code. Please try again."
+                "error": "Your registration request was created, but the verification email could not be sent. Please check the mail configuration and use Resend Code.",
+                "verification_required": True,
+                "request_created": True,
+                "email": email
             }), 502
 
         return jsonify({
             "success": True,
-            "message": "Verification code sent to your email."
+            "message": "Verification code sent to your college email.",
+            "email_verified": False,
+            "verification_required": True,
+            "approval_required": True,
+            "approval_status": "PENDING",
+            "email": email
         }), 201
 
     except Exception as e:
-
-        print("Register error:", e)
-
+        print("Register error:", repr(e))
         return jsonify({
             "success": False,
-            "error": "Unable to create the account."
+            "error": "Unable to start the account registration."
         }), 500
 
 
@@ -2240,30 +2628,35 @@ def verify_email():
             }), 400
 
         role = normalize_role(pending.get("role"))
-        active = role not in PRIVILEGED_ROLES
 
-        user_document = {
-            "name": pending["name"],
-            "email": pending["email"],
-            "phone": pending["phone"],
-            "password": pending["password"],
-            "role": role,
-            "active": active,
-            "email_verified": True,
-            "email_verified_at": datetime.now(),
-            "created_at": pending.get("created_at", datetime.now()),
-        }
+        user_result = users.update_one(
+            {"email": email},
+            {
+                "$set": {
+                    "email_verified": True,
+                    "email_verified_at": datetime.now(),
+                    "approval_status": "PENDING",
+                    "active": False,
+                    "updated_at": datetime.now(),
+                }
+            }
+        )
 
-        users.insert_one(user_document)
+        if user_result.matched_count != 1:
+            return jsonify({
+                "success": False,
+                "error": "Registration request was not found. Please register again."
+            }), 404
+
         email_verifications.delete_one({"_id": pending["_id"]})
 
         return jsonify({
             "success": True,
             "message": (
-                "Email verified. Your account is ready to use."
-                if active else
-                "Email verified. Your account is awaiting role approval."
-            )
+                "Email verified. Your account is awaiting administrator approval."
+            ),
+            "approval_required": True,
+            "approval_status": "PENDING"
         })
 
     except Exception as e:
@@ -2342,6 +2735,38 @@ def resend_otp():
         }), 500
 
 
+    #==============================================================================================tempory============================
+
+@app.route("/api/test-smtp-network", methods=["GET"])
+def test_smtp_network():
+    import socket
+
+    try:
+        host = "smtp.gmail.com"
+        port = 465
+
+        print(f"Testing TCP connection to {host}:{port}")
+
+        sock = socket.create_connection(
+            (host, port),
+            timeout=15
+        )
+
+        sock.close()
+
+        return jsonify({
+            "success": True,
+            "message": "TCP connection to Gmail SMTP succeeded."
+        })
+
+    except Exception as e:
+        print("SMTP NETWORK TEST ERROR:", repr(e))
+
+        return jsonify({
+            "success": False,
+            "error": repr(e)
+        }), 500
+        
 # =========================================================
 # CURRENT USER
 # =========================================================
@@ -2588,6 +3013,7 @@ def update_profile():
 )
 def logout():
 
+    _mark_current_presence_offline()
     session.clear()
 
     return jsonify({
@@ -2608,6 +3034,32 @@ def logout():
 def ensure_indexes():
 
     try:
+
+        # =====================================================
+        # USER PRESENCE / LOGIN ACTIVITY INDEXES
+        # =====================================================
+
+        try:
+            _session_presence_collection().create_index(
+                [("session_id", ASCENDING)],
+                name="user_presence_session_idx",
+                unique=True
+            )
+            _session_presence_collection().create_index(
+                [("last_seen_at", DESCENDING)],
+                name="user_presence_last_seen_idx"
+            )
+            _login_logs_collection().create_index(
+                [("login_at", DESCENDING)],
+                name="login_logs_login_at_idx"
+            )
+            _login_logs_collection().create_index(
+                [("email", ASCENDING), ("login_at", DESCENDING)],
+                name="login_logs_email_idx"
+            )
+        except Exception as index_error:
+            print("User presence/login log index warning:", index_error)
+
 
         # =====================================================
         # USERS INDEX
@@ -3225,36 +3677,100 @@ def dashboard():
     methods=["GET"]
 )
 def vehicle_summary():
-    try:
-        total_registered_fleet = college_buses.count_documents({"status": "ACTIVE"})
-        today = datetime.now().strftime("%d-%m-%Y")
-        logs = list(bus_logs.find({"date": today}).sort("_id", ASCENDING))
 
-        grouped = {}
-        for log in logs:
-            plate = str(log.get("plate", log.get("vehicle_no", ""))).strip().upper()
-            bus_no = str(log.get("bus_no", log.get("bus_number", ""))).strip()
-            key = plate or bus_no
-            if not key:
-                continue
-            item = grouped.setdefault(key, {"entry": False, "exit": False})
-            movement = str(log.get("direction", log.get("movement", log.get("status", log.get("current_status", ""))))).strip().upper()
-            if movement in {"ENTRY", "ARRIVED", "INSIDE CAMPUS"}:
-                item["entry"] = True
-            elif movement in {"EXIT", "EXITED", "OUTSIDE / TRANSIT"}:
-                item["exit"] = True
+    try:
+
+        # =====================================================
+        # 1. TOTAL REGISTERED ACTIVE FLEET
+        # =====================================================
+
+        total_registered_fleet = (
+            college_buses.count_documents({
+                "status": "ACTIVE"
+            })
+        )
+
+        # =====================================================
+        # 2. TODAY
+        # =====================================================
+
+        today = datetime.now().strftime("%d-%m-%Y")
+
+        today_logs = list(
+            bus_logs.find({
+                "date": today
+            })
+        )
+
+        # =====================================================
+        # 3. COUNT TODAY'S ENTRY EVENTS
+        # =====================================================
+
+        entered_campus_today = 0
+
+        # =====================================================
+        # 4. COUNT TODAY'S EXIT EVENTS
+        # =====================================================
+
+        exited_campus_today = 0
+
+        for log in today_logs:
+
+            # Support direction/status/current_status
+            # so different camera log formats still work.
+
+            movement = str(
+                log.get(
+                    "direction",
+                    log.get(
+                        "status",
+                        log.get(
+                            "current_status",
+                            ""
+                        )
+                    )
+                )
+            ).strip().upper()
+
+            if movement == "ENTRY":
+                entered_count += 1
+
+            elif movement == "EXIT":
+                exited_count += 1
+
+        # =====================================================
+        # RETURN
+        # =====================================================
 
         return jsonify({
-            "success": True,
-            "totalRegisteredFleet": total_registered_fleet,
-            "enteredCampusToday": sum(1 for item in grouped.values() if item["entry"]),
-            "exitedCampusToday": sum(1 for item in grouped.values() if item["exit"]),
+
+            "totalRegisteredFleet":
+                total_registered_fleet,
+
+            "enteredCampusToday":
+                entered_campus_today,
+
+            "exitedCampusToday":
+                exited_campus_today
+
         })
+
     except Exception as e:
-        print("Vehicle summary error:", e)
-        return jsonify({"success": False, "error": str(e)}), 500
 
+        print(
+            "Vehicle summary error:",
+            e
+        )
 
+        return jsonify({
+
+            "success":
+                False,
+
+            "error":
+                str(e)
+
+        }), 500
 # =========================================================
 # ALL BUS LOGS
 # =========================================================
@@ -3969,69 +4485,14 @@ def get_staff():
             )
         )
 
-        data = []
-
-        for vehicle in vehicles:
-
-            item = serialize_document(vehicle)
-            plate = str(
-                vehicle.get("plate", "")
-            ).strip().upper()
-
-            # Camera detections are stored in staff_logs.
-            # Use the newest matching detection so the UI gets
-            # the actual captured frame and latest movement.
-            latest_log = None
-
-            if plate:
-                latest_log = staff_logs.find_one(
-                    {
-                        "plate": plate
-                    },
-                    sort=[("_id", DESCENDING)]
-                )
-
-            if latest_log:
-                item["latest_image"] = latest_log.get(
-                    "image",
-                    latest_log.get("image_path", "")
-                )
-                item["latest_movement"] = latest_log.get(
-                    "movement",
-                    latest_log.get("status", "")
-                )
-                item["last_entry_time"] = latest_log.get(
-                    "entry_time"
-                )
-                item["last_exit_time"] = latest_log.get(
-                    "exit_time"
-                )
-            else:
-                item["latest_image"] = item.get("image", "")
-                item["latest_movement"] = ""
-                item["last_entry_time"] = item.get("entry_time")
-                item["last_exit_time"] = item.get("exit_time")
-
-            image_value = item.get("latest_image")
-            if image_value:
-                filename = os.path.basename(
-                    str(image_value).replace("\\", "/")
-                )
-                item["image_url"] = (
-                    "/captured-frames/"
-                    + quote(filename)
-                    if filename else ""
-                )
-            else:
-                item["image_url"] = ""
-
-            data.append(item)
+        data = [
+            serialize_document(vehicle)
+            for vehicle in vehicles
+        ]
 
         return jsonify(data)
 
     except Exception as e:
-
-        print("Staff vehicles error:", e)
 
         return jsonify({
 
@@ -4282,7 +4743,7 @@ def register_visitor():
         }
 
         vehicle_result = (
-            visitor_vehicles.insert_one(
+            unknown_vehicles.insert_one(
                 visitor_document
             )
         )
@@ -4349,7 +4810,7 @@ def register_visitor():
         )
 
         saved_visitor = (
-            visitor_vehicles.find_one({
+            unknown_vehicles.find_one({
 
                 "_id":
                     vehicle_result.inserted_id
@@ -4455,86 +4916,35 @@ def get_visitors():
 
     try:
 
-        # Only registered visitor records belong in this page.
-        # Camera UNKNOWN detections use the same MongoDB collection
-        # but do not contain visitor_id, so they are excluded here.
         visitors = list(
-            visitor_vehicles.find({
-                "visitor_id": {"$exists": True}
-            }).sort(
+            visitor_vehicles.find()
+            .sort(
                 "created_at",
                 DESCENDING
             )
         )
 
-        data = []
-
         for visitor in visitors:
 
-            item = serialize_document(visitor)
-            plate = str(
-                visitor.get(
-                    "vehicle_number",
-                    visitor.get("plate", "")
-                )
-            ).strip().upper()
+            visitor["_id"] = str(
+                visitor["_id"]
+            )
 
-                # Camera UNKNOWN detections are stored in unknown_vehicles.
-            latest_detection = None
-            if plate:
-                latest_detection = unknown_vehicles.find_one(
-                    {
-                        "plate": plate,
-                        "image": {"$exists": True, "$ne": ""}
-                    },
-                    sort=[("_id", DESCENDING)]
-                )
+            for key in [
+                "created_at",
+                "updated_at",
+                "entry_datetime",
+                "exit_datetime"
+            ]:
 
-            if latest_detection:
-                item["latest_image"] = latest_detection.get(
-                    "image",
-                    latest_detection.get("image_path", "")
-                )
-                item["latest_movement"] = latest_detection.get(
-                    "movement",
-                    latest_detection.get("status", "")
-                )
-                item["last_entry_time"] = latest_detection.get(
-                    "entry_time"
-                )
-                item["last_exit_time"] = latest_detection.get(
-                    "exit_time"
-                )
-                movement = str(
-                    latest_detection.get(
-                        "movement",
-                        latest_detection.get("status", "")
+                if isinstance(
+                    visitor.get(key),
+                    datetime
+                ):
+
+                    visitor[key] = (
+                        visitor[key].isoformat()
                     )
-                ).strip().upper()
-                if movement in {"EXIT", "EXITED"}:
-                    item["status"] = "Outside"
-                elif movement in {"ENTRY", "ARRIVED"}:
-                    item["status"] = "Inside"
-            else:
-                item["latest_image"] = item.get("image", "")
-                item["latest_movement"] = item.get("status", "")
-                item["last_entry_time"] = item.get("entry_time")
-                item["last_exit_time"] = item.get("exit_datetime")
-
-            image_value = item.get("latest_image")
-            if image_value:
-                filename = os.path.basename(
-                    str(image_value).replace("\\", "/")
-                )
-                item["image_url"] = (
-                    "/captured-frames/"
-                    + quote(filename)
-                    if filename else ""
-                )
-            else:
-                item["image_url"] = ""
-
-            data.append(item)
 
         return jsonify({
 
@@ -4542,16 +4952,14 @@ def get_visitors():
                 True,
 
             "visitors":
-                data,
+                visitors,
 
             "count":
-                len(data)
+                len(visitors)
 
         }), 200
 
     except Exception as e:
-
-        print("Get visitors error:", e)
 
         return jsonify({
 
@@ -6612,19 +7020,15 @@ def html_files(filename):
 
     static_html_pages = {
         "login.html",
-        "register.html",
-        "forgot-password.html",
-        "reset-password.html",
-        "download.html",
-        "camera.html",
-        "profile.html",
-        "visitor.html",
-        "vehicle.html",
-        "staff-vehicle.html",
-        "staff-vehicles.html",
-        "system-config.html",
-        "404.html",
-        "500.html"
+    "register.html",
+    "forgot-password.html",
+    "reset-password.html",
+    "download.html",
+    "camera.html",
+    "profile.html",
+    "system-config.html",
+    "404.html",
+    "500.html"
     }
     print(
     "HTML DEBUG:",
@@ -6666,9 +7070,11 @@ def html_files(filename):
     # -----------------------------------------------------
 
     react_pages = {
-        "index.html",
-        "unknown-vehicles.html"
-    }
+    "index.html",
+    "staff-vehicles.html",
+    "unknown-vehicles.html",
+    "vehicle.html"
+}
 
     if (
         filename in react_pages
@@ -6917,185 +7323,57 @@ def home():
         "login.html"
     )
 # =========================================================
-# STARTUP
+# SMTP CONNECTIVITY TEST
+# Gmail SMTP over SSL (port 465)
 # =========================================================
 
-def startup():
-
-    print()
-    print("=" * 60)
-    print("IN/OUT X FRONTEND")
-    print("=" * 60)
-
-    print(
-        "Database      : MongoDB Atlas"
-    )
-
-    print(
-        "Database Name : IN_OUTX"
-    )
-
-    print(
-        "Frontend      : "
-        + HTML_DIR
-    )
-
-    print(
-        "Captured      : "
-        + CAPTURED_FRAMES_DIR
-    )
-
-    print(
-        "KRCE Logo     : "
-        + KRCE_LOGO
-    )
-
-    print(
-        "KRCT Logo     : "
-        + KRCT_LOGO
-    )
-
-    print(
-        "Server        : "
-        "http://127.0.0.1:5000"
-    )
-
-    print(
-        "Realtime      : "
-        "MongoDB Change Streams + Socket.IO"
-    )
-
-    print("=" * 60)
-    print()
-
-    # -----------------------------------------------------
-    # Create captured frames directory
-    # -----------------------------------------------------
-
-    if not os.path.isdir(
-        CAPTURED_FRAMES_DIR
-    ):
-
-        print(
-            "WARNING: captured_frames directory "
-            "does not exist."
-        )
-
-        try:
-
-            os.makedirs(
-                CAPTURED_FRAMES_DIR,
-                exist_ok=True
-            )
-
-            print(
-                "Created captured_frames directory."
-            )
-
-        except Exception as e:
-
-            print(
-                "Could not create captured_frames:",
-                e
-            )
-
-    # -----------------------------------------------------
-    # Check logos
-    # -----------------------------------------------------
-
-    print(
-        "KRCE logo exists:",
-        os.path.isfile(
-            KRCE_LOGO
-        )
-    )
-
-    print(
-        "KRCT logo exists:",
-        os.path.isfile(
-            KRCT_LOGO
-        )
-    )
-
-    if not os.path.isfile(
-        KRCE_LOGO
-    ):
-
-        print(
-            "WARNING: KRCE logo not found."
-        )
-
-        print(
-            "Expected:"
-        )
-
-        print(
-            KRCE_LOGO
-        )
-
-    if not os.path.isfile(
-        KRCT_LOGO
-    ):
-
-        print(
-            "WARNING: KRCT logo not found."
-        )
-
-        print(
-            "Expected:"
-        )
-
-        print(
-            KRCT_LOGO
-        )
-
-    # -----------------------------------------------------
-    # MongoDB
-    # -----------------------------------------------------
-
-    if not check_mongodb():
-
-        print(
-            "WARNING: MongoDB connection failed."
-        )
-
-        print(
-            "The server will still start, "
-            "but database operations will fail."
-        )
-
-    # -----------------------------------------------------
-    # Indexes
-    # -----------------------------------------------------
-
-    ensure_indexes()
-
-    # -----------------------------------------------------
-    # Change streams
-    # -----------------------------------------------------
-
+@app.route(
+    "/api/test-smtp",
+    methods=["GET"]
+)
+def test_smtp():
     try:
+        smtp_host = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+        smtp_port = int(os.getenv("MAIL_PORT", "465"))
+        smtp_username = os.getenv("MAIL_USERNAME")
+        smtp_password = os.getenv("MAIL_PASSWORD")
 
-        start_change_streams()
+        if not smtp_username or not smtp_password:
+            return jsonify({
+                "success": False,
+                "error": (
+                    "MAIL_USERNAME or MAIL_PASSWORD is missing "
+                    "from environment variables."
+                )
+            }), 500
+
+        with smtplib.SMTP_SSL(
+            smtp_host,
+            smtp_port,
+            timeout=15
+        ) as server:
+            server.login(
+                smtp_username,
+                smtp_password
+            )
+
+        return jsonify({
+            "success": True,
+            "message": "Gmail SMTP SSL connection and login successful."
+        }), 200
 
     except Exception as e:
-
         print(
-            "Change stream startup warning:",
-            e
+            "SMTP TEST ERROR:",
+            repr(e)
         )
 
-print("MAIL_SERVER:", os.getenv("MAIL_SERVER"))
-print("MAIL_PORT:", os.getenv("MAIL_PORT"))
-print("MAIL_USERNAME:", os.getenv("MAIL_USERNAME"))
-print("MAIL_FROM:", os.getenv("MAIL_FROM"))
-print("MAIL_PASSWORD configured:", bool(os.getenv("MAIL_PASSWORD")))
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
 
-
-
-
-#---------------
 # =========================================================
 # TODAY BUS ENTRIES
 # =========================================================
@@ -7179,51 +7457,23 @@ def today_entries():
             "error": str(e)
         }), 500
 # =========================================================
-# LOCAL CAMERA PROCESS
-# =========================================================
-
-camera_process = None
-
-
-def start_camera_process():
-    global camera_process
-
-    if camera_process is not None and camera_process.poll() is None:
-        print("Camera.py is already running.")
-        return
-
-    camera_path = os.path.join(PROJECT_ROOT, "camera.py")
-    if not os.path.isfile(camera_path):
-        print("WARNING: camera.py not found:", camera_path)
-        return
-
-    try:
-        camera_process = subprocess.Popen(
-            [sys.executable, camera_path],
-            cwd=PROJECT_ROOT
-        )
-        print("INOUTX camera.py started successfully. PID:", camera_process.pid)
-    except Exception as e:
-        print("ERROR: Failed to start camera.py:", repr(e))
-
-
-# =========================================================
 # RUN
 # =========================================================
 
 if __name__ == "__main__":
 
-    print("=" * 60)
-    print("INOUTX SYSTEM STARTING")
-    print("=" * 60)
-
     startup()
-    start_camera_process()
 
     socketio.run(
+
         app,
+
         host="0.0.0.0",
+
         port=5000,
+
         debug=True,
+
         use_reloader=False
+
     )
