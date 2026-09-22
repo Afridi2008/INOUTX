@@ -3532,15 +3532,29 @@ def identify_vehicle(plate):
     "/api/dashboard",
     methods=["GET"]
 )
+@login_required
 def dashboard():
 
     try:
 
-        total_buses = college_buses.count_documents({
-            "status":
-                "ACTIVE"
-        })
+        # =====================================================
+        # TOTAL REGISTERED COUNTS
+        # =====================================================
+        # These are real MongoDB collection counts.
+        # No hard-coded/mock values are used.
 
+        total_buses = college_buses.count_documents({})
+
+        total_staff_vehicles = (
+            staff_vehicles.count_documents({})
+        )
+
+        total_visitors = (
+            visitor_vehicles.count_documents({})
+        )
+
+        # Keep the existing log statistics available for
+        # other dashboard consumers.
         total_logs = bus_logs.count_documents({})
 
         today = datetime.now().strftime(
@@ -3553,13 +3567,13 @@ def dashboard():
                     today
             })
         )
-        print("DASHBOARD TODAY LOGS =", today_logs)
+
         entry_count = 0
         exit_count = 0
 
         for log in today_logs:
 
-            direction  = str(
+            direction = str(
                 log.get(
                     "direction",
                     ""
@@ -3574,9 +3588,18 @@ def dashboard():
 
         return jsonify({
 
+            # Exact registered totals used by the
+            # three dashboard metric cards.
             "totalBuses":
                 total_buses,
 
+            "totalStaffVehicles":
+                total_staff_vehicles,
+
+            "totalVisitors":
+                total_visitors,
+
+            # Existing dashboard statistics.
             "totalLogs":
                 total_logs,
 
@@ -3607,6 +3630,7 @@ def dashboard():
                 str(e)
 
         }), 500
+
 # =========================================================
 # VEHICLE SUMMARY
 # =========================================================
@@ -6929,6 +6953,26 @@ def serve_html_file(filename):
             "error": "HTML file not found"
         }), 404
 
+    # -----------------------------------------------------
+    # PUBLIC HTML PAGES
+    # -----------------------------------------------------
+    # These pages must remain accessible before login.
+    public_html_pages = {
+        "login.html",
+        "register.html",
+        "forgot-password.html",
+        "reset-password.html",
+        "404.html",
+        "500.html",
+    }
+
+    # Every other /html/*.html page is private.
+    if (
+        filename not in public_html_pages
+        and not session.get("user")
+    ):
+        return redirect("/login.html")
+
     return send_from_directory(
         HTML_DIR,
         filename
@@ -6952,6 +6996,27 @@ def html_files(filename):
             "error":
                 "API endpoint not found"
         }), 404
+
+    # -----------------------------------------------------
+    # PAGE AUTHENTICATION
+    # -----------------------------------------------------
+    # Direct URL access such as /index.html,
+    # /html/index.html, /vehicle.html, etc. is blocked
+    # until the user has a valid Flask login session.
+    public_pages = {
+        "login.html",
+        "register.html",
+        "forgot-password.html",
+        "reset-password.html",
+        "404.html",
+        "500.html",
+    }
+
+    if (
+        filename not in public_pages
+        and not session.get("user")
+    ):
+        return redirect("/login.html")
 
     # -----------------------------------------------------
     # Static HTML pages
