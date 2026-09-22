@@ -1217,7 +1217,7 @@
                                         class="metric-value"
                                         id="collegeBuses">
 
-                                        0/0
+                                        0
 
                                     </div>
 
@@ -1226,12 +1226,12 @@
 
 
                                         <span class="text-success">
-                                            LIVE
+                                            Atlas
                                         </span>
 
 
                                         <span>
-                                            Inside / Total Fleet
+                                            Total Registered
                                         </span>
 
 
@@ -1340,7 +1340,7 @@
 
 
                                         <span class="metric-label">
-                                            Visitors On Campus
+                                            Visitors
                                         </span>
 
 
@@ -1370,12 +1370,12 @@
 
 
                                         <span class="text-success">
-                                            Today
+                                            Atlas
                                         </span>
 
 
                                         <span>
-                                            Issued Today
+                                            Total Registered
                                         </span>
 
 
@@ -1799,6 +1799,11 @@
                     );
 
 
+                if (response.status === 401) {
+                    window.location.replace("/login.html");
+                    return;
+                }
+
                 if (!response.ok) {
 
                     throw new Error(
@@ -1819,47 +1824,32 @@
                 );
 
 
-                /* COLLEGE BUSES */
+                /* COLLEGE BUSES
+                   Exact total registered in MongoDB. */
 
-                const totalFleet =
+                collegeBusesElement.textContent =
                     Number(
                         data.totalBuses || 0
                     );
 
 
-                const busesInside =
-                    Number(
-                        data.busesInside ??
-                        data.entryBuses ??
-                        0
-                    );
 
-
-                collegeBusesElement.textContent =
-                    busesInside +
-                    "/" +
-                    totalFleet;
-
-
-
-                /* FACULTY VEHICLES */
+                /* FACULTY / STAFF VEHICLES
+                   Exact total registered in MongoDB. */
 
                 facultyVehiclesElement.textContent =
                     Number(
-                        data.facultyVehicles ??
-                        data.totalFacultyVehicles ??
-                        0
+                        data.totalStaffVehicles || 0
                     );
 
 
 
-                /* VISITORS */
+                /* VISITORS
+                   Exact total visitor records in MongoDB. */
 
                 visitorsOnCampusElement.textContent =
                     Number(
-                        data.visitorsOnCampus ??
-                        data.currentVisitors ??
-                        0
+                        data.totalVisitors || 0
                     );
 
 
