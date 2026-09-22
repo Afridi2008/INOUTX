@@ -2158,8 +2158,8 @@
                             <div class="config-panel-title-text">
                                 <h2>User Approvals</h2>
                                 <p>
-                                    Review registrations. Users must verify their college email before
-                                    the administrator can approve the account.
+                                    Review new account requests. Approve or reject each registration
+                                    manually. Only KRCT/KRCE college email addresses are accepted.
                                 </p>
                             </div>
 
@@ -3839,10 +3839,8 @@
                         formatApprovalRole(user.role)
                     );
 
-                const verified = user.email_verified === true;
-                const statusHtml = verified
-                    ? `<span class="approval-status approval-status-verified"><i class="bi bi-patch-check-fill"></i> Email verified · Awaiting approval</span>`
-                    : `<span class="approval-status approval-status-unverified"><i class="bi bi-envelope-exclamation"></i> Email verification pending</span>`;
+                const statusHtml =
+                    `<span class="approval-status approval-status-verified"><i class="bi bi-hourglass-split"></i> Awaiting administrator approval</span>`;
 
                 return `
                     <tr>
@@ -3876,9 +3874,9 @@
                                     class="approval-action approval-approve"
                                     data-approval-action="approve"
                                     data-user-id="${id}"
-                                    ${verified ? "" : "disabled title=\"Email verification required before approval\""}>
+                                    >
                                     <i class="bi bi-check-lg"></i>
-                                    ${verified ? "Approve" : "Verify Email First"}
+                                    Approve
                                 </button>
 
                                 <button
