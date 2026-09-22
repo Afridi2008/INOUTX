@@ -1799,14 +1799,9 @@ def login():
                 )
             }), 401
 
-        if user.get("email_verified") is not True:
-
-            return jsonify({
-                "success": False,
-                "error": "Verify your college email before logging in.",
-                "email_verification_required": True
-            }), 403
-
+        # Email ownership verification is NOT required for login.
+        # Registration is restricted to KRCT/KRCE domains and the
+        # configuration administrator manually approves the account.
         approval_status = str(
             user.get("approval_status", "")
         ).strip().upper()
@@ -2189,7 +2184,8 @@ def serialize_pending_user(user):
             user.get("approval_status", "PENDING")
         ).strip().upper(),
         "active": user.get("active") is True,
-        "email_verified": user.get("email_verified") is True,
+        # Email verification is not part of the registration workflow.
+        "email_verified": True,
         "created_at": serialize_value(
             user.get("created_at")
         ),
@@ -2288,8 +2284,7 @@ def approve_user(user_id):
         result = users.update_one(
             {
                 "_id": object_id,
-                "approval_status": "PENDING",
-                "email_verified": True
+                "approval_status": "PENDING"
             },
             {
                 "$set": {
@@ -2310,12 +2305,6 @@ def approve_user(user_id):
                     "success": False,
                     "error": "User account was not found."
                 }), 404
-
-            if existing and existing.get("email_verified") is not True:
-                return jsonify({
-                    "success": False,
-                    "error": "This user must verify the college email before approval."
-                }), 409
 
             return jsonify({
                 "success": False,
@@ -2418,7 +2407,7 @@ def reject_user(user_id):
         }), 500
 
 
-# REGISTER USER
+# REGISTER USER - ADMIN APPROVAL ONLY
 # =========================================================
 
 @app.route(
@@ -2453,10 +2442,11 @@ def register():
         if len(email) > 254:
             return jsonify({"success": False, "error": "Email address is too long."}), 400
 
+        # Only official KRCT / KRCE email domains are accepted.
+        # No personal email and no external domain is allowed.
         allowed_registration_email = (
             email.endswith("@krct.ac.in")
             or email.endswith("@krce.ac.in")
-            or email == CONFIG_ADMIN_EMAIL
         )
 
         if not allowed_registration_email:
@@ -2480,18 +2470,6 @@ def register():
         if not role:
             return jsonify({"success": False, "error": "Account type is required."}), 400
 
-        if email == CONFIG_ADMIN_EMAIL and role != "config_admin":
-            return jsonify({
-                "success": False,
-                "error": "The INOUTX admin email must use the Configuration Admin role."
-            }), 403
-
-        if role == "config_admin" and email != CONFIG_ADMIN_EMAIL:
-            return jsonify({
-                "success": False,
-                "error": "The Configuration Admin role is restricted to the configured admin account."
-            }), 403
-
         existing_user = users.find_one({"email": email})
         if existing_user:
             return jsonify({
@@ -2505,32 +2483,10 @@ def register():
             bcrypt.gensalt()
         ).decode("utf-8")
 
-        # The verification record is created BEFORE the user account.
-        # The account is inserted into users only after the OTP is correct.
-        otp = str(secrets.randbelow(900000) + 100000)
-
-        email_verifications.delete_many({"email": email})
-        email_verifications.insert_one({
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "password": hashed_password,
-            "role": role,
-            "otp_hash": bcrypt.hashpw(
-                otp.encode("utf-8"),
-                bcrypt.gensalt()
-            ).decode("utf-8"),
-            "otp_expires_at": now + timedelta(minutes=OTP_EXPIRY_MINUTES),
-            "attempts": 0,
-            "resend_count": 0,
-            "last_sent_at": now,
-            "created_at": now,
-        })
-
-        # Create the registration request immediately. This makes the request
-        # visible to the configuration administrator even while the email is
-        # waiting for verification. The account remains unusable until both
-        # email verification and administrator approval are complete.
+        # Create the account immediately as a PENDING registration request.
+        # There is NO email OTP / email verification step.
+        # The configuration administrator is the only person who can approve
+        # or reject the registration.
         user_result = users.insert_one({
             "name": name,
             "email": email,
@@ -2539,31 +2495,16 @@ def register():
             "role": role,
             "active": False,
             "approval_status": "PENDING",
-            "email_verified": False,
+            "email_verified": True,
+            "email_verified_at": now,
             "created_at": now,
             "updated_at": now,
         })
 
-        try:
-            send_verification_otp(email, otp)
-        except Exception as email_error:
-            print("Registration OTP delivery error:", repr(email_error))
-            # Keep the registration request. The administrator can see that
-            # email verification is still pending, and the user can retry via
-            # Resend Code after the mail configuration is fixed.
-            return jsonify({
-                "success": False,
-                "error": "Your registration request was created, but the verification email could not be sent. Please check the mail configuration and use Resend Code.",
-                "verification_required": True,
-                "request_created": True,
-                "email": email
-            }), 502
-
         return jsonify({
             "success": True,
-            "message": "Verification code sent to your college email.",
-            "email_verified": False,
-            "verification_required": True,
+            "message": "Account request submitted successfully. Please wait for administrator approval.",
+            "request_created": True,
             "approval_required": True,
             "approval_status": "PENDING",
             "email": email
