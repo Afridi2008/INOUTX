@@ -2594,27 +2594,27 @@
     const DEFAULT_CONFIG = {
 
         camera1: {
-            name: "Camera 1",
+            name: "Gate 1 — Camera 1",
             type: "USB",
             source: ""
         },
 
         camera2: {
-            name: "Camera 2",
+            name: "Gate 2 — Camera 2",
             type: "USB",
             source: ""
         },
 
         gate: {
-            name: "Main Gate",
+            name: "Gate 1",
             camera: "Camera 1",
             direction: "ENTRY"
         },
 
         mongodb: {
             uri: "",
-            database: "IN_OUT_X",
-            collection: "bus_logs"
+            database: "IN_OUTX",
+            collection: "bus_movements"
         }
 
     };
@@ -2960,45 +2960,27 @@
        SAVE CONFIGURATION
     ====================================================== */
 
-    async function saveConfiguration() {
+    function saveConfiguration() {
 
         try {
 
             const configuration =
                 getConfigurationFromForm();
 
-            const response = await fetch(
-                "/api/system-config",
-                {
-                    method: "PUT",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(configuration)
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || result.success !== true) {
-                throw new Error(
-                    result.error ||
-                    "Unable to save system configuration."
-                );
-            }
 
             localStorage.setItem(
                 STORAGE_KEY,
-                JSON.stringify(result.configuration || configuration)
+                JSON.stringify(
+                    configuration
+                )
             );
 
-            applyConfiguration(
-                result.configuration || configuration
-            );
+
+            updatePreview();
+
 
             showMessage(
-                "System configuration saved successfully. Camera source changes will be picked up automatically by the camera process.",
+                "System configuration saved successfully.",
                 "success"
             );
 
@@ -3010,8 +2992,8 @@
                 error
             );
 
+
             showMessage(
-                error.message ||
                 "Unable to save system configuration.",
                 "error"
             );
@@ -3022,48 +3004,58 @@
 
 
     /* =====================================================
-       LOAD CONFIGURATION FROM SERVER
+       LOAD CONFIGURATION
     ====================================================== */
 
-    async function loadConfiguration(
+    function loadConfiguration(
         showNotification = true
     ) {
 
         try {
 
-            const response = await fetch(
-                "/api/system-config",
-                {
-                    method: "GET",
-                    credentials: "include",
-                    cache: "no-store"
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || result.success !== true) {
-                throw new Error(
-                    result.error ||
-                    "Unable to load system configuration."
+            const saved =
+                localStorage.getItem(
+                    STORAGE_KEY
                 );
+
+
+            if (!saved) {
+
+                applyConfiguration(
+                    DEFAULT_CONFIG
+                );
+
+
+                if (showNotification) {
+
+                    showMessage(
+                        "No saved configuration found. Default configuration loaded.",
+                        "warning"
+                    );
+
+                }
+
+                return;
+
             }
 
-            const configuration =
-                result.configuration || DEFAULT_CONFIG;
 
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(configuration)
+            const configuration =
+                JSON.parse(saved);
+
+
+            applyConfiguration(
+                configuration
             );
 
-            applyConfiguration(configuration);
 
             if (showNotification) {
+
                 showMessage(
                     "Saved configuration loaded successfully.",
                     "success"
                 );
+
             }
 
         }
@@ -3074,31 +3066,13 @@
                 error
             );
 
-            /* Local storage is only a fallback for an already loaded
-               page. MongoDB remains the authoritative configuration. */
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY);
 
-                if (saved) {
-                    applyConfiguration(JSON.parse(saved));
+            applyConfiguration(
+                DEFAULT_CONFIG
+            );
 
-                    if (showNotification) {
-                        showMessage(
-                            "Server configuration could not be loaded. Local saved values were loaded as a fallback.",
-                            "warning"
-                        );
-                    }
-                    return;
-                }
-            }
-            catch (localError) {
-                console.error("Local configuration fallback error:", localError);
-            }
-
-            applyConfiguration(DEFAULT_CONFIG);
 
             showMessage(
-                error.message ||
                 "Saved configuration could not be loaded. Default configuration restored.",
                 "error"
             );
@@ -3109,68 +3083,36 @@
 
 
     /* =====================================================
-       RESET CONFIGURATION ON SERVER
+       RESET CONFIGURATION
     ====================================================== */
 
-    async function resetConfiguration() {
+    function resetConfiguration() {
 
         const confirmed =
             window.confirm(
                 "Reset System Configuration to default values?"
             );
 
+
         if (!confirmed) {
             return;
         }
 
-        try {
 
-            const response = await fetch(
-                "/api/system-config/reset",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
 
-            const result = await response.json();
 
-            if (!response.ok || result.success !== true) {
-                throw new Error(
-                    result.error ||
-                    "Unable to reset system configuration."
-                );
-            }
+        applyConfiguration(
+            DEFAULT_CONFIG
+        );
 
-            localStorage.removeItem(STORAGE_KEY);
 
-            applyConfiguration(
-                result.configuration || DEFAULT_CONFIG
-            );
-
-            showMessage(
-                "System configuration has been reset.",
-                "success"
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Reset configuration error:",
-                error
-            );
-
-            showMessage(
-                error.message ||
-                "Unable to reset system configuration.",
-                "error"
-            );
-
-        }
+        showMessage(
+            "System configuration has been reset.",
+            "success"
+        );
 
     }
 
@@ -3897,7 +3839,10 @@
                         formatApprovalRole(user.role)
                     );
 
-                const statusHtml = `<span class="approval-status approval-status-unverified"><i class="bi bi-hourglass-split"></i> Awaiting administrator approval</span>`;
+                const verified = user.email_verified === true;
+                const statusHtml = verified
+                    ? `<span class="approval-status approval-status-verified"><i class="bi bi-patch-check-fill"></i> Email verified · Awaiting approval</span>`
+                    : `<span class="approval-status approval-status-unverified"><i class="bi bi-envelope-exclamation"></i> Email verification pending</span>`;
 
                 return `
                     <tr>
@@ -3931,9 +3876,9 @@
                                     class="approval-action approval-approve"
                                     data-approval-action="approve"
                                     data-user-id="${id}"
->
+                                    ${verified ? "" : "disabled title=\"Email verification required before approval\""}>
                                     <i class="bi bi-check-lg"></i>
-                                    Approve
+                                    ${verified ? "Approve" : "Verify Email First"}
                                 </button>
 
                                 <button
