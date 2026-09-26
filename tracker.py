@@ -17,7 +17,7 @@ MODEL_PATH = "models/yolov8n.pt"
 # 5 = bus
 # 7 = truck
 
-VEHICLE_CLASSES = [2, 3, 5, 7]
+VEHICLE_CLASSES = [5]
 
 # Lower = detects more distant vehicles
 DETECTION_CONFIDENCE = 0.20
