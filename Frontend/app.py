@@ -5287,28 +5287,21 @@ def create_excel(
 ):
 
     workbook = Workbook()
-
     worksheet = workbook.active
-
     worksheet.title = "Vehicle Report"
 
     # -----------------------------------------------------
     # TITLE
     # -----------------------------------------------------
 
-    worksheet.merge_cells(
-        "A1:K1"
-    )
+    worksheet.merge_cells("A1:K1")
 
     title_cell = worksheet["A1"]
-
     title_cell.value = report_title
-
     title_cell.font = Font(
         bold=True,
         size=16
     )
-
     title_cell.alignment = Alignment(
         horizontal="center",
         vertical="center"
@@ -5318,16 +5311,11 @@ def create_excel(
     # GENERATED TIME
     # -----------------------------------------------------
 
-    worksheet.merge_cells(
-        "A2:K2"
-    )
+    worksheet.merge_cells("A2:K2")
 
     worksheet["A2"] = (
         "Generated: "
-        +
-        datetime.now().strftime(
-            "%d-%m-%Y %H:%M:%S"
-        )
+        + datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     )
 
     worksheet["A2"].alignment = Alignment(
@@ -5339,19 +5327,17 @@ def create_excel(
     # -----------------------------------------------------
 
     headers = [
-
         "Bus ID",
         "Bus No",
         "Plate",
         "Driver",
         "Route",
-        "Status",
+        "Direction",
         "Date",
         "Time",
         "OCR Plate",
         "OCR Bus Number",
         "Image"
-
     ]
 
     header_row = 4
@@ -5360,128 +5346,285 @@ def create_excel(
         headers,
         start=1
     ):
-
         cell = worksheet.cell(
             row=header_row,
             column=column_index
         )
 
         cell.value = header
-
-        cell.font = Font(
-            bold=True
-        )
-
+        cell.font = Font(bold=True)
         cell.alignment = Alignment(
             horizontal="center",
             vertical="center"
         )
-
         cell.fill = PatternFill(
             fill_type="solid",
             fgColor="1F2937"
         )
 
     # -----------------------------------------------------
-    # DATA
+    # GROUP LOGS BY BUS
+    #
+    # One bus = one parent group.
+    # Every ENTRY / EXIT detection becomes a sub-row.
+    #
+    # Prefer Bus No as the grouping identity. This prevents
+    # OCR plate variations from creating another bus group.
     # -----------------------------------------------------
 
-    for row_index, row in enumerate(
-        rows,
-        start=header_row + 1
-    ):
+    grouped = {}
 
-        values = [
+    for row in rows:
 
-            row.get(
-                "bus_id",
-                ""
-            ),
-
+        bus_no = str(
             row.get(
                 "bus_no",
                 row.get(
                     "bus_number",
                     ""
                 )
-            ),
+            )
+            or ""
+        ).strip()
 
+        plate = str(
             row.get(
                 "plate",
                 ""
-            ),
+            )
+            or ""
+        ).strip()
 
+        bus_id = str(
             row.get(
-                "driver",
+                "bus_id",
                 ""
-            ),
+            )
+            or ""
+        ).strip()
 
-            row.get(
-                "route",
-                ""
-            ),
-
-            row.get(
-                "status",
-                ""
-            ),
-
-            row.get(
-                "date",
-                ""
-            ),
-
-            row.get(
-                "time",
-                ""
-            ),
-
-            row.get(
-                "ocr_plate",
-                ""
-            ),
-
-            row.get(
-                "ocr_bus_number",
-                ""
-            ),
-
-            row.get(
-                "image",
-                row.get(
-                    "image_path",
-                    ""
-                )
+        if bus_no:
+            group_key = (
+                "BUS",
+                bus_no.upper()
+            )
+        elif plate:
+            group_key = (
+                "PLATE",
+                plate.upper()
+            )
+        elif bus_id:
+            group_key = (
+                "ID",
+                bus_id.upper()
+            )
+        else:
+            group_key = (
+                "UNKNOWN",
+                str(row.get("_id", id(row)))
             )
 
+        grouped.setdefault(
+            group_key,
+            []
+        ).append(row)
+
+    # -----------------------------------------------------
+    # DATA
+    # -----------------------------------------------------
+
+    current_row = header_row + 1
+    group_ranges = []
+
+    for bus_rows in grouped.values():
+
+        group_start = current_row
+        first = bus_rows[0]
+
+        parent_values = [
+            first.get("bus_id", ""),
+            first.get(
+                "bus_no",
+                first.get("bus_number", "")
+            ),
+            first.get("plate", ""),
+            first.get("driver", ""),
+            first.get("route", "")
         ]
 
-        for column_index, value in enumerate(
-            values,
-            start=1
-        ):
+        for movement_index, row in enumerate(bus_rows):
 
-            cell = worksheet.cell(
-                row=row_index,
-                column=column_index
+            values = [
+
+                parent_values[0] if movement_index == 0 else "",
+                parent_values[1] if movement_index == 0 else "",
+                parent_values[2] if movement_index == 0 else "",
+                parent_values[3] if movement_index == 0 else "",
+                parent_values[4] if movement_index == 0 else "",
+
+                row.get(
+                    "status",
+                    ""
+                ),
+
+                row.get(
+                    "date",
+                    ""
+                ),
+
+                row.get(
+                    "time",
+                    ""
+                ),
+
+                row.get(
+                    "ocr_plate",
+                    ""
+                ),
+
+                row.get(
+                    "ocr_bus_number",
+                    ""
+                ),
+
+                row.get(
+                    "image",
+                    row.get(
+                        "image_path",
+                        ""
+                    )
+                )
+
+            ]
+
+            for column_index, value in enumerate(
+                values,
+                start=1
+            ):
+                cell = worksheet.cell(
+                    row=current_row,
+                    column=column_index
+                )
+
+                cell.value = str(
+                    value or ""
+                )
+
+                cell.alignment = Alignment(
+                    horizontal="left"
+                    if column_index in (1, 2, 3, 4, 5, 11)
+                    else "center",
+                    vertical="center",
+                    wrap_text=True
+                )
+
+                if movement_index == 0 and column_index <= 5:
+                    cell.font = Font(
+                        bold=True
+                    )
+
+            # Direction styling
+            direction = str(
+                row.get(
+                    "status",
+                    ""
+                )
+                or ""
+            ).strip().upper()
+
+            direction_cell = worksheet.cell(
+                row=current_row,
+                column=6
             )
 
-            cell.value = str(
-                value
-            )
+            if direction == "ENTRY":
+                direction_cell.font = Font(
+                    bold=True,
+                    color="198754"
+                )
+            elif direction == "EXIT":
+                direction_cell.font = Font(
+                    bold=True,
+                    color="DC3545"
+                )
 
-            cell.alignment = Alignment(
-                vertical="center"
+            current_row += 1
+
+        group_end = current_row - 1
+
+        group_ranges.append(
+            (
+                group_start,
+                group_end
             )
+        )
+
+        # Blank separator between buses
+        current_row += 1
+
+    # -----------------------------------------------------
+    # EMPTY REPORT
+    # -----------------------------------------------------
+
+    if not grouped:
+
+        worksheet.cell(
+            row=header_row + 1,
+            column=1
+        ).value = "No vehicle records found."
+
+    # -----------------------------------------------------
+    # MERGE PARENT BUS INFORMATION
+    #
+    # Bus ID / Bus No / Plate / Driver / Route are shown
+    # once for the whole bus group.
+    # -----------------------------------------------------
+
+    for start_row, end_row in group_ranges:
+
+        if end_row > start_row:
+
+            for column_index in range(1, 6):
+
+                worksheet.merge_cells(
+                    start_row=start_row,
+                    start_column=column_index,
+                    end_row=end_row,
+                    end_column=column_index
+                )
+
+                cell = worksheet.cell(
+                    row=start_row,
+                    column=column_index
+                )
+
+                cell.alignment = Alignment(
+                    horizontal="center",
+                    vertical="center",
+                    wrap_text=True
+                )
+
+                cell.font = Font(
+                    bold=True
+                )
+
+    # -----------------------------------------------------
+    # ROW HEIGHTS
+    # -----------------------------------------------------
+
+    for row_index in range(
+        header_row + 1,
+        worksheet.max_row + 1
+    ):
+        worksheet.row_dimensions[row_index].height = 24
 
     # -----------------------------------------------------
     # COLUMN WIDTHS
     # -----------------------------------------------------
 
     widths = [
-
         24,
-        12,
+        14,
         18,
         25,
         25,
@@ -5491,14 +5634,12 @@ def create_excel(
         20,
         22,
         50
-
     ]
 
     for index, width in enumerate(
         widths,
         start=1
     ):
-
         worksheet.column_dimensions[
             get_column_letter(index)
         ].width = width
@@ -5518,7 +5659,6 @@ def create_excel(
         min_col=1,
         max_col=len(headers)
     ):
-
         for cell in row_cells:
 
             cell.border = Border(
@@ -5530,6 +5670,10 @@ def create_excel(
 
     worksheet.freeze_panes = "A5"
 
+    # -----------------------------------------------------
+    # SAVE
+    # -----------------------------------------------------
+
     output = BytesIO()
 
     workbook.save(
@@ -5539,18 +5683,13 @@ def create_excel(
     output.seek(0)
 
     return send_file(
-
         output,
-
         download_name=filename,
-
         as_attachment=True,
-
         mimetype=(
             "application/vnd.openxmlformats-"
             "officedocument.spreadsheetml.sheet"
         )
-
     )
 
 
@@ -5571,19 +5710,12 @@ def create_pdf(
     # =====================================================
 
     document = SimpleDocTemplate(
-
         output,
-
         pagesize=A4,
-
-        rightMargin=10 * mm,
-
-        leftMargin=10 * mm,
-
+        rightMargin=8 * mm,
+        leftMargin=8 * mm,
         topMargin=8 * mm,
-
         bottomMargin=15 * mm
-
     )
 
     styles = getSampleStyleSheet()
@@ -5592,154 +5724,74 @@ def create_pdf(
     # STYLES
     # =====================================================
 
-    title_style = ParagraphStyle(
-
-        "INOUTXTitle",
-
-        parent=styles["Title"],
-
-        fontName="Helvetica-Bold",
-
-        fontSize=15,
-
-        leading=18,
-
-        alignment=TA_CENTER,
-
-        textColor=colors.HexColor(
-            "#123B68"
-        ),
-
-        spaceAfter=2 * mm
-
-    )
-
     normal_style = ParagraphStyle(
-
         "INOUTXNormal",
-
         parent=styles["Normal"],
-
         fontName="Helvetica",
-
         fontSize=7,
-
         leading=8.5,
-
         alignment=TA_LEFT,
-
-        textColor=colors.HexColor(
-            "#1F2937"
-        )
-
-    )
-
-    center_style = ParagraphStyle(
-
-        "INOUTXCenter",
-
-        parent=normal_style,
-
-        alignment=TA_CENTER
-
+        textColor=colors.HexColor("#1F2937")
     )
 
     small_style = ParagraphStyle(
-
         "INOUTXSmall",
-
         parent=normal_style,
-
         fontSize=6.5,
-
         leading=8
-
     )
 
-    section_style = ParagraphStyle(
-
-        "INOUTXSection",
-
-        parent=styles["Heading2"],
-
-        fontName="Helvetica-Bold",
-
-        fontSize=10,
-
-        leading=12,
-
-        textColor=colors.HexColor(
-            "#123B68"
-        ),
-
-        spaceBefore=2 * mm,
-
-        spaceAfter=2 * mm
-
+    center_style = ParagraphStyle(
+        "INOUTXCenter",
+        parent=small_style,
+        alignment=TA_CENTER
     )
 
     header_style = ParagraphStyle(
-
         "INOUTXTableHeader",
-
         parent=normal_style,
-
         fontName="Helvetica-Bold",
-
         fontSize=6.5,
-
         leading=7.5,
-
         alignment=TA_CENTER,
-
         textColor=colors.white
+    )
 
+    section_style = ParagraphStyle(
+        "INOUTXSection",
+        parent=styles["Heading2"],
+        fontName="Helvetica-Bold",
+        fontSize=10,
+        leading=12,
+        textColor=colors.HexColor("#123B68"),
+        spaceBefore=2 * mm,
+        spaceAfter=2 * mm
     )
 
     summary_label_style = ParagraphStyle(
-
         "SummaryLabel",
-
         parent=normal_style,
-
         fontName="Helvetica-Bold",
-
         fontSize=7,
-
         leading=8,
-
         alignment=TA_CENTER,
-
-        textColor=colors.HexColor(
-            "#374151"
-        )
-
+        textColor=colors.HexColor("#374151")
     )
 
     summary_value_style = ParagraphStyle(
-
         "SummaryValue",
-
         parent=normal_style,
-
         fontName="Helvetica-Bold",
-
         fontSize=12,
-
         leading=14,
-
         alignment=TA_CENTER,
-
-        textColor=colors.HexColor(
-            "#123B68"
-        )
-
+        textColor=colors.HexColor("#123B68")
     )
 
     story = []
 
     # =====================================================
-    # HEADER WITH BOTH COLLEGE LOGOS
+    # HEADER
     # =====================================================
 
     story.append(
@@ -5760,118 +5812,96 @@ def create_pdf(
     # SUMMARY
     # =====================================================
 
-    entry_count = 0
-    exit_count = 0
+    entry_count = sum(
+        1
+        for row in rows
+        if str(
+            row.get("status", "")
+            or ""
+        ).strip().upper() == "ENTRY"
+    )
 
-    for row in rows:
-
-        status = str(
-            row.get(
-                "status",
-                ""
-            )
-        ).strip().upper()
-
-        if status == "ENTRY":
-
-            entry_count += 1
-
-        elif status == "EXIT":
-
-            exit_count += 1
+    exit_count = sum(
+        1
+        for row in rows
+        if str(
+            row.get("status", "")
+            or ""
+        ).strip().upper() == "EXIT"
+    )
 
     summary_table = Table(
-
-        [[
-
-            Paragraph(
-                "TOTAL RECORDS",
-                summary_label_style
-            ),
-
-            Paragraph(
-                "ENTRY",
-                summary_label_style
-            ),
-
-            Paragraph(
-                "EXIT",
-                summary_label_style
-            )
-
-        ], [
-
-            Paragraph(
-                str(len(rows)),
-                summary_value_style
-            ),
-
-            Paragraph(
-                str(entry_count),
-                summary_value_style
-            ),
-
-            Paragraph(
-                str(exit_count),
-                summary_value_style
-            )
-
-        ]],
-
+        [
+            [
+                Paragraph(
+                    "TOTAL RECORDS",
+                    summary_label_style
+                ),
+                Paragraph(
+                    "ENTRY",
+                    summary_label_style
+                ),
+                Paragraph(
+                    "EXIT",
+                    summary_label_style
+                )
+            ],
+            [
+                Paragraph(
+                    str(len(rows)),
+                    summary_value_style
+                ),
+                Paragraph(
+                    str(entry_count),
+                    summary_value_style
+                ),
+                Paragraph(
+                    str(exit_count),
+                    summary_value_style
+                )
+            ]
+        ],
         colWidths=[
             60 * mm,
             60 * mm,
             60 * mm
         ]
-
     )
 
     summary_table.setStyle(
-
         TableStyle([
-
             (
                 "BACKGROUND",
                 (0, 0),
                 (-1, 0),
-                colors.HexColor(
-                    "#F3F4F6"
-                )
+                colors.HexColor("#F3F4F6")
             ),
-
             (
                 "GRID",
                 (0, 0),
                 (-1, -1),
                 0.5,
-                colors.HexColor(
-                    "#D1D5DB"
-                )
+                colors.HexColor("#D1D5DB")
             ),
-
             (
                 "VALIGN",
                 (0, 0),
                 (-1, -1),
                 "MIDDLE"
             ),
-
             (
                 "TOPPADDING",
                 (0, 0),
                 (-1, -1),
                 2.5 * mm
             ),
-
             (
                 "BOTTOMPADDING",
                 (0, 0),
                 (-1, -1),
                 2.5 * mm
             )
-
         ])
-
     )
 
     story.append(
@@ -5885,112 +5915,136 @@ def create_pdf(
         )
     )
 
-    # =====================================================
-    # REPORT TABLE
-    # =====================================================
-
     story.append(
         Paragraph(
-            "Vehicle Detection Records",
+            "Vehicle Movement History",
             section_style
         )
     )
 
-    table_data = [[
-
-        Paragraph(
-            "Bus No",
-            header_style
-        ),
-
-        Paragraph(
-            "Plate",
-            header_style
-        ),
-
-        Paragraph(
-            "Driver",
-            header_style
-        ),
-
-        Paragraph(
-            "Route",
-            header_style
-        ),
-
-        Paragraph(
-            "Status",
-            header_style
-        ),
-
-        Paragraph(
-            "Date",
-            header_style
-        ),
-
-        Paragraph(
-            "Time",
-            header_style
-        ),
-
-        Paragraph(
-            "OCR Plate",
-            header_style
-        ),
-
-        Paragraph(
-            "OCR Bus No",
-            header_style
-        ),
-
-        Paragraph(
-            "Captured Image",
-            header_style
-        )
-
-    ]]
-
     # =====================================================
-    # TABLE ROWS
+    # GROUP LOGS BY BUS
+    #
+    # Prefer Bus No as the identity so repeated detections
+    # of the same bus remain under one parent group.
     # =====================================================
+
+    grouped = {}
 
     for row in rows:
-
-        image_value = row.get(
-            "image",
-            row.get(
-                "image_path",
-                ""
-            )
-        )
-
-        image_cell = Paragraph(
-            "No image",
-            small_style
-        )
-
-        full_image_path = (
-            resolve_captured_image(
-                image_value
-            )
-        )
-
-        if full_image_path:
-
-            image_object = create_captured_image(
-                full_image_path,
-                38,
-                26
-            )
-
-            if image_object:
-
-                image_cell = image_object
 
         bus_no = str(
             row.get(
                 "bus_no",
                 row.get(
+                    "bus_number",
+                    ""
+                )
+            )
+            or ""
+        ).strip()
+
+        plate = str(
+            row.get(
+                "plate",
+                ""
+            )
+            or ""
+        ).strip()
+
+        bus_id = str(
+            row.get(
+                "bus_id",
+                ""
+            )
+            or ""
+        ).strip()
+
+        if bus_no:
+            group_key = (
+                "BUS",
+                bus_no.upper()
+            )
+        elif plate:
+            group_key = (
+                "PLATE",
+                plate.upper()
+            )
+        elif bus_id:
+            group_key = (
+                "ID",
+                bus_id.upper()
+            )
+        else:
+            group_key = (
+                "UNKNOWN",
+                str(row.get("_id", id(row)))
+            )
+
+        grouped.setdefault(
+            group_key,
+            []
+        ).append(row)
+
+    # =====================================================
+    # TABLE HEADER
+    # =====================================================
+
+    table_data = [[
+        Paragraph(
+            "Bus No",
+            header_style
+        ),
+        Paragraph(
+            "Plate",
+            header_style
+        ),
+        Paragraph(
+            "Driver",
+            header_style
+        ),
+        Paragraph(
+            "Route",
+            header_style
+        ),
+        Paragraph(
+            "Direction",
+            header_style
+        ),
+        Paragraph(
+            "Date",
+            header_style
+        ),
+        Paragraph(
+            "Time",
+            header_style
+        ),
+        Paragraph(
+            "OCR Plate",
+            header_style
+        ),
+        Paragraph(
+            "OCR Bus No",
+            header_style
+        ),
+        Paragraph(
+            "Captured Image",
+            header_style
+        )
+    ]]
+
+    # =====================================================
+    # GROUPED TABLE ROWS
+    # =====================================================
+
+    for bus_rows in grouped.values():
+
+        first = bus_rows[0]
+
+        parent_bus_no = str(
+            first.get(
+                "bus_no",
+                first.get(
                     "bus_number",
                     "-"
                 )
@@ -5998,134 +6052,175 @@ def create_pdf(
             or "-"
         )
 
-        plate = str(
-            row.get(
+        parent_plate = str(
+            first.get(
                 "plate",
                 "-"
             )
             or "-"
         )
 
-        driver = str(
-            row.get(
+        parent_driver = str(
+            first.get(
                 "driver",
                 "-"
             )
             or "-"
         )
 
-        route = str(
-            row.get(
+        parent_route = str(
+            first.get(
                 "route",
                 "-"
             )
             or "-"
         )
 
-        status = str(
-            row.get(
-                "status",
-                "-"
-            )
-            or "-"
-        )
+        for movement_index, row in enumerate(
+            bus_rows
+        ):
 
-        date = str(
-            row.get(
-                "date",
-                "-"
-            )
-            or "-"
-        )
+            # ---------------------------------------------
+            # IMAGE
+            # ---------------------------------------------
 
-        log_time = str(
-            row.get(
-                "time",
-                "-"
+            image_value = row.get(
+                "image",
+                row.get(
+                    "image_path",
+                    ""
+                )
             )
-            or "-"
-        )
 
-        ocr_plate = str(
-            row.get(
-                "ocr_plate",
-                "-"
+            image_cell = Paragraph(
+                "No image",
+                small_style
             )
-            or "-"
-        )
 
-        ocr_bus_number = str(
-            row.get(
-                "ocr_bus_number",
-                "-"
+            full_image_path = (
+                resolve_captured_image(
+                    image_value
+                )
             )
-            or "-"
-        )
 
+            if full_image_path:
+
+                image_object = (
+                    create_captured_image(
+                        full_image_path,
+                        34,
+                        24
+                    )
+                )
+
+                if image_object:
+                    image_cell = image_object
+
+            # ---------------------------------------------
+            # MOVEMENT DATA
+            # ---------------------------------------------
+
+            status = str(
+                row.get(
+                    "status",
+                    "-"
+                )
+                or "-"
+            ).strip().upper()
+
+            date = str(
+                row.get(
+                    "date",
+                    "-"
+                )
+                or "-"
+            )
+
+            log_time = str(
+                row.get(
+                    "time",
+                    "-"
+                )
+                or "-"
+            )
+
+            ocr_plate = str(
+                row.get(
+                    "ocr_plate",
+                    "-"
+                )
+                or "-"
+            )
+
+            ocr_bus_number = str(
+                row.get(
+                    "ocr_bus_number",
+                    "-"
+                )
+                or "-"
+            )
+
+            # Parent bus information is shown only once.
+            if movement_index == 0:
+
+                bus_cell = Paragraph(
+                    parent_bus_no,
+                    center_style
+                )
+
+                plate_cell = Paragraph(
+                    parent_plate,
+                    center_style
+                )
+
+                driver_cell = Paragraph(
+                    parent_driver,
+                    small_style
+                )
+
+                route_cell = Paragraph(
+                    parent_route,
+                    small_style
+                )
+
+            else:
+
+                bus_cell = ""
+                plate_cell = ""
+                driver_cell = ""
+                route_cell = ""
+
+            table_data.append([
+                bus_cell,
+                plate_cell,
+                driver_cell,
+                route_cell,
+                Paragraph(
+                    status,
+                    center_style
+                ),
+                Paragraph(
+                    date,
+                    center_style
+                ),
+                Paragraph(
+                    log_time,
+                    center_style
+                ),
+                Paragraph(
+                    ocr_plate,
+                    small_style
+                ),
+                Paragraph(
+                    ocr_bus_number,
+                    small_style
+                ),
+                image_cell
+            ])
+
+        # Blank visual separator between bus groups.
         table_data.append([
-
-            Paragraph(
-                bus_no,
-                small_style
-            ),
-
-            Paragraph(
-                plate,
-                small_style
-            ),
-
-            Paragraph(
-                driver,
-                small_style
-            ),
-
-            Paragraph(
-                route,
-                small_style
-            ),
-
-            Paragraph(
-                status,
-                small_style
-            ),
-
-            Paragraph(
-                date,
-                small_style
-            ),
-
-            Paragraph(
-                log_time,
-                small_style
-            ),
-
-            Paragraph(
-                ocr_plate,
-                small_style
-            ),
-
-            Paragraph(
-                ocr_bus_number,
-                small_style
-            ),
-
-            image_cell
-
-        ])
-
-    # =====================================================
-    # EMPTY REPORT
-    # =====================================================
-
-    if len(table_data) == 1:
-
-        table_data.append([
-
-            Paragraph(
-                "No vehicle records found.",
-                small_style
-            ),
-
+            "",
             "",
             "",
             "",
@@ -6135,129 +6230,172 @@ def create_pdf(
             "",
             "",
             ""
-
         ])
 
     # =====================================================
-    # A4 PORTRAIT TABLE WIDTH
+    # EMPTY REPORT
+    # =====================================================
+
+    if not grouped:
+
+        table_data.append([
+            Paragraph(
+                "No vehicle records found.",
+                small_style
+            ),
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ])
+
+    # =====================================================
+    # TABLE
     # =====================================================
 
     table = Table(
-
         table_data,
-
         repeatRows=1,
-
         colWidths=[
-
             15 * mm,   # Bus No
-            23 * mm,   # Plate
-            25 * mm,   # Driver
-            26 * mm,   # Route
-            18 * mm,   # Status
-            20 * mm,   # Date
+            22 * mm,   # Plate
+            24 * mm,   # Driver
+            25 * mm,   # Route
+            18 * mm,   # Direction
+            19 * mm,   # Date
             17 * mm,   # Time
-            23 * mm,   # OCR Plate
-            23 * mm,   # OCR Bus
-            30 * mm    # Image
-
+            22 * mm,   # OCR Plate
+            22 * mm,   # OCR Bus
+            28 * mm    # Image
         ],
-
         hAlign="CENTER"
-
     )
 
-    # =====================================================
-    # TABLE STYLE
-    # =====================================================
-
     table.setStyle(
-
         TableStyle([
-
             (
                 "BACKGROUND",
                 (0, 0),
                 (-1, 0),
-                colors.HexColor(
-                    "#123B68"
-                )
+                colors.HexColor("#123B68")
             ),
-
             (
                 "TEXTCOLOR",
                 (0, 0),
                 (-1, 0),
                 colors.white
             ),
-
             (
                 "GRID",
                 (0, 0),
                 (-1, -1),
                 0.4,
-                colors.HexColor(
-                    "#9CA3AF"
-                )
+                colors.HexColor("#9CA3AF")
             ),
-
             (
                 "VALIGN",
                 (0, 0),
                 (-1, -1),
                 "MIDDLE"
             ),
-
             (
                 "ALIGN",
                 (0, 0),
                 (-1, -1),
                 "CENTER"
             ),
-
-            (
-                "ROWBACKGROUNDS",
-                (0, 1),
-                (-1, -1),
-                [
-                    colors.white,
-                    colors.HexColor(
-                        "#F8FAFC"
-                    )
-                ]
-            ),
-
             (
                 "TOPPADDING",
                 (0, 0),
                 (-1, -1),
                 2
             ),
-
             (
                 "BOTTOMPADDING",
                 (0, 0),
                 (-1, -1),
                 2
             ),
-
             (
                 "LEFTPADDING",
                 (0, 0),
                 (-1, -1),
                 2
             ),
-
             (
                 "RIGHTPADDING",
                 (0, 0),
                 (-1, -1),
                 2
             )
-
         ])
-
     )
+
+    # =====================================================
+    # ENTRY / EXIT COLORS
+    # =====================================================
+
+    table_row_index = 1
+
+    for bus_rows in grouped.values():
+
+        for row in bus_rows:
+
+            status = str(
+                row.get(
+                    "status",
+                    ""
+                )
+                or ""
+            ).strip().upper()
+
+            if status == "ENTRY":
+
+                table.setStyle(
+                    TableStyle([
+                        (
+                            "TEXTCOLOR",
+                            (4, table_row_index),
+                            (4, table_row_index),
+                            colors.HexColor("#198754")
+                        ),
+                        (
+                            "FONTNAME",
+                            (4, table_row_index),
+                            (4, table_row_index),
+                            "Helvetica-Bold"
+                        )
+                    ])
+                )
+
+            elif status == "EXIT":
+
+                table.setStyle(
+                    TableStyle([
+                        (
+                            "TEXTCOLOR",
+                            (4, table_row_index),
+                            (4, table_row_index),
+                            colors.HexColor("#DC3545")
+                        ),
+                        (
+                            "FONTNAME",
+                            (4, table_row_index),
+                            (4, table_row_index),
+                            "Helvetica-Bold"
+                        )
+                    ])
+                )
+
+            table_row_index += 1
+
+        # separator row
+        table_row_index += 1
 
     story.append(
         table
@@ -6268,27 +6406,18 @@ def create_pdf(
     # =====================================================
 
     document.build(
-
         story,
-
         onFirstPage=pdf_footer,
-
         onLaterPages=pdf_footer
-
     )
 
     output.seek(0)
 
     return send_file(
-
         output,
-
         download_name=filename,
-
         as_attachment=True,
-
         mimetype="application/pdf"
-
     )
 
 
@@ -7466,7 +7595,7 @@ def today_entries():
 
 if __name__ == "__main__":
 
-    startup()
+    
 
     socketio.run(
 
