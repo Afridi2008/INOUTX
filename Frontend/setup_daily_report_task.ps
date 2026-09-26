@@ -1,0 +1,24 @@
+# INOUTX - create a Windows Task Scheduler task for the daily report.
+# Run this PowerShell script ONCE from the Frontend folder/project.
+
+$frontend = Split-Path -Parent $MyInvocation.MyCommand.Path
+$bat = Join-Path $frontend "send_daily_report.bat"
+$taskName = "INOUTX - Daily Excel Report Email"
+$time = "18:00"
+
+if (-not (Test-Path $bat)) {
+    throw "send_daily_report.bat was not found: $bat"
+}
+
+schtasks.exe /Create /TN $taskName /TR "`"$bat`"" /SC DAILY /ST $time /F
+
+Write-Host ""
+Write-Host "INOUTX daily report task created." -ForegroundColor Green
+Write-Host "Task : $taskName"
+Write-Host "Time : Every day at $time"
+Write-Host ""
+Write-Host "To test immediately:" -ForegroundColor Cyan
+Write-Host "schtasks /Run /TN `"$taskName`""
+Write-Host ""
+Write-Host "To inspect the task:" -ForegroundColor Cyan
+Write-Host "schtasks /Query /TN `"$taskName`" /V /FO LIST"
